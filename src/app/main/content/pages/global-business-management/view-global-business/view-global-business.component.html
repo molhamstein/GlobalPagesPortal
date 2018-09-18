@@ -1,0 +1,180 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">visibility</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Business
+                    Information</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <mat-card *ngIf="businessInfo.category && businessInfo.subCategory && businessInfo.city && businessInfo.location">
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
+
+            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto"
+                name="form" [formGroup]="form">
+
+                <div class="h2 mb-24">Business Information</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Arabic Name" formControlName="nameAr" readonly [(ngModel)]="businessInfo.nameAr">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="English Name" formControlName="nameEn" readonly [(ngModel)]="businessInfo.nameEn">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Unique Name" formControlName="nameUnique" readonly [(ngModel)]="businessInfo.nameUnique">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm" style="margin-top: -16px;">
+                        <input matInput placeholder="Description" formControlName="description" readonly [(ngModel)]="businessInfo.description">
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Phone Number 1" formControlName="phoneNumber1" readonly [(ngModel)]="businessInfo.phoneNumber1">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Phone Number 2" formControlName="phoneNumber2" readonly [(ngModel)]="businessInfo.phoneNumber2">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Fax" formControlName="fax" readonly [(ngModel)]="businessInfo.fax">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Status" formControlName="status" readonly [(ngModel)]="businessInfo.status">
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Category" formControlName="category" readonly [(ngModel)]="businessInfo.category.titleEn">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="SubCategory" formControlName="subCategory" readonly [(ngModel)]="businessInfo.subCategory.titleEn">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="City" formControlName="city" readonly [(ngModel)]="businessInfo.city.nameEn">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Location" formControlName="location" readonly [(ngModel)]="businessInfo.location.nameEn">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Owner" formControlName="owner" readonly [(ngModel)]="businessInfo.owner.username">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Opening Days Enabled" formControlName="openingDaysEnabled" readonly [(ngModel)]="businessInfo.openingDaysEnabled">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field *ngIf="businessInfo.openingDaysEnabled" fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Opening Days" formControlName="openingDays" readonly [(ngModel)]="openingDaysField">
+                    </mat-form-field>
+                </div>
+
+                <div *ngIf="businessInfo.logo" class="h2 mb-24" style="margin-top:20px">Business Logo </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
+                    <img src="{{businessInfo.logo}}" width="150" height="60" style="margin-left:15px;">
+                </div>
+
+
+                <div class="h2 mb-24" style="margin-top:30px">Business Location</div>
+                <div>
+                    <agm-map [latitude]="lat" [longitude]="lng">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [draggable]="true"></agm-marker>
+                    </agm-map>
+                </div>
+
+                <div class="h2 mb-24" style="margin-top:35px;">Business Products</div>
+
+                <div class="example-container mat-elevation-z8" style="margin-top:20px;">
+
+                    <mat-table [dataSource]="dataSource">
+
+                        <!-- ID Column -->
+                        <ng-container matColumnDef="order">
+                            <mat-header-cell *matHeaderCellDef> Order </mat-header-cell>
+                            <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                        </ng-container>
+
+                        <!-- name Column -->
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;">name</mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.name}}</mat-cell>
+                        </ng-container>
+
+                        <!-- price Column -->
+                        <ng-container matColumnDef="price">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Price </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.price}}</mat-cell>
+                        </ng-container>
+
+                        <!-- image Column -->
+                        <ng-container matColumnDef="image">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Image </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;">
+                                <img src="{{row.image}}" width="50" height="30"> </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;">
+                        </mat-row>
+                    </mat-table>
+                </div>
+
+                <div *ngIf="businessInfo.covers.length != '0'" class="h2 mb-24" style="margin-top:30px">Business Covers</div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
+                    <form class="form-max-width">
+                        <img *ngFor="let c of businessInfo.covers" [src]="c" width="256px" height="256px" style="margin-left:15px; padding: 10px">
+                    </form>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </mat-card>
+
+    <!-- / CONTENT -->
+
+</div>

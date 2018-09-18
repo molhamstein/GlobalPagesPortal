@@ -1,0 +1,169 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">location_city</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Regions Management</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <mat-card>
+        <div [formGroup]="form">
+            <mat-form-field>
+            <mat-select placeholder="Choose Your Type" formControlName="option" [(ngModel)]="choose">
+                <mat-option *ngFor="let o of options" [value]="o.value" (click)="onSelect()">
+                    {{o.value}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        </div>
+    </mat-card>
+
+
+    <mat-card *ngIf="choose == 'Cities'">
+
+        <div class="example-header">
+            <mat-form-field style="width: 50%;">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+            </mat-form-field>
+            <button mat-raised-button class="btn-add" [routerLink]="['/pages/regions-management/add-region','City']">
+                Add New City
+            </button>
+        </div>
+
+        <div *ngIf="dataSource" class="example-container mat-elevation-z8">
+
+            <mat-table [dataSource]="dataSource" matSort>
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="order">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Order </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                </ng-container>
+
+                <!-- NameAr Column -->
+                <ng-container matColumnDef="nameAr">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header style=" flex: 0 0 250px;"> Arabic Name</mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 250px;"> {{row.nameAr}}</mat-cell>
+                </ng-container>
+
+                <!-- NameEn Column -->
+                <ng-container matColumnDef="nameEn">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header style=" flex: 0 0 250px;"> English Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 250px;"> {{row.nameEn}}</mat-cell>
+                </ng-container>
+
+                <!-- Locations Column -->
+                <ng-container matColumnDef="locations">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header style=" flex: 0 0 250px;"> Locations </mat-header-cell>
+                    <mat-cell *matCellDef="let row " style=" flex: 0 0 250px;">
+                        <span *ngFor="let s of row.locations">
+                            &#9679; <a [routerLink]="['/pages/regions-management/edit-region',s.id]">{{s.nameEn}}</a>
+                            <br />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+
+                <!-- icons Column -->
+                <ng-container matColumnDef="icons">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button mat-icon-button matTooltip="edit City" [matTooltipPosition]="'above'" [routerLink]="['/pages/regions-management/edit-region',row.id]">
+                            <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="delete City" [matTooltipPosition]="'above'" (click)="deleteCityModal(row, row.id)">
+                            <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                        </button>
+
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+        </div>
+
+    </mat-card>
+
+    <mat-card *ngIf="choose == 'Locations'">
+
+            <div class="example-header">
+                <mat-form-field style="width: 50%;">
+                    <input matInput (keyup)="applyFilter1($event.target.value)" placeholder="Search">
+                </mat-form-field>
+                <button mat-raised-button class="btn-add" [routerLink]="['/pages/regions-management/add-region', 'Location']">
+                    Add new Location
+                </button>
+            </div>
+    
+            <div  class="example-container mat-elevation-z8">
+    
+                <mat-table [dataSource]="dataSource1" matSort>
+    
+                    <!-- ID Column -->
+                    <ng-container matColumnDef="order">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Order </mat-header-cell>
+                        <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                    </ng-container>
+    
+                    <!-- NameAr Column -->
+                    <ng-container matColumnDef="nameAr">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header style=" flex: 0 0 250px;"> Arabic Name</mat-header-cell>
+                        <mat-cell *matCellDef="let row" style=" flex: 0 0 250px;"> {{row.nameAr}}</mat-cell>
+                    </ng-container>
+    
+                    <!-- NameEn Column -->
+                    <ng-container matColumnDef="nameEn">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header style=" flex: 0 0 250px;"> English Name </mat-header-cell>
+                        <mat-cell *matCellDef="let row" style=" flex: 0 0 250px;"> {{row.nameEn}}</mat-cell>
+                    </ng-container>
+    
+                    <!-- Cities Column -->
+                    <ng-container matColumnDef="city">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header style=" flex: 0 0 250px;"> City </mat-header-cell>
+                        <mat-cell *matCellDef="let row " style=" flex: 0 0 250px;">
+                            {{row.city.nameEn}}
+                        </mat-cell>
+                    </ng-container>
+    
+    
+                    <!-- icons Column -->
+                    <ng-container matColumnDef="icons">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> </mat-header-cell>
+                        <mat-cell *matCellDef="let row">
+    
+                            <button mat-icon-button matTooltip="edit Location" [matTooltipPosition]="'above'" [routerLink]="['/pages/regions-management/edit-region',row.id]">
+                                <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
+                            </button>
+                            <button mat-icon-button matTooltip="delete Location" [matTooltipPosition]="'above'" (click)="deleteLocationModal(row, row.id)">
+                                <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                            </button>
+    
+                        </mat-cell>
+                    </ng-container>
+    
+                    <mat-header-row *matHeaderRowDef="displayedColumns1"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns1;">
+                    </mat-row>
+                </mat-table>
+    
+                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+    
+        </mat-card>
+
+</div>

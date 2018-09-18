@@ -1,0 +1,95 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">library_books</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Business Management</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+
+    <mat-card>
+
+        <div class="example-header">
+            <mat-form-field style="width: 50%;">
+                <input matInput (keyup)="onFilter($event.target.value)" placeholder="Search" [(ngModel)]="fValue">
+            </mat-form-field>
+            <button mat-raised-button class="btn-add" [routerLink]="['/pages/global-business-management/add-global-business']">
+                Add new Business
+            </button>
+        </div>
+
+        <div *ngIf="dataSource" class="example-container mat-elevation-z8">
+
+            <mat-table [dataSource]="dataSource">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="order">
+                    <mat-header-cell *matHeaderCellDef> Order </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                </ng-container>
+
+                <!-- nameAr Column -->
+                <ng-container matColumnDef="nameAr">
+                    <mat-header-cell *matHeaderCellDef >Arabic Name</mat-header-cell>
+                    <mat-cell *matCellDef="let row" > {{row.nameAr}}</mat-cell>
+                </ng-container>
+
+                <!-- nameEn Column -->
+                <ng-container matColumnDef="nameEn">
+                    <mat-header-cell *matHeaderCellDef > English Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row" > {{row.nameEn}}</mat-cell>
+                </ng-container>
+
+                <!-- status Column -->
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.status}}</mat-cell>
+                </ng-container>
+
+
+                <!-- description Column -->
+                <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.description}}</mat-cell>
+                </ng-container>
+
+
+                <!-- icons Column -->
+                <ng-container matColumnDef="icons">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button matTooltip="view business" [matTooltipPosition]="'above'" mat-icon-button [routerLink]="['/pages/global-business-management/view-global-business',row.id]">
+                            <mat-icon style="color: rgba(41, 163, 102, 0.993)">visibility</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="edit business" [matTooltipPosition]="'above'" [routerLink]="['/pages/global-business-management/edit-global-business',row.id]">
+                            <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="delete business" [matTooltipPosition]="'above'" (click)="deleteModal(row, row.id)">
+                            <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                        </button>
+
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+
+            <mat-paginator [pageSize]="5" [length]="count" (page)="onPaginateChange($event)"></mat-paginator>
+        </div>
+
+    </mat-card>
+
+</div>

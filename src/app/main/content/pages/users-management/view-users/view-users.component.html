@@ -1,0 +1,82 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">streetview</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">View User</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <mat-card>
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
+
+            <form class="mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto" name="form"
+                [formGroup]="form">
+
+                <div class="h2 mb-24">User Information</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput readonly placeholder="Username" formControlName="username" [(ngModel)]="selectedUser.username">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput readonly placeholder="Email Verified" formControlName="emailVerified" [(ngModel)]="selectedUser.emailVerified">
+                    </mat-form-field>
+
+                </div>
+
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput readonly placeholder="Email" formControlName="email" [(ngModel)]="selectedUser.email">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput readonly placeholder="Phone Number" formControlName="phoneNumber" [(ngModel)]="selectedUser.phoneNumber">
+                    </mat-form-field>
+                </div>
+
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput readonly placeholder="Date of Birth" formControlName="birthDate" [(ngModel)]="selectedUser.birthDate">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput readonly placeholder="Gender" formControlName="gender" [(ngModel)]="selectedUser.gender">
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput readonly placeholder="Status" formControlName="status" [(ngModel)]="selectedUser.status">
+                    </mat-form-field>
+                </div>
+
+
+                <div>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </mat-card>
+
+    <!-- / CONTENT -->
+
+</div>

@@ -1,0 +1,166 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">edit</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Advertisement</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <mat-card>
+
+        <div *ngIf="categories && owners && regions" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
+
+            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto"
+                name="form" [formGroup]="form">
+
+                <div class="h2 mb-24">Advertisement Information </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Title" formControlName="title" [(ngModel)]="editedAd.title">
+                        <mat-error *ngIf="formErrors.title.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm" style="margin-top: -16px;">
+                        <textarea matInput placeholder="Description" formControlName="description" [(ngModel)]="editedAd.description">
+                                </textarea>
+                        <mat-error *ngIf="formErrors.description.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Status" formControlName="status" [(ngModel)]="editedAd.status">
+                        <mat-error *ngIf="formErrors.status.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div class="rightForm verify">
+                        Is Featured
+                    </div>
+                    <mat-slide-toggle class="tog" formControlName="isFeatured" [(ngModel)]="editedAd.isFeatured"></mat-slide-toggle>
+
+                </div>
+
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <mat-select placeholder="Category" formControlName="category" [(ngModel)]="category">
+                            <mat-option *ngFor="let c of categories" [value]="c">
+                                {{c.titleEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.category.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <mat-select placeholder="SubCategory" formControlName="subCategory" [(ngModel)]="subCategory">
+                            <mat-option *ngFor="let s of category.subCategories" [value]="s">
+                                {{s.titleEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.subCategory.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <mat-select placeholder="City" formControlName="city" [(ngModel)]="region">
+                            <mat-option *ngFor="let r of regions" [value]="r">
+                                {{r.nameEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.city.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <mat-select placeholder="Location" formControlName="location" [(ngModel)]="subRegion">
+                            <mat-option *ngFor="let l of region.locations" [value]="l">
+                                {{l.nameEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.location.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <mat-select placeholder="Owner" formControlName="owner" [(ngModel)]="owner">
+                            <mat-option *ngFor="let o of owners" [value]="o">
+                                {{o.username}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.owner.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+            </form>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
+
+            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" style="background-color:#f5f5f5 !important" fxLayout="column"
+                fxLayoutAlign="start" fxFlex="1 0 auto" name="form1">
+                <div class="h2 mb-24" style="margin-top:9px;">Advertisement Photos
+                    <button mat-mini-fab class="add-file-button mat-primary" (click)="fileInput.click()" aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                        <mat-icon style="color:white">add</mat-icon>
+                    </button>
+                    <input hidden type="file" accept="image/*" (change)="onFileChanged($event)" #fileInput/>
+                </div>
+                <div class="file-uploader">
+
+                    <img *ngFor="let i of imgs" [src]="i" width="256px" height="256px" class="img" style="padding:10px" (click)="dd($event)">
+                    <!-- <div class="edit"><a href="#"><mat-icon style="color:black">
+                                                delete
+                                            </mat-icon></a></div> -->
+
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <!--                 <button (click)="onupload()">
+                    upload
+                </button> -->
+            <button mat-raised-button class="btn-save" [disabled]="form.invalid " (click)="updateAd()">
+                Update Advertisement
+            </button>
+        </div>
+
+
+
+    </mat-card>
+
+    <!-- / CONTENT -->
+
+</div>

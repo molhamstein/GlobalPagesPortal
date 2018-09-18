@@ -1,0 +1,98 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">perm_identity</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Users Management</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+
+    <mat-card>
+
+        <div class="example-header">
+            <mat-form-field style="width: 50%;">
+                <input matInput (keyup)="onFilter($event.target.value)" placeholder="Search" [(ngModel)]="fValue">
+            </mat-form-field>
+            <button mat-raised-button class="btn-add" [routerLink]="['/pages/users-management/add-users']">
+                Add new User
+            </button>
+        </div>
+
+        <div *ngIf="dataSource" class="example-container mat-elevation-z8">
+
+            <mat-table [dataSource]="dataSource" >
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="order">
+                    <mat-header-cell *matHeaderCellDef > Order </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                </ng-container>
+
+                <!-- UserName Column -->
+                <ng-container matColumnDef="username">
+                    <mat-header-cell *matHeaderCellDef  > User Name</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.username}}</mat-cell>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef  style=" flex: 0 0 250px;"> Email </mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 250px;" > {{row.email}}</mat-cell>
+                </ng-container>
+
+                <!-- Gender Column -->
+                <ng-container matColumnDef="gender">
+                    <mat-header-cell *matHeaderCellDef  > Gender </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.gender}}</mat-cell>
+                </ng-container>
+
+
+                <!-- PhoneNumber Column -->
+                <ng-container matColumnDef="phoneNumber">
+                    <mat-header-cell *matHeaderCellDef  > Phone Number </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.phoneNumber}}</mat-cell>
+                </ng-container>
+
+
+                <!-- icons Column -->
+                <ng-container matColumnDef="icons">
+                    <mat-header-cell *matHeaderCellDef > </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button matTooltip="view user"  [matTooltipPosition]="'above'"
+                            mat-icon-button [routerLink]="['/pages/users-management/view-users',row.id]">
+                            <mat-icon style="color: rgba(41, 163, 102, 0.993)">streetview</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="edit user"  [matTooltipPosition]="'above'"
+                         [routerLink]="['/pages/users-management/edit-users',row.id]">
+                            <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="delete user"  [matTooltipPosition]="'above'"
+                            (click)="deleteModal(row, row.id)">
+                            <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                        </button>
+
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+
+            <mat-paginator [pageSize]="5" [length]="count" (page)="onPaginateChange($event)"></mat-paginator>
+        </div>
+
+    </mat-card>
+
+</div>

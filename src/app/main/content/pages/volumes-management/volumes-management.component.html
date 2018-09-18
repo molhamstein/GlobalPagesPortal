@@ -1,0 +1,101 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">library_books</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Volumes
+                    Management</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+
+    <mat-card>
+
+        <div class="example-header">
+            <mat-form-field style="width: 50%;">
+                <input matInput (keyup)="onFilter($event.target.value)" placeholder="Search" [(ngModel)]="fValue">
+            </mat-form-field>
+            <button mat-raised-button class="btn-add" [routerLink]="['/pages/volumes-management/add-volume']">
+                Add new Volume
+            </button>
+        </div>
+
+        <div *ngIf="dataSource" class="example-container mat-elevation-z8">
+
+            <mat-table [dataSource]="dataSource">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="order">
+                    <mat-header-cell *matHeaderCellDef> Order </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                </ng-container>
+
+                <!-- titleAr Column -->
+                <ng-container matColumnDef="titleAr">
+                    <mat-header-cell *matHeaderCellDef >Arabic Title</mat-header-cell>
+                    <mat-cell *matCellDef="let row" > {{row.titleAr}}</mat-cell>
+                </ng-container>
+
+                <!-- titleEn Column -->
+                <ng-container matColumnDef="titleEn">
+                    <mat-header-cell *matHeaderCellDef > English Title </mat-header-cell>
+                    <mat-cell *matCellDef="let row" > {{row.titleEn}}</mat-cell>
+                </ng-container>
+
+                <!-- status Column -->
+                <ng-container matColumnDef="status">
+                    <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.status}}</mat-cell>
+                </ng-container>
+
+
+                <!-- posts Column -->
+                <ng-container matColumnDef="posts">
+                    <mat-header-cell *matHeaderCellDef> Ads </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                        <span *ngFor="let p of row.posts">
+                            &#9679; <a [routerLink]="['/pages/ads-management/view-ad',p.id]">{{p.title}}</a>
+                            <br />
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+
+                <!-- icons Column -->
+                <ng-container matColumnDef="icons">
+                    <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+
+                        <button matTooltip="view volume" [matTooltipPosition]="'above'" mat-icon-button [routerLink]="['/pages/volumes-management/view-volume',row.id]">
+                            <mat-icon style="color: rgba(41, 163, 102, 0.993)">visibility</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="edit volume" [matTooltipPosition]="'above'" [routerLink]="['/pages/volumes-management/edit-volume',row.id]">
+                            <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
+                        </button>
+                        <button mat-icon-button matTooltip="delete volume" [matTooltipPosition]="'above'" (click)="deleteModal(row, row.id)">
+                            <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                        </button>
+
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+
+            <mat-paginator [pageSize]="5" [length]="count" (page)="onPaginateChange($event)"></mat-paginator>
+        </div>
+
+    </mat-card>
+
+</div>

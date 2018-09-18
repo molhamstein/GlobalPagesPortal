@@ -1,0 +1,293 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">edit</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Business</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+    <!-- CONTENT -->
+    <mat-card>
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
+
+            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto"
+                name="form" [formGroup]="form">
+
+                <div class="h2 mb-24">Business Information</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Arabic Name" formControlName="nameAr" [(ngModel)]="editedBusiness.nameAr">
+                        <mat-error *ngIf="formErrors.nameAr.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="English Name" formControlName="nameEn" [(ngModel)]="editedBusiness.nameEn">
+                        <mat-error *ngIf="formErrors.nameEn.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Unique Name" formControlName="nameUnique" [(ngModel)]="editedBusiness.nameUnique">
+                        <mat-error *ngIf="formErrors.nameUnique.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm" style="margin-top: -16px;">
+                        <textarea matInput placeholder="Description" formControlName="description" [(ngModel)]="editedBusiness.description">
+                            </textarea>
+                        <mat-error *ngIf="formErrors.description.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Phone Number 1" formControlName="phoneNumber1" [(ngModel)]="editedBusiness.phoneNumber1">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Phone Number 2" formControlName="phoneNumber2" [(ngModel)]="editedBusiness.phoneNumber2">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Fax" formControlName="fax" [(ngModel)]="editedBusiness.fax">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Status" formControlName="status" [(ngModel)]="editedBusiness.status">
+                        <mat-error *ngIf="formErrors.status.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <mat-select placeholder="Category" formControlName="category" [(ngModel)]="category">
+                            <mat-option *ngFor="let c of categories" [value]="c">
+                                {{c.titleEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.category.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <mat-select placeholder="SubCategory" formControlName="subCategory" [(ngModel)]="subCategory">
+                            <mat-option *ngFor="let s of category.subCategories" [value]="s">
+                                {{s.titleEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.subCategory.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <mat-select placeholder="City" formControlName="city" [(ngModel)]="region">
+                            <mat-option *ngFor="let r of regions" [value]="r">
+                                {{r.nameEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.city.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <mat-select placeholder="Location" formControlName="location" [(ngModel)]="subRegion">
+                            <mat-option *ngFor="let l of region.locations" [value]="l">
+                                {{l.nameEn}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.location.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <mat-select placeholder="Owner" formControlName="owner" [(ngModel)]="owner">
+                            <mat-option *ngFor="let o of owners" [value]="o">
+                                {{o.username}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.owner.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div class="rightForm verify">
+                        Opening Days Enabled
+                    </div>
+                    <mat-slide-toggle class="tog" formControlName="openingDaysEnabled" [(ngModel)]="editedBusiness.openingDaysEnabled"></mat-slide-toggle>
+
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field *ngIf="editedBusiness.openingDaysEnabled" fxFlex="50" class="leftForm">
+                        <mat-select placeholder="Opening Days" formControlName="openingDays" multiple [(ngModel)]="empty" >
+                            <mat-option *ngFor="let d of days" [value]="d.value" (click)="pushDay(d)" >
+                                {{d.valueName}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.owner.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="h2 mb-24" style="margin-top:20px">Business Logo
+                    <button mat-mini-fab class="btn-push" (click)="fileInput1.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
+                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                        <mat-icon style="color:white">add</mat-icon>
+                    </button>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedLogo($event)" #fileInput1/>
+                    <img src="{{editedBusiness.logo}}" width="150" height="60" style="margin-left:15px;">
+                </div>
+
+
+                <div class="h2 mb-24" style="margin-top:30px">Business Location</div>
+                <div>
+                    <agm-map [latitude]="lat" [longitude]="lng">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [draggable]="true"></agm-marker>
+                    </agm-map>
+                </div>
+
+                <div class="h2 mb-24" style="margin-top:35px;">Business Products</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Product Name" formControlName="productName" [(ngModel)]="editedProduct.name">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <input matInput placeholder="Product Price" formControlName="productPrice" [(ngModel)]="editedProduct.price">
+                    </mat-form-field>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:15px;">
+                    <div class="leftForm product-image">
+                        Product Image
+                    </div>
+                    <button mat-mini-fab class="btn-push" (click)="fileInput.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
+                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                        <mat-icon style="color:white">add</mat-icon>
+                    </button>
+                    <!-- <button mat-raised-button class="btn-push" style="margin-left: 15px;" (click)="fileInput.click()">
+                        <mat-icon style="color:white">add</mat-icon>
+                    </button> -->
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedProducts($event)" #fileInput/>
+                    <img src="{{editedProduct.image}}" width="150" height="60" style="margin-left:15px;">
+                </div>
+
+                <div>
+                    <button mat-raised-button class="btn-add" (click)="pushProduct()">
+                        Add Product
+                    </button>
+                </div>
+
+                <div class="example-container mat-elevation-z8" style="margin-top:20px;">
+
+                    <mat-table [dataSource]="dataSource">
+
+                        <!-- ID Column -->
+                        <ng-container matColumnDef="order">
+                            <mat-header-cell *matHeaderCellDef> Order </mat-header-cell>
+                            <mat-cell *matCellDef="let row"> {{row.order}}</mat-cell>
+                        </ng-container>
+
+                        <!-- name Column -->
+                        <ng-container matColumnDef="name">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;">name</mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.name}}</mat-cell>
+                        </ng-container>
+
+                        <!-- price Column -->
+                        <ng-container matColumnDef="price">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Price </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.price}}</mat-cell>
+                        </ng-container>
+
+                        <!-- image Column -->
+                        <ng-container matColumnDef="image">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Image </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;">
+                                <img src="{{row.image}}" width="50" height="30"> </mat-cell>
+                        </ng-container>
+
+                        <!-- icons Column -->
+                        <ng-container matColumnDef="icons">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 105px;"> </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 105px;">
+
+                                <button mat-icon-button matTooltip="delete" [matTooltipPosition]="'above'" (click)="deleteProduct(row)">
+                                    <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                                </button>
+
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row *matRowDef="let row; columns: displayedColumns;">
+                        </mat-row>
+                    </mat-table>
+                </div>
+
+                <div class="h2 mb-24" style="margin-top:30px">Business Covers
+                    <button mat-mini-fab class="btn-push" (click)="fileInput2.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
+                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                        <mat-icon style="color:white">add</mat-icon>
+                    </button>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedCovers($event)" #fileInput2/>
+                </div>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
+                    <form class="form-max-width">
+                        <img *ngFor="let c of covers" [src]="c" width="256px" height="256px" style="margin-left:15px; padding: 10px">
+                    </form>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <button mat-raised-button class="btn-save" [disabled]="!editedBusiness.nameAr || !editedBusiness.nameEn 
+                    || !editedBusiness.nameUnique || !editedBusiness.description || !category.titleEn || !subCategory.titleEn 
+                    || !region.nameEn || !subRegion.nameEn || !owner.username" (click)="updateBusiness()">
+                        Update Business
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </mat-card>
+
+    <!-- / CONTENT -->
+
+</div>

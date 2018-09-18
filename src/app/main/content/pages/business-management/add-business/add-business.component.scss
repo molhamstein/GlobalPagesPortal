@@ -1,0 +1,33 @@
+:host {
+
+    .content {
+
+        form {
+            width: 100%;
+            max-width: 800px !important;
+        }
+
+        .form-errors-model {
+            flex: 1;
+
+            code {
+                background: none !important;
+            }
+        }
+    }
+}
+
+.btn-save {
+    float: right; 
+    color:white; 
+    background-color:rgb(21, 122, 168);
+}
+
+.leftForm {
+    max-width: 45% !important;
+}
+
+.rightForm {
+    max-width: 45% !important;
+    margin-left: 7%;
+}
