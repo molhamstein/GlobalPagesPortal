@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { fuseAnimations } from '../../../../../core/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
@@ -7,6 +7,9 @@ import { RegionsService } from '../../../../../core/services/regions.service';
 import { AdsService } from '../../../../../core/services/ads.service';
 import { CategoriesService } from '../../../../../core/services/categories.service';
 import { usersService } from '../../../../../core/services/users.service';
+import { Location } from '../../../../../../../node_modules/@angular/common';
+import { Observable } from 'rxjs/Observable';
+import { startWith, map } from 'rxjs/operators';
 
 @Component({
     selector: 'edit-ad',
@@ -17,7 +20,10 @@ import { usersService } from '../../../../../core/services/users.service';
 export class EditAdComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
-    id:any;
+    id: any;
+    myControl = new FormControl();
+    filteredOptions: Observable<Owners[]>;
+    selectedOwner: any = {};
     editedAd: any = {};
     categories: any = [];
     category: any = {};
@@ -31,10 +37,11 @@ export class EditAdComponent implements OnInit {
     selectedFile: File;
     url: any;
     dataFormImgs: any = [];
+    selectStatus = ['pending', 'activated', 'deactivated'];
 
-    constructor(private formBuilder: FormBuilder, private adServ: AdsService,
+    constructor(private formBuilder: FormBuilder, private adServ: AdsService, private loc: Location,
         private route: Router, private snack: MatSnackBar, private catServ: CategoriesService,
-        private regServ: RegionsService, private userServ: usersService, private activatedRoute : ActivatedRoute) {
+        private regServ: RegionsService, private userServ: usersService, private activatedRoute: ActivatedRoute) {
 
         this.category.subCategories = [];
         this.region.locations = [];
@@ -47,20 +54,27 @@ export class EditAdComponent implements OnInit {
 
             this.adServ.getAdById(this.id).subscribe(res => {
                 this.editedAd = res;
-                for (let index = 0; index < this.editedAd.media.length; index++) {
-                    this.imgs.push('http://' + this.editedAd.media[index].url);
+                this.selectedOwner = this.editedAd.owner;
+                if (this.editedAd.media) {
+                    for (let index = 0; index < this.editedAd.media.length; index++) {
+                        this.imgs.push(this.editedAd.media[index].url);
+                    }
                 }
+                else { this.editedAd.media = [] }
             })
-
-            
-
         });
 
         this.userServ.getAllUsers().subscribe(res => {
             this.owners = res;
+            this.filteredOptions = this.myControl.valueChanges
+                .pipe(
+                    startWith<string | Owners>(''),
+                    map(value => typeof value === 'string' ? value : value.username),
+                    map(title => title ? this._filter(title) : this.owners.slice())
+                );
         })
 
-        this.catServ.getAllCategories().subscribe(res => {
+        this.catServ.getCategories().subscribe(res => {
             this.categories = res;
         })
 
@@ -77,7 +91,6 @@ export class EditAdComponent implements OnInit {
             subCategory: [],
             city: [],
             location: [],
-            owner: [],
         };
 
         this.form = this.formBuilder.group({
@@ -89,7 +102,6 @@ export class EditAdComponent implements OnInit {
             subCategory: [this.categories[0], Validators.required],
             city: [this.regions[0], Validators.required],
             location: [this.regions[0], Validators.required],
-            owner: [this.owners[0], Validators.required],
         });
 
         this.form.valueChanges.subscribe(() => {
@@ -98,9 +110,18 @@ export class EditAdComponent implements OnInit {
 
     }
 
+    displayFn(own?: Owners): string | undefined {
+        return own ? own.username : undefined;
+    }
+
+    private _filter(own: string): Owners[] {
+        const filterValue = own.toLowerCase();
+
+        return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
+    }
+
     onFileChanged(event) {
         this.selectedFile = <File>event.target.files[0]
-
         var reader = new FileReader();
 
         reader.onload = (event: ProgressEvent) => {
@@ -108,49 +129,85 @@ export class EditAdComponent implements OnInit {
             this.imgs.push(this.url);
         }
         reader.readAsDataURL(event.target.files[0]);
-
+        event.target.value = '';
         this.dataFormImgs.push(this.selectedFile);
-
-        debugger
-    }
-
-    onupload() {
-        const frmData = new FormData();
-
-        for (var i = 0; i < this.dataFormImgs.length; i++) {
-            frmData.append("fileUpload", this.dataFormImgs[i], this.dataFormImgs[i].name);
-            debugger
-        }
-        /* this.adServ.uploadImages(frmData).subscribe(events => {
-            console.log(events)
-
-        }) */
     }
 
     updateAd() {
-        this.editedAd.ownerId = this.owner.id;
+        var isThere :boolean = false;
+        for (let index = 0; index < this.owners.length; index++) {
+            if(this.selectedOwner.id == this.owners[index].id){
+                this.editedAd.ownerId = this.selectedOwner.id;
+                isThere = true;
+                break;
+            }
+        }
+        if(isThere == false) {
+            this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
+            return;
+        }
         this.editedAd.categoryId = this.category.id;
         this.editedAd.subCategoryId = this.subCategory.id;
         this.editedAd.cityId = this.region.id;
         this.editedAd.locationId = this.subRegion.id;
-        /* this.editedAd.media = []; */
-        if(!this.editedAd.media) {
-            this.editedAd.media = [];
-        }
 
-        this.adServ.editAd(this.editedAd, this.editedAd.id).subscribe(res => {
-            this.route.navigate(['/pages/ads-management']);
-            this.snack.open("You Succesfully updated an Advertisement", "Done", {
-                duration: 2000,
-            })
-        },
-            err => {
-                this.snack.open("Please Re-enter the right Advertisement information..", "OK")
+        if (this.dataFormImgs,length != 0) {
+            const frmData: FormData = new FormData();
+            for (var i = 0; i < this.dataFormImgs.length; i++) {
+                frmData.append("file", this.dataFormImgs[i], this.dataFormImgs[i].name);
             }
-        )
+            this.adServ.uploadImages(frmData).subscribe(res => {
+                for (let j = 0; j < res.length; j++) {
+                    var tempobj: any = {};
+                    tempobj.url = res[j].url;
+                    tempobj.thumbnail = res[j].url;
+                    tempobj.type = 'image';
+                    this.editedAd.media.push(tempobj);
+                }
+            })
+        }
+        setTimeout(() => {
+            this.adServ.editAd(this.editedAd, this.editedAd.id).subscribe(res => {
+                this.loc.back();
+                /* this.route.navigate(['/pages/ads-management']); */
+                this.snack.open("You Succesfully updated an Advertisement", "Done", {
+                    duration: 2000,
+                })
+            },
+                err => {
+                    this.snack.open("Please Re-enter the right Advertisement information..", "OK")
+                }
+            )
+        },2000);
+
     }
 
+    /* eventSelection(event) {
+        console.log(event)
+    } */
 
+    deleteImage(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        for (let index = 0; index < this.imgs.length; index++) {
+            if (temp == this.imgs[index]) {
+                const i: number = this.imgs.indexOf(this.imgs[index]);
+                if (i !== -1) {
+                    if (temp.startsWith('http')) {
+                        this.imgs.splice(index, 1);
+                        this.editedAd.media.splice(index, 1);
+                        return
+                    }
+                    this.imgs.splice(index, 1);
+                    this.dataFormImgs.splice(index - this.editedAd.media.length, 1);
+                    return
+                }
+            }
+        }
+    }
+
+    back() {
+        this.loc.back();
+    }
 
     onFormValuesChanged() {
         for (const field in this.formErrors) {
@@ -169,4 +226,11 @@ export class EditAdComponent implements OnInit {
             }
         }
     }
+}
+export interface Owners {
+    username: string;
+    email: string;
+    status: string;
+    gender: string;
+    id:number;
 }

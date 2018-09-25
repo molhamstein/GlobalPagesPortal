@@ -1,4 +1,4 @@
-<div *ngIf = "isParent" class="page-layout simple left-sidenav inner-sidenav">
+<div *ngIf="isParent" class="page-layout simple left-sidenav inner-sidenav">
     <!-- HEADER -->
     <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
 
@@ -7,7 +7,9 @@
 
             <div class="logo" fxLayout="row" fxLayoutAlign="start center">
                 <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">edit</mat-icon>
-                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Business Category</span>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Business
+                    Category
+                </span>
             </div>
 
         </div>
@@ -35,17 +37,20 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                            <input matInput placeholder="Arabic Title" formControlName="titleAr" [(ngModel)]="editedBusiness.titleAr">
-                            <mat-error *ngIf="formErrors.titleAr.required">
-                                Required
-                            </mat-error>
-                        </mat-form-field>
+                        <input matInput placeholder="Arabic Title" formControlName="titleAr" [(ngModel)]="editedBusiness.titleAr">
+                        <mat-error *ngIf="formErrors.titleAr.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
 
                 </div>
 
-                <div >
+                <div style="margin-top:20px;">
                     <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="updateBusiness()">
                         Update Business Category
+                    </button>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
                     </button>
                 </div>
 
@@ -53,12 +58,12 @@
         </div>
 
     </mat-card>
-    
+
     <!-- / CONTENT -->
 
 </div>
 
-<div *ngIf = "isChild" class="page-layout simple left-sidenav inner-sidenav">
+<div *ngIf="isChild" class="page-layout simple left-sidenav inner-sidenav">
     <!-- HEADER -->
     <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
 
@@ -67,7 +72,9 @@
 
             <div class="logo" fxLayout="row" fxLayoutAlign="start center">
                 <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">edit</mat-icon>
-                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Business SubCategory</span>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Business
+                    SubCategory
+                </span>
             </div>
 
         </div>
@@ -95,11 +102,11 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                            <input matInput placeholder="Arabic Title" formControlName="titleAr" [(ngModel)]="editedBusiness.titleAr">
-                            <mat-error *ngIf="formErrors.titleAr.required">
-                                Required
-                            </mat-error>
-                        </mat-form-field>
+                        <input matInput placeholder="Arabic Title" formControlName="titleAr" [(ngModel)]="editedBusiness.titleAr">
+                        <mat-error *ngIf="formErrors.titleAr.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
 
                 </div>
 
@@ -117,9 +124,12 @@
                     </mat-form-field>
                 </div>
 
-                <div >
+                <div style="margin-top:20px;">
                     <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="updateBusiness()">
                         Update Business SubCategory
+                    </button>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
                     </button>
                 </div>
 
@@ -127,7 +137,7 @@
         </div>
 
     </mat-card>
-    
+
     <!-- / CONTENT -->
 
 </div>

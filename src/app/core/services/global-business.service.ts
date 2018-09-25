@@ -50,13 +50,8 @@ export class GlobalBusinessService {
     return this.httpclient.get(GlobalURL.URL + 'businesses/?filter={"where":{"nameEn":{"like":"' + value +'"}},"limit":50}');
   }
 
-  /* uploadImages(data) : Observable<any> {
-   var headers1 = new HttpHeaders({
-      'Content-Type': 'multipart/form-data',
-      'Authorization': this.accessToken
-    })
-    return this.httpclient.post(GlobalURL.URL + 'attachments/images/upload', data , {headers: headers1  });
-  } */
-
+  uploadImages(data) : Observable<any> {
+     return this.httpclient.post(GlobalURL.URL + 'attachments/images/upload', data );
+   }
 
 }

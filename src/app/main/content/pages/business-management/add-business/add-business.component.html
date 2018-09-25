@@ -43,9 +43,12 @@
 
                 </div>
 
-                <div >
+                <div style="margin-top: 20px">
                     <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="saveCat()">
                         Save Business Category
+                    </button>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
                     </button>
                 </div>
 
@@ -53,7 +56,7 @@
         </div>
 
     </mat-card>
-    
+
     <!-- / CONTENT -->
 
 </div>
@@ -103,7 +106,7 @@
                     </mat-form-field>
 
                 </div>
-                
+
                 <div *ngIf="categories" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
                         <mat-select placeholder="Choose the Category" formControlName="category" [(ngModel)]="category">
@@ -117,17 +120,20 @@
                     </mat-form-field>
                 </div>
 
-                <div >
+                <div style="margin-top: 20px">
                     <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="saveSubCat()">
                         Save Business SubCategory
                     </button>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                            Back
+                        </button>
                 </div>
 
             </form>
         </div>
 
     </mat-card>
-    
+
     <!-- / CONTENT -->
 
 </div>

@@ -114,7 +114,6 @@ export class GlobalBusinessManagementComponent implements OnInit {
             }
             this.tempLength = this.myData.length;
             this.dataSource = new MatTableDataSource(this.myData);
-            debugger
         })
 
     }

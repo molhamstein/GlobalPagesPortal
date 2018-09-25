@@ -9,6 +9,9 @@ import { RegionsService } from '../../../../../core/services/regions.service';
 import { GlobalBusinessService } from '../../../../../core/services/global-business.service';
 import { google } from '@agm/core/services/google-maps-types';
 import { BusinessCategoriesService } from '../../../../../core/services/business-cat.service';
+import { Location } from '../../../../../../../node_modules/@angular/common';
+import { Observable } from 'rxjs/Observable';
+import { startWith, map } from 'rxjs/operators';
 
 
 @Component({
@@ -21,6 +24,9 @@ export class AddGlobalBusinessComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
     newBusiness: any = {};
+    myControl = new FormControl();
+    filteredOptions: Observable<Owners[]>;
+    selectedOwner: any = {};
     categories: any = [];
     category: any = {};
     subCategory: any = {};
@@ -29,47 +35,37 @@ export class AddGlobalBusinessComponent implements OnInit {
     regions: any = [];
     region: any = {};
     subRegion: any = {};
-    prodcutFile: File;
-    logoFile:File;
-    coverFile:File;
+    prodcutFile: File = null;
+    logoFile: File = null;
+    coverFile: File = null;
     url: any;
-    covers:any = [];
+    covers: any = [];
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
     days: any[] = [{ value: 0, valueName: "Monday" }, { value: 1, valueName: "Tuesday" }, { value: 2, valueName: "Wednesday" },
     { value: 3, valueName: "Thursday" }, { value: 4, valueName: "Friday" }, { value: 5, valueName: "Saturday" }, { value: 6, valueName: "Sunday" },]
     openingDays: any = [];
-    lat = -34.397;
-    lng = 150.644;
+    lat = 33.51380000000012;
+    lng = 36.27649999999994;
 
-    displayedColumns = ['order', 'name', 'price', 'image', 'icons'];
+    displayedColumns = ['order', 'name', 'price', 'description', 'image', 'icons'];
     dataSource = new MatTableDataSource<Products>([]);
     myData: Products[] = [];
     newProduct: any = {};
     order = 0;
-    empty: any =[];
+    empty: any = [];
+    selectStatus = ['pending', 'activated', 'deactivated'];
 
     constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
         private route: Router, private snack: MatSnackBar, private busCatServ: BusinessCategoriesService,
-        private regServ: RegionsService, private userServ: usersService) {
+        private regServ: RegionsService, private userServ: usersService, private loc: Location) {
 
         this.newBusiness.openingDaysEnabled = false;
+        this.newBusiness.openingDays = [];
+        this.newBusiness.covers = [];
+        this.newBusiness.products = [];
         this.category.subCategories = [];
         this.region.locations = [];
-
-        /* var myLatlng = new google.maps.LatLng(-25.363882, 131.044922);
-        var mapOptions = {
-            zoom: 4,
-            center: myLatlng
-        }
-        var map = new google. maps.Map(document.getElementById("map"), mapOptions);
-
-        var marker = new google.maps.Marker({
-            position: myLatlng,
-            map: map,
-            draggable: true,
-            title: "Drag me!"
-        }); */
     }
 
     ngOnInit() {
@@ -77,6 +73,12 @@ export class AddGlobalBusinessComponent implements OnInit {
         this.dataSource = new MatTableDataSource(this.myData);
         this.userServ.getAllUsers().subscribe(res => {
             this.owners = res;
+            this.filteredOptions = this.myControl.valueChanges
+                .pipe(
+                    startWith<string | Owners>(''),
+                    map(value => typeof value === 'string' ? value : value.username),
+                    map(title => title ? this._filter(title) : this.owners.slice())
+                );
         })
 
         this.busCatServ.getBusinessCategories().subscribe(res => {
@@ -98,7 +100,6 @@ export class AddGlobalBusinessComponent implements OnInit {
             subCategory: [],
             city: [],
             location: [],
-            owner: [],
             openingDays: [],
         };
 
@@ -116,10 +117,10 @@ export class AddGlobalBusinessComponent implements OnInit {
             subCategory: [{}, Validators.required],
             city: [{}, Validators.required],
             location: ['', Validators.required],
-            owner: [{}, Validators.required],
             openingDays: [{}, Validators.required],
-            productName: [],
-            productPrice: []
+            productName: '',
+            productPrice: '',
+            productDescription: '',
         });
 
         this.form.valueChanges.subscribe(() => {
@@ -128,9 +129,26 @@ export class AddGlobalBusinessComponent implements OnInit {
 
     }
 
+    displayFn(own?: Owners): string | undefined {
+        return own ? own.username : undefined;
+    }
+
+    private _filter(own: string): Owners[] {
+        const filterValue = own.toLowerCase();
+
+        return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
+    }   
+
+    markerDragEnd($event) {
+        this.lat = $event.coords.lat;
+        console.log(this.lat);
+        this.lng = $event.coords.lng;
+        console.log(this.lng);
+    }
+
     pushDay(day) {
         for (let index = 0; index < this.openingDays.length; index++) {
-            if(day.valueName == this.openingDays[index].valueName) {
+            if (day.valueName == this.openingDays[index].valueName) {
                 var i = this.openingDays.indexOf(this.openingDays[index], 0);
                 this.openingDays.splice(i, 1);
                 return
@@ -148,6 +166,7 @@ export class AddGlobalBusinessComponent implements OnInit {
             this.newBusiness.logo = (<FileReader>event.target).result;
         }
         reader.readAsDataURL(event.target.files[0]);
+        event.target.value = '';
     }
 
     onFileChangedProducts(event) {
@@ -160,8 +179,7 @@ export class AddGlobalBusinessComponent implements OnInit {
             this.newProduct.image = this.url;
         }
         reader.readAsDataURL(event.target.files[0]);
-
-        this.dataFormProductsImgs.push(this.prodcutFile);
+        event.target.value = '';
 
     }
 
@@ -175,34 +193,48 @@ export class AddGlobalBusinessComponent implements OnInit {
             this.covers.push(this.url);
         }
         reader.readAsDataURL(event.target.files[0]);
-
+        event.target.value = '';
         this.dataFormCoversImgs.push(this.coverFile);
 
     }
 
-   /*  onupload() {
-        const frmData = new FormData();
-
-        for (var i = 0; i < this.dataFormImgs.length; i++) {
-            frmData.append("fileUpload", this.dataFormImgs[i], this.dataFormImgs[i].name);
-            debugger
+    deleteImageLogo(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        if (temp == this.newBusiness.logo) {
+            this.newBusiness.logo = '';
+            this.logoFile = null;
         }
-                frmData.append("fileUpload", this.selectedFile);
-        this.adServ.uploadImages(frmData).subscribe(res => {
-            res;
-           debugger
-        })
-    } */
+    }
 
-    dd(event) {
-        console.log(event);
+    deleteImageProduct(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        if (temp == this.newProduct.image) {
+            this.newProduct.image = '';
+            this.prodcutFile = null;
+        }
+    }
+
+    deleteImageCover(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        for (let index = 0; index < this.covers.length; index++) {
+            if (temp == this.covers[index]) {
+                const i: number = this.covers.indexOf(this.covers[index]);
+                if (i !== -1) {
+                    this.covers.splice(index, 1);
+                    this.dataFormCoversImgs.splice(index, 1);
+                    return
+                }
+            }
+        }
     }
 
     pushProduct() {
-        if (this.newProduct.name && this.newProduct.price && this.newProduct.image) {
+        if (this.newProduct.name && this.newProduct.price && this.newProduct.description && this.newProduct.image) {
             this.order++;
             this.newProduct.order = this.order;
             this.myData.push(this.newProduct);
+            debugger
+            this.dataFormProductsImgs.push(this.prodcutFile);
             this.dataSource.data = this.myData;
             this.newProduct = {};
         }
@@ -218,13 +250,29 @@ export class AddGlobalBusinessComponent implements OnInit {
             this.myData[index].order--;
         }
         this.myData.splice(i, 1);
+        this.dataFormProductsImgs.splice(i, 1);
         this.order = this.myData.length;
         this.dataSource.data = this.myData;
     }
 
     saveBusiness() {
+        var isThere :boolean = false;
+        for (let index = 0; index < this.owners.length; index++) {
+            if(this.selectedOwner.id == this.owners[index].id){
+                this.newBusiness.ownerId = this.selectedOwner.id;
+                isThere = true;
+                break;
+            }
+        }
+        if(isThere == false) {
+            this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
+            return;
+        }
+
         if (this.newBusiness.openingDaysEnabled == true) {
-            this.newBusiness.openingDays = this.openingDays;
+            for (let index = 0; index < this.openingDays.length; index++) {
+                this.newBusiness.openingDays.push(this.openingDays[index].value)
+            }
         }
         else { this.newBusiness.openingDays = [] }
         this.newBusiness.ownerId = this.owner.id;
@@ -232,25 +280,64 @@ export class AddGlobalBusinessComponent implements OnInit {
         this.newBusiness.subCategoryId = this.subCategory.id;
         this.newBusiness.cityId = this.region.id;
         this.newBusiness.locationId = this.subRegion.id;
-        this.newBusiness.logo ="";
-        this.newBusiness.covers = [];
-        this.newBusiness.products = [];
-        this.newBusiness.locationPoint = {lat:0, lng:0};
-        debugger
-        /*         if(!this.newAd.media) {
-                    this.newAd.media = [];
-                } */
-
-        this.busServ.addNewGlobalBusiness(this.newBusiness).subscribe(res => {
-            this.route.navigate(['/pages/global-business-management']);
-            this.snack.open("You Succesfully entered a new Business", "Done", {
-                duration: 2000,
+        this.newBusiness.locationPoint = { lat: this.lat, lng: this.lng };
+        if (this.logoFile != null) {
+            const logoFrmData: FormData = new FormData();
+            logoFrmData.append("file", this.logoFile, this.logoFile.name);
+            this.busServ.uploadImages(logoFrmData).subscribe(res => {
+                this.newBusiness.logo = res[0].url;
             })
-        },
-            err => {
-                this.snack.open("Please Re-enter the right Business information..", "OK")
+        }
+        else { this.newBusiness.logo = ""; }
+
+        if (this.dataFormCoversImgs.length != 0) {
+            const coverFrmData: FormData = new FormData();
+            for (var i = 0; i < this.dataFormCoversImgs.length; i++) {
+                coverFrmData.append("file", this.dataFormCoversImgs[i], this.dataFormCoversImgs[i].name);
             }
-        )
+            this.busServ.uploadImages(coverFrmData).subscribe(res => {
+                for (let j = 0; j < res.length; j++) {
+                    var tempobj: any = {};
+                    tempobj.url = res[j].url;
+                    tempobj.thumbnail = res[j].url;
+                    tempobj.type = 'image';
+                    this.newBusiness.covers.push(tempobj);
+                }
+            })
+        }
+
+        if (this.dataFormProductsImgs.length != 0) {
+            const productFrmData: FormData = new FormData();
+            for (var i = 0; i < this.dataFormProductsImgs.length; i++) {
+                productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
+            }
+            this.busServ.uploadImages(productFrmData).subscribe(res => {
+                for (let j = 0; j < res.length; j++) {
+                    this.myData[j].image = res[j].url;
+                    delete this.myData[j].order;
+                    this.newBusiness.products.push(this.myData[j]);
+                    debugger
+                }
+            })
+        }
+        setTimeout(() => {
+            this.busServ.addNewGlobalBusiness(this.newBusiness).subscribe(res => {
+                this.loc.back();
+                /* this.route.navigate(['/pages/global-business-management']); */
+                this.snack.open("You Succesfully entered a new Business", "Done", {
+                    duration: 2000,
+                })
+            },
+                err => {
+                    this.snack.open("Please Re-enter the right Business information..", "OK")
+                }
+            )
+        },2000);
+
+    }
+
+    back() {
+        this.loc.back();
     }
 
 
@@ -278,5 +365,15 @@ export interface Products {
     order: number;
     name: string;
     price: number;
+    description: string;
     image: any;
 }
+
+export interface Owners {
+    username: string;
+    email: string;
+    status: string;
+    gender: string;
+    id:number;
+}
+

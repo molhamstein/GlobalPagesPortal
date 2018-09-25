@@ -4,6 +4,7 @@ import { fuseAnimations } from '../../../../../core/animations';
 import { usersService } from '../../../../../core/services/users.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
+import { Location } from '../../../../../../../node_modules/@angular/common';
 
 @Component({
     selector   : 'edit-users',
@@ -16,10 +17,11 @@ export class editUsersComponent implements OnInit
     form: FormGroup;
     formErrors: any;
     genders = [{value:"male", viewValue:"Male"}, {value: "female", viewValue:"Female"}];
+    selectStatus = ['pending', 'activated','deactivated'];
     editedUser:any ={};
     id:any;
 
-    constructor(private formBuilder: FormBuilder, private userServ: usersService,
+    constructor(private formBuilder: FormBuilder, private userServ: usersService,private loc : Location,
          private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
     {
         this.formErrors = {
@@ -64,7 +66,8 @@ export class editUsersComponent implements OnInit
         } 
 
         this.userServ.editUser(this.editedUser, this.id).subscribe(() => {
-            this.route.navigate(['/pages/users-management']);
+            this.loc.back();
+            /* this.route.navigate(['/pages/users-management']); */
             this.snack.open("You Succesfully updated this User","Done", {
                 duration: 2000,
               })
@@ -73,6 +76,10 @@ export class editUsersComponent implements OnInit
             this.snack.open("Please Re-enter the right user information..","OK")
         }
     )
+    }
+
+    back() {
+        this.loc.back();
     }
 
     onFormValuesChanged()

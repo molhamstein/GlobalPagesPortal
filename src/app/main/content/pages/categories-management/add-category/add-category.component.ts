@@ -4,33 +4,34 @@ import { fuseAnimations } from '../../../../../core/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { CategoriesService } from '../../../../../core/services/categories.service';
+import { Location } from '@angular/common';
 
 @Component({
-    selector   : 'add-category',
+    selector: 'add-category',
     templateUrl: './add-category.component.html',
-    styleUrls  : ['./add-category.component.scss'],
-    animations : fuseAnimations
+    styleUrls: ['./add-category.component.scss'],
+    animations: fuseAnimations
 })
-export class AddCategoryComponent implements OnInit
-{
+export class AddCategoryComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
-    newCat:any ={};
+    newCat: any = {};
     newSubCat: any = {};
-    id:any;
-    categories:any = [];
-    category:any;
+    id: any;
+    categories: any = [];
+    category: any;
+    catFile: File = null;
+    subCatFile: File = null;
 
-    constructor(private formBuilder: FormBuilder, private catServ: CategoriesService, private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
-    {
-        
+    constructor(private formBuilder: FormBuilder, private catServ: CategoriesService, private loc: Location,
+        private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
+
     }
 
-    ngOnInit()
-    {
+    ngOnInit() {
         this.formErrors = {
-            titleEn   : {},
-            titleAr   : {},
+            titleEn: {},
+            titleAr: {},
         };
 
         this.activatedRoute.params.subscribe((params: any) => {
@@ -39,21 +40,21 @@ export class AddCategoryComponent implements OnInit
 
         if (this.id == 'Cat') {
             this.form = this.formBuilder.group({
-                titleEn : ['', Validators.required],
-                titleAr : ['', Validators.required],
+                titleEn: ['', Validators.required],
+                titleAr: ['', Validators.required],
             });
-    
+
             this.form.valueChanges.subscribe(() => {
                 this.onFormValuesChanged();
-            });   
+            });
         }
 
         if (this.id == 'subCat') {
 
             this.formErrors = {
-                titleEn   : {},
-                titleAr   : {},
-                category : {}
+                titleEn: {},
+                titleAr: {},
+                category: {}
             };
 
             this.catServ.getCategories().subscribe(res => {
@@ -62,54 +63,138 @@ export class AddCategoryComponent implements OnInit
             })
 
             this.form = this.formBuilder.group({
-                titleEn : ['', Validators.required],
-                titleAr : ['', Validators.required],
+                titleEn: ['', Validators.required],
+                titleAr: ['', Validators.required],
                 category: ['', Validators.required]
             });
             this.form.valueChanges.subscribe(() => {
                 this.onFormValuesChanged();
-            });   
+            });
         }
-        
+
     }
 
-    saveCat(){
+    onFileChangedCat(event) {
+        this.catFile = <File>event.target.files[0]
+
+        var reader = new FileReader();
+
+        reader.onload = (event: ProgressEvent) => {
+            this.newCat.icon = (<FileReader>event.target).result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+        event.target.value = '';
+    }
+
+    onFileChangedSubCat(event) {
+        this.subCatFile = <File>event.target.files[0]
+
+        var reader = new FileReader();
+
+        reader.onload = (event: ProgressEvent) => {
+            this.newSubCat.icon = (<FileReader>event.target).result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+        event.target.value = '';
+    }
+
+    deleteImageCat(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        if (temp == this.newCat.icon) {
+            this.newCat.icon = '';
+            this.catFile = null;
+        }
+    }
+
+    deleteImageSubCat(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        if (temp == this.newSubCat.icon) {
+            this.newSubCat.icon = '';
+            this.subCatFile = null;
+        }
+    }
+
+    saveCat() {
         var dateTemp = new Date();
         this.newCat.creationDate = dateTemp.toISOString();
-        this.catServ.addCategory(this.newCat).subscribe(res => {
-            this.route.navigate(['/pages/categories-management']);
-            this.snack.open("You Succesfully entered a new Category","Done", {
-                duration: 2000,
-              })
-        },
-        err => {
-            this.snack.open("Please Re-enter the right Category information..","OK")
+        if (this.catFile != null) {
+            const logoFrmData: FormData = new FormData();
+            logoFrmData.append("file", this.catFile, this.catFile.name);
+            this.catServ.uploadImages(logoFrmData).subscribe(res => {
+                this.newCat.icon = res[0].url;
+
+                this.catServ.addCategory(this.newCat).subscribe(res => {
+                    this.route.navigate(['/pages/categories-management']);
+                    this.snack.open("You Succesfully entered a new Category", "Done", {
+                        duration: 2000,
+                    })
+                },
+                    err => {
+                        this.snack.open("Please Re-enter the right Category information..", "OK")
+                    }
+                )
+            })
         }
-    )
+        else {
+            this.newCat.icon = "";
+            this.catServ.addCategory(this.newCat).subscribe(res => {
+                this.route.navigate(['/pages/categories-management']);
+                this.snack.open("You Succesfully entered a new Category", "Done", {
+                    duration: 2000,
+                })
+            },
+                err => {
+                    this.snack.open("Please Re-enter the right Category information..", "OK")
+                }
+            )
+        }
+
     }
 
-    saveSubCat(){
+    saveSubCat() {
         var dateTemp = new Date();
         this.newSubCat.creationDate = dateTemp.toISOString();
         this.newSubCat.parentCategoryId = this.category.id;
-        this.catServ.addCategory(this.newSubCat).subscribe(res => {
-            this.route.navigate(['/pages/categories-management']);
-            this.snack.open("You Succesfully entered a new SubCategory","Done", {
-                duration: 2000,
-              })
-        },
-        err => {
-            this.snack.open("Please Re-enter the right SubCategory information..","OK")
+        if (this.subCatFile != null) {
+            const logoFrmData: FormData = new FormData();
+            logoFrmData.append("file", this.subCatFile, this.subCatFile.name);
+            this.catServ.uploadImages(logoFrmData).subscribe(res => {
+                this.newSubCat.icon = res[0].url;
+            })
+            this.catServ.addCategory(this.newSubCat).subscribe(res => {
+                this.route.navigate(['/pages/categories-management']);
+                this.snack.open("You Succesfully entered a new SubCategory", "Done", {
+                    duration: 2000,
+                })
+            },
+                err => {
+                    this.snack.open("Please Re-enter the right SubCategory information..", "OK")
+                }
+            )
         }
-    )
+        else {
+            this.newSubCat.icon = "";
+            this.catServ.addCategory(this.newSubCat).subscribe(res => {
+                this.route.navigate(['/pages/categories-management']);
+                this.snack.open("You Succesfully entered a new SubCategory", "Done", {
+                    duration: 2000,
+                })
+            },
+                err => {
+                    this.snack.open("Please Re-enter the right SubCategory information..", "OK")
+                }
+            )
+        }
+
     }
 
-    onFormValuesChanged()
-    {
-        for ( const field in this.formErrors )
-        {
-            if ( !this.formErrors.hasOwnProperty(field) )
-            {
+    back() {
+        this.loc.back();
+    }
+
+    onFormValuesChanged() {
+        for (const field in this.formErrors) {
+            if (!this.formErrors.hasOwnProperty(field)) {
                 continue;
             }
 
@@ -119,8 +204,7 @@ export class AddCategoryComponent implements OnInit
             // Get the control
             const control = this.form.get(field);
 
-            if ( control && control.dirty && !control.valid )
-            {
+            if (control && control.dirty && !control.valid) {
                 this.formErrors[field] = control.errors;
             }
         }

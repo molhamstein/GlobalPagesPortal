@@ -7,6 +7,7 @@ import { AdsService } from '../../../../../core/services/ads.service';
 import { VolumesService } from '../../../../../core/services/volumes.service.';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
+import { Location } from '../../../../../../../node_modules/@angular/common';
 
 
 @Component({
@@ -27,8 +28,9 @@ export class AddVolumeComponent implements OnInit {
     ads: Ads[] = [];
     selectedAd: any = {};
     order = 0;
+    selectStatus = ['pending', 'activated','deactivated'];
 
-    constructor(private formBuilder: FormBuilder, private adServ: AdsService,
+    constructor(private formBuilder: FormBuilder, private adServ: AdsService,private loc : Location,
         private route: Router, private snack: MatSnackBar, private volServ: VolumesService) {
     }
 
@@ -109,13 +111,13 @@ export class AddVolumeComponent implements OnInit {
     saveVolume() {
         var dateTemp = new Date();
         this.newVolume.creationDate = dateTemp.toISOString();
-        debugger
         this.newVolume.postsIds = [];
         for (let index = 0; index < this.myData.length; index++) {
             this.newVolume.postsIds.push(this.myData[index].id);
         }
         this.volServ.addNewVolume(this.newVolume).subscribe(res => {
-            this.route.navigate(['/pages/volumes-management']);
+            this.loc.back();
+            /* this.route.navigate(['/pages/volumes-management']); */
             this.snack.open("You Succesfully entered a new Volume", "Done", {
                 duration: 2000,
             })
@@ -126,7 +128,9 @@ export class AddVolumeComponent implements OnInit {
         )
     }
 
-
+    back() {
+        this.loc.back();
+    }
 
     onFormValuesChanged() {
         for (const field in this.formErrors) {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fuseAnimations } from '../../../../../core/animations';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '../../../../../../../node_modules/@angular/common';
 import { AdsService } from '../../../../../core/services/ads.service';
 import { VolumesService } from '../../../../../core/services/volumes.service.';
@@ -10,6 +10,7 @@ import { GlobalBusinessService } from '../../../../../core/services/global-busin
 import { RegionsService } from '../../../../../core/services/regions.service';
 import { CategoriesService } from '../../../../../core/services/categories.service';
 import { BusinessCategoriesService } from '../../../../../core/services/business-cat.service';
+import swal from 'sweetalert2';
 
 @Component({
     selector: 'view-global-business',
@@ -31,7 +32,7 @@ export class ViewGlobalBusinessComponent implements OnInit {
     openingDays: any = [];
     openingDaysField: string ="";
 
-    constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
+    constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService, private route : Router,
         private loc: Location, private busCatServ: BusinessCategoriesService,
         private regServ: RegionsService, private activatedRoute: ActivatedRoute) {
 
@@ -46,13 +47,15 @@ export class ViewGlobalBusinessComponent implements OnInit {
         this.busServ.getGlobalBusinessById(this.id).subscribe(res => {
             this.businessInfo = res;
             
-            this.businessInfo.logo = "http://104.217.253.15:3000/images/" + this.businessInfo.logo;
+           /*  this.businessInfo.logo = "http://104.217.253.15:3000/images/" + this.businessInfo.logo;
             for (let index = 0; index < this.businessInfo.products.length; index++) {
                 this.businessInfo.products[index].image = "http://104.217.253.15:3000/images/" + this.businessInfo.products[index].image;
             }
             for (let index = 0; index < this.businessInfo.covers.length; index++) {
                 this.businessInfo.covers[index].url = "http://104.217.253.15:3000/images/" + this.businessInfo.covers[index].url;
-            }
+            } */
+            this.lng = this.businessInfo.locationPoint.lng;
+            this.lat = this.businessInfo.locationPoint.lat;
 
             this.busCatServ.getBusinessById(this.businessInfo.categoryId).subscribe(res => {
                 this.businessInfo.category = res;
@@ -153,6 +156,35 @@ export class ViewGlobalBusinessComponent implements OnInit {
 
     }
 
+    deleteBusiness() {
+
+        this.businessInfo.status = "deactivated";
+        this.busServ.deleteGlobalBusiness(this.businessInfo, this.businessInfo.id).subscribe(() => {
+            console.log("deactivated");
+            this.route.navigate(['/pages/global-business-management']);
+        })
+    }
+
+    deleteModal() {
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                this.deleteBusiness();
+                swal(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
 
     onFormValuesChanged() {
         for (const field in this.formErrors) {

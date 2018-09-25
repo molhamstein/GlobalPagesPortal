@@ -15,6 +15,7 @@ import { FuseNavigationService } from './core/components/navigation/navigation.s
 
 import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
+import { AuthGuard } from './core/services/auth.gard';
 
 const appRoutes: Routes = [
    /*  {
@@ -50,8 +51,10 @@ const appRoutes: Routes = [
         loadChildren: './main/content/apps/scrumboard/scrumboard.module#FuseScrumboardModule'
     }, */
     {
-        path      : '*',
-        redirectTo: '/pages/auth/login'
+        path      : '',
+        redirectTo: '/pages/users-management',
+        pathMatch: 'full',
+        canActivate: [AuthGuard] 
     }
 ];
 
@@ -84,7 +87,8 @@ const appRoutes: Routes = [
     providers   : [
         FuseSplashScreenService,
         FuseConfigService,
-        FuseNavigationService
+        FuseNavigationService,
+        AuthGuard
     ],
     bootstrap   : [
         AppComponent

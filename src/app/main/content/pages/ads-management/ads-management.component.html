@@ -58,9 +58,9 @@
 
 
                 <!-- PhoneNumber Column -->
-                <ng-container matColumnDef="viewsCount">
-                    <mat-header-cell *matHeaderCellDef  > Views Count </mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.viewsCount}}</mat-cell>
+                <ng-container matColumnDef="thumbnail">
+                    <mat-header-cell *matHeaderCellDef  > Thumbnail </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> <img src="{{row.thumbnail}}" width="50" height="30"> </mat-cell>
                 </ng-container>
 
 

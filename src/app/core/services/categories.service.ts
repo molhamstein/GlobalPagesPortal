@@ -20,7 +20,7 @@ export class CategoriesService {
   }
 
   getCategories() : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'postCategories/?filter={"where":{"parentCategoryId":{"exists":false}}}')
+    return this.httpclient.get(GlobalURL.URL + 'postCategories/?filter={"where":{"parentCategoryId":{"exists":false}},"include":"subCategories"}')
   }
 
   getSubCategories() : Observable<any> {
@@ -32,7 +32,7 @@ export class CategoriesService {
   }
 
   getCategoryById(id): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'postCategories/' + id);
+    return this.httpclient.get(GlobalURL.URL + 'postCategories/' + id + '?filter[include]=subCategories');
 }
 
   addCategory(cat): Observable<any> {
@@ -47,7 +47,9 @@ export class CategoriesService {
     return this.httpclient.delete(GlobalURL.URL + 'postCategories/' + id, { headers: this.headers })
   }
 
-
+  uploadImages(data) : Observable<any> {
+    return this.httpclient.post(GlobalURL.URL + 'attachments/images/upload', data );
+  }
 
 
 }

@@ -15,7 +15,7 @@ import { AdsService } from '../../../../core/services/ads.service';
 })
 export class AdsManagementComponent implements OnInit {
 
-    displayedColumns = ['order', 'title', 'description', 'status', 'viewsCount', 'icons'];
+    displayedColumns = ['order', 'title', 'description', 'status', 'thumbnail', 'icons'];
     dataSource = new MatTableDataSource<Ads>([]);
     myData: Ads[] = [];
     count: any;
@@ -60,6 +60,15 @@ export class AdsManagementComponent implements OnInit {
                 this.myData = res;
                 for (let index = 0; index < this.myData.length; index++) {
                     this.myData[index].order = this.pagOrder + 1;
+                    if (res[index].media.length != 0) {
+                        this.myData[index].thumbnail = res[index].media[0].url;
+                        if (this.myData[index].thumbnail == undefined) {
+                            this.myData[index].thumbnail = "";
+                        }
+                    }
+                    else {
+                        this.myData[index].thumbnail = "";
+                    }
                     this.pagOrder = this.myData[index].order;
                 }
                 this.tempLength = this.myData.length;
@@ -75,6 +84,15 @@ export class AdsManagementComponent implements OnInit {
                 this.myData = res;
                 for (let index = 0; index < this.myData.length; index++) {
                     this.myData[index].order = this.pagOrder + 1;
+                    if (res[index].media.length != 0) {
+                        this.myData[index].thumbnail = res[index].media[0].url;
+                        if (this.myData[index].thumbnail == undefined) {
+                            this.myData[index].thumbnail = "";
+                        }
+                    }
+                    else {
+                        this.myData[index].thumbnail = "";
+                    }
                     this.pagOrder = this.myData[index].order;
                 }
                 this.tempLength = this.myData.length;
@@ -111,6 +129,17 @@ export class AdsManagementComponent implements OnInit {
 
             for (let index = 0; index < this.myData.length; index++) {
                 this.myData[index].order = index + 1;
+                debugger
+                if (res[index].media.length != 0) {
+                    this.myData[index].thumbnail = res[index].media[0].url;
+                    if (this.myData[index].thumbnail == undefined) {
+                        this.myData[index].thumbnail = "";
+                    }
+                }
+                else {
+                    this.myData[index].thumbnail = "";
+                }
+                
                 this.pagOrder = this.myData[index].order;
             }
             this.dataSource = new MatTableDataSource(this.myData);
@@ -125,6 +154,7 @@ export class AdsManagementComponent implements OnInit {
         delete ad.subCategory;
         delete ad.city;
         delete ad.location;
+        delete ad.thumbnail;
         ad.status = "deactivated";
         this.adServ.deleteAd(ad, id).subscribe(() => {
             console.log("deactivated");
@@ -133,6 +163,15 @@ export class AdsManagementComponent implements OnInit {
                 this.myData = res;
                 for (let index = 0; index < this.myData.length; index++) {
                     this.myData[index].order = this.pagOrder + 1;
+                    if (res[index].media.length != 0) {
+                        this.myData[index].thumbnail = res[index].media[0].url;
+                        if (this.myData[index].thumbnail == undefined) {
+                            this.myData[index].thumbnail = "";
+                        }
+                    }
+                    else {
+                        this.myData[index].thumbnail = "";
+                    }
                     this.pagOrder = this.myData[index].order;
                 }
                 this.tempLength = this.myData.length;
@@ -176,5 +215,5 @@ export interface Ads {
     title: string;
     description: string;
     status: string;
-    viewsCount: number
+    thumbnail: string
 }

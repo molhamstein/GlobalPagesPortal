@@ -16,7 +16,7 @@ export class RegionsService {
   }
 
   getAllCities(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'cities');
+    return this.httpclient.get(GlobalURL.URL + 'cities/?filter[include]=locations');
   }
 
   getAllLocations(): Observable<any> {

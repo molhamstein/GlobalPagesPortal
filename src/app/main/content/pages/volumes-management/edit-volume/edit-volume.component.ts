@@ -7,6 +7,7 @@ import { AdsService } from '../../../../../core/services/ads.service';
 import { VolumesService } from '../../../../../core/services/volumes.service.';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
+import { Location } from '../../../../../../../node_modules/@angular/common';
 
 @Component({
     selector: 'edit-volume',
@@ -27,9 +28,10 @@ export class EditVolumeComponent implements OnInit {
     ads: Ads[] = [];
     selectedAd: any = {};
     order = 0;
+    selectStatus = ['pending', 'activated','deactivated'];
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService, private volServ:VolumesService,
-        private route: Router, private snack: MatSnackBar, private activatedRoute : ActivatedRoute) {
+        private route: Router, private snack: MatSnackBar, private activatedRoute : ActivatedRoute, private loc : Location) {
     }
 
     ngOnInit() {
@@ -131,7 +133,8 @@ export class EditVolumeComponent implements OnInit {
             this.editedVolume.postsIds.push(this.myData[index].id);
         }
         this.volServ.editVolume(this.editedVolume,this.editedVolume.id).subscribe(res => {
-            this.route.navigate(['/pages/volumes-management']);
+            this.loc.back();
+            /* this.route.navigate(['/pages/volumes-management']); */
             this.snack.open("You Succesfully updated the Volume", "Done", {
                 duration: 2000,
             })
@@ -140,6 +143,10 @@ export class EditVolumeComponent implements OnInit {
                 this.snack.open("Please Re-enter the right Volume information..", "OK")
             }
         )
+    }
+
+    back() {
+        this.loc.back();
     }
 
     onFormValuesChanged() {

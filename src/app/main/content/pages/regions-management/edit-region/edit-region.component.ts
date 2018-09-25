@@ -4,6 +4,7 @@ import { fuseAnimations } from '../../../../../core/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { RegionsService } from '../../../../../core/services/regions.service';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'edit-region',
@@ -23,7 +24,7 @@ export class EditRegionComponent implements OnInit {
     cityExists: any;
     locExists: any;
 
-    constructor(private formBuilder: FormBuilder, private regServ: RegionsService,
+    constructor(private formBuilder: FormBuilder, private regServ: RegionsService, private loc : Location,
         private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
 
     }
@@ -126,6 +127,10 @@ export class EditRegionComponent implements OnInit {
                 this.snack.open("Please Re-enter the right Location information..", "OK")
             }
         )
+    }
+
+    back() {
+        this.loc.back();
     }
 
     onFormValuesChanged() {

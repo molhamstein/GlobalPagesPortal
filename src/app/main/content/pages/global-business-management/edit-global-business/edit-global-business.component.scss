@@ -28,6 +28,13 @@
     background-color:rgb(21, 122, 168);
 }
 
+.btn-back {
+    float: right; 
+    color:white; 
+    background-color:#f44336;
+    margin-right: 20px;
+}
+
 .leftForm {
     max-width: 45% !important;
 }
@@ -70,3 +77,63 @@
     background-color:rgb(41, 158, 17);
 }
 
+img {
+    opacity: 1.0;
+    transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -webkit-transition: opacity 1s ease-in-out;
+}
+img:hover {
+    opacity: 0.6;
+    transition: opacity .55s ease-in-out;
+    -moz-transition: opacity .55s ease-in-out;
+    -webkit-transition: opacity .55s ease-in-out;
+    cursor: pointer;
+
+}
+
+
+.profile-img-container {
+    position: relative;
+    display: inline-block; /* added */
+    overflow: hidden; /* added */
+    transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -webkit-transition: opacity 1s ease-in-out;
+}
+
+
+.profile-img-container img:hover {
+    opacity: 0.5
+    
+}
+.profile-img-container:hover a {
+    opacity: 1; /* added */
+    top: 10%; /* added */
+    bottom: 75%;
+    z-index: 500;
+    cursor: pointer;
+    transition: opacity .55s ease-in-out;
+    -moz-transition: opacity .55s ease-in-out;
+    -webkit-transition: opacity .55s ease-in-out;
+}
+/* added */
+.profile-img-container:hover a span {
+    top: 20%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+}
+/* added */
+.profile-img-container a {
+    display: block;
+    position: absolute;
+    top: -100%;
+    opacity: 0;
+    left: 80%;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    color: inherit;
+}

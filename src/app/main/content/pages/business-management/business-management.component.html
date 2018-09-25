@@ -19,7 +19,7 @@
     <mat-card>
         <div [formGroup]="form">
             <mat-form-field>
-            <mat-select placeholder="Choose Your Business" formControlName="option" [(ngModel)]="business">
+            <mat-select placeholder="Choose Your Type" formControlName="option" [(ngModel)]="business">
                 <mat-option *ngFor="let o of options" [value]="o.value" (click)="onSelect()">
                     {{o.value}}
                 </mat-option>

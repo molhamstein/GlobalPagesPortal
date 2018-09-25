@@ -4,6 +4,7 @@ import { fuseAnimations } from '../../../../../core/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { CategoriesService } from '../../../../../core/services/categories.service';
+import { Location } from '@angular/common';
 
 @Component({
     selector: 'edit-category',
@@ -21,7 +22,9 @@ export class EditCategoryComponent implements OnInit {
     isParent = false;
     isChild = false;
 
-    constructor(private formBuilder: FormBuilder, private catServ: CategoriesService,
+    catFile: File = null;
+
+    constructor(private formBuilder: FormBuilder, private catServ: CategoriesService, private loc: Location,
         private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
 
     }
@@ -33,7 +36,6 @@ export class EditCategoryComponent implements OnInit {
 
         this.catServ.getCategoryById(this.id).subscribe(res => {
             this.editedCat = res;
-
 
             if (!this.editedCat.parentCategoryId) {
                 this.isParent = true;
@@ -83,22 +85,67 @@ export class EditCategoryComponent implements OnInit {
 
     }
 
-    updateCategory() {
+    onFileChangedCat(event) {
+        this.catFile = <File>event.target.files[0]
 
+        var reader = new FileReader();
+
+        reader.onload = (event: ProgressEvent) => {
+            this.editedCat.icon = (<FileReader>event.target).result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+        event.target.value = '';
+    }
+
+    deleteImageCat(event) {
+        var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
+        if (temp == this.editedCat.icon) {
+            this.editedCat.icon = '';
+            this.catFile = null;
+        }
+    }
+
+    updateCategory() {
+        
         if (this.editedCat.parentCategoryId) {
             this.editedCat.parentCategoryId = this.category.id;
         }
+        if (this.catFile != null) {
+            const logoFrmData: FormData = new FormData();
+            logoFrmData.append("file", this.catFile, this.catFile.name);
+            this.catServ.uploadImages(logoFrmData).subscribe(res => {
+                this.editedCat.icon = res[0].url;
 
-        this.catServ.editCategory(this.editedCat, this.id).subscribe(() => {
-            this.route.navigate(['/pages/categories-management']);
-            this.snack.open("You Succesfully updated this Category", "Done", {
-                duration: 2000,
+                this.catServ.editCategory(this.editedCat, this.id).subscribe(() => {
+                    this.route.navigate(['/pages/categories-management']);
+                    this.snack.open("You Succesfully updated this Category", "Done", {
+                        duration: 2000,
+                    })
+                },
+                    err => {
+                        this.snack.open("Please Re-enter the right Category information..", "OK")
+                    }
+                )
             })
-        },
-            err => {
-                this.snack.open("Please Re-enter the right Category information..", "OK")
-            }
-        )
+        }
+
+        else {
+            this.editedCat.icon = "";
+            this.catServ.editCategory(this.editedCat, this.id).subscribe(() => {
+                this.route.navigate(['/pages/categories-management']);
+                this.snack.open("You Succesfully updated this Category", "Done", {
+                    duration: 2000,
+                })
+            },
+                err => {
+                    this.snack.open("Please Re-enter the right Category information..", "OK")
+                }
+            )
+        }
+    }
+
+    back() {
+        this.loc.back();
     }
 
     onFormValuesChanged() {

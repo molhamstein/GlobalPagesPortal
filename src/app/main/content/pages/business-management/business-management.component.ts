@@ -81,7 +81,7 @@ export class BusinessManagementComponent implements OnInit {
             this.j = 1;
             var temp = res;
             for (let index = 0; index < temp.length; index++) {
-                    this.busServ.getBusinessById(temp[index].id).subscribe(res => {
+                    this.busServ.getBusinessById(temp[index].parentCategoryId).subscribe(res => {
                         temp[index].parentCategory = res;
                         temp[index].order = this.j;
                         this.j++;

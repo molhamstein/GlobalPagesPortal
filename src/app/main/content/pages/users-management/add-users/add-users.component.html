@@ -100,7 +100,6 @@
                                 {{s}}
                             </mat-option>
                         </mat-select>
-                        <!-- <input matInput placeholder="Status" formControlName="status" [(ngModel)]="newUser.status"> -->
                         <mat-error *ngIf="formErrors.status.required">
                             Required
                         </mat-error>
@@ -113,12 +112,14 @@
                     <mat-slide-toggle class="tog" formControlName="emailVerified" [(ngModel)]="newUser.emailVerified"></mat-slide-toggle>
                 </div>
 
-                <div>
+                <div style="margin-top: 30px;">
                     <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="saveUser()">
                         Save User
                     </button>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
+                    </button>
                 </div>
-
             </form>
         </div>
 

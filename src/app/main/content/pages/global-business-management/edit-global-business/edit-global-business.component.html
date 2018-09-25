@@ -77,7 +77,11 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput placeholder="Status" formControlName="status" [(ngModel)]="editedBusiness.status">
+                        <mat-select placeholder="Status" formControlName="status" [(ngModel)]="editedBusiness.status">
+                            <mat-option *ngFor="let s of selectStatus" [value]="s">
+                                {{s}}
+                            </mat-option>
+                        </mat-select>
                         <mat-error *ngIf="formErrors.status.required">
                             Required
                         </mat-error>
@@ -136,14 +140,12 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Owner" formControlName="owner" [(ngModel)]="owner">
-                            <mat-option *ngFor="let o of owners" [value]="o">
-                                {{o.username}}
+                        <input type="text" placeholder="Owner" aria-label="Owner" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="selectedOwner">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option.username}}
                             </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="formErrors.owner.required">
-                            Required
-                        </mat-error>
+                        </mat-autocomplete>
                     </mat-form-field>
 
                     <div class="rightForm verify">
@@ -154,8 +156,8 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field *ngIf="editedBusiness.openingDaysEnabled" fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Opening Days" formControlName="openingDays" multiple [(ngModel)]="empty" >
-                            <mat-option *ngFor="let d of days" [value]="d.value" (click)="pushDay(d)" >
+                        <mat-select placeholder="Opening Days" formControlName="openingDays" multiple [(ngModel)]="empty">
+                            <mat-option *ngFor="let d of days" [value]="d.value" (click)="pushDay(d)">
                                 {{d.valueName}}
                             </mat-option>
                         </mat-select>
@@ -173,14 +175,17 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
                     <input hidden type="file" accept="image/*" (change)="onFileChangedLogo($event)" #fileInput1/>
-                    <img src="{{editedBusiness.logo}}" width="150" height="60" style="margin-left:15px;">
+                    <div class="profile-img-container">
+                        <img src="{{editedBusiness.logo}}" width="150" height="60" style="margin-left:15px;" class="img img-thumbnail img-circle img-responsive">
+                        <a (click)="deleteImageLogo($event)"><mat-icon>close</mat-icon></a>
+                    </div>
                 </div>
 
 
                 <div class="h2 mb-24" style="margin-top:30px">Business Location</div>
                 <div>
-                    <agm-map [latitude]="lat" [longitude]="lng">
-                        <agm-marker [latitude]="lat" [longitude]="lng" [draggable]="true"></agm-marker>
+                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
                     </agm-map>
                 </div>
 
@@ -196,18 +201,22 @@
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:15px;">
-                    <div class="leftForm product-image">
+                    <mat-form-field fxFlex="50" class="leftForm">
+                        <input matInput placeholder="Product Description" formControlName="productDescription" [(ngModel)]="editedProduct.description">
+                    </mat-form-field>
+
+                    <div class="rightForm product-image">
                         Product Image
                     </div>
                     <button mat-mini-fab class="btn-push" (click)="fileInput.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
                         [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
-                    <!-- <button mat-raised-button class="btn-push" style="margin-left: 15px;" (click)="fileInput.click()">
-                        <mat-icon style="color:white">add</mat-icon>
-                    </button> -->
                     <input hidden type="file" accept="image/*" (change)="onFileChangedProducts($event)" #fileInput/>
-                    <img src="{{editedProduct.image}}" width="150" height="60" style="margin-left:15px;">
+                    <div class="profile-img-container">
+                        <img src="{{editedProduct.image}}" width="150" height="60" style="margin-left:15px;" class="img img-thumbnail img-circle img-responsive">
+                        <a (click)="deleteImageProduct($event)"><mat-icon>close</mat-icon></a>
+                    </div>
                 </div>
 
                 <div>
@@ -228,27 +237,33 @@
 
                         <!-- name Column -->
                         <ng-container matColumnDef="name">
-                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;">name</mat-header-cell>
-                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.name}}</mat-cell>
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 165px;">name</mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 165px;"> {{row.name}}</mat-cell>
                         </ng-container>
 
                         <!-- price Column -->
                         <ng-container matColumnDef="price">
-                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Price </mat-header-cell>
-                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.price}}</mat-cell>
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 177px;"> Price </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 177px;"> {{row.price}}</mat-cell>
+                        </ng-container>
+
+                        <!-- description Column -->
+                        <ng-container matColumnDef="description">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 205px;"> description </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 205px;"> {{row.description}}</mat-cell>
                         </ng-container>
 
                         <!-- image Column -->
                         <ng-container matColumnDef="image">
-                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Image </mat-header-cell>
-                            <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 156px;"> Image </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 156px;">
                                 <img src="{{row.image}}" width="50" height="30"> </mat-cell>
                         </ng-container>
 
                         <!-- icons Column -->
                         <ng-container matColumnDef="icons">
-                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 105px;"> </mat-header-cell>
-                            <mat-cell *matCellDef="let row" style=" flex: 0 0 105px;">
+                            <mat-header-cell *matHeaderCellDef style=" flex: 0 0 90px;"> </mat-header-cell>
+                            <mat-cell *matCellDef="let row" style=" flex: 0 0 90px;">
 
                                 <button mat-icon-button matTooltip="delete" [matTooltipPosition]="'above'" (click)="deleteProduct(row)">
                                     <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
@@ -272,15 +287,22 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
                     <form class="form-max-width">
-                        <img *ngFor="let c of covers" [src]="c" width="256px" height="256px" style="margin-left:15px; padding: 10px">
+                        <div *ngFor="let c of covers" class="profile-img-container">
+                            <img [src]="c.url" width="256px" height="256px" class="img img-thumbnail img-circle img-responsive" style="margin-left:15px; padding: 10px">
+                            <a (click)="deleteImageCover($event)"><mat-icon>close</mat-icon></a>
+                        </div>
                     </form>
                 </div>
 
                 <div style="margin-top:20px;">
                     <button mat-raised-button class="btn-save" [disabled]="!editedBusiness.nameAr || !editedBusiness.nameEn 
                     || !editedBusiness.nameUnique || !editedBusiness.description || !category.titleEn || !subCategory.titleEn 
-                    || !region.nameEn || !subRegion.nameEn || !owner.username" (click)="updateBusiness()">
+                    || !region.nameEn || !subRegion.nameEn || !selectedOwner" (click)="updateBusiness()">
                         Update Business
+                    </button>
+
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
                     </button>
                 </div>
             </form>

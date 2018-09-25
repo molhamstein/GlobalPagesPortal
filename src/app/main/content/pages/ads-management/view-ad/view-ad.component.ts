@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { fuseAnimations } from '../../../../../core/animations';
 import { usersService } from '../../../../../core/services/users.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '../../../../../../../node_modules/@angular/common';
 import { AdsService } from '../../../../../core/services/ads.service';
+import swal from 'sweetalert2';
 
 @Component({
     selector: 'view-ad',
@@ -20,7 +21,7 @@ export class ViewAdComponent implements OnInit {
     imgs: any = [];
     url: any;
 
-    constructor(private formBuilder: FormBuilder, private adServ: AdsService,
+    constructor(private formBuilder: FormBuilder, private adServ: AdsService, private route : Router,
         private loc: Location, private activatedRoute: ActivatedRoute) {
 
     }
@@ -38,7 +39,7 @@ export class ViewAdComponent implements OnInit {
                     var temp = new Date(this.Adinfo.creationDate);
                     this.Adinfo.creationDate = temp.toLocaleDateString('en-US');
                     for (let index = 0; index < this.Adinfo.media.length; index++) {
-                        this.imgs.push('http://' + this.Adinfo.media[index].url);
+                        this.imgs.push( this.Adinfo.media[index].url);
                     }
 
                     if (this.Adinfo.creationDate == undefined) {
@@ -93,6 +94,36 @@ export class ViewAdComponent implements OnInit {
             this.onFormValuesChanged();
         });
 
+    }
+
+    deleteAd() {
+
+        this.Adinfo.status = "deactivated";
+        this.adServ.deleteAd(this.Adinfo, this.Adinfo.id).subscribe(() => {
+            console.log("deactivated");
+            this.route.navigate(['/pages/ads-management']);
+        })
+    }
+
+    deleteModal() {
+        swal({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.value) {
+                this.deleteAd();
+                swal(
+                    'Deleted!',
+                    'Your file has been deleted.',
+                    'success'
+                )
+            }
+        })
     }
 
 

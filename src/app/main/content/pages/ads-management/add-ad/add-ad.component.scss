@@ -25,6 +25,13 @@
     margin-right: 23px;
 }
 
+.btn-back {
+    float: right; 
+    color:white; 
+    background-color:#f44336;
+    margin-right: 20px;
+}
+
 .leftForm {
     max-width: 45% !important;
 }
@@ -57,44 +64,6 @@
     max-width: 100% !important;
 }
 
-/* .container-h {
-    position: relative;
-    width: 50%;
-}
-
-.image-h {
-  opacity: 1;
-
-  transition: .5s ease;
-  backface-visibility: hidden;
-}
-
-.middle {
-  transition: .5s ease;
-  opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.container-h:hover .image-h {
-  opacity: 0.3;
-}
-
-.container-h:hover .middle {
-  opacity: 1;
-}
-
-.text {
-  background-color: #4CAF50;
-  color: white;
-  font-size: 16px;
-  padding: 16px 32px;
-} */
-
 img {
     opacity: 1.0;
     transition: opacity 1s ease-in-out;
@@ -106,21 +75,52 @@ img:hover {
     transition: opacity .55s ease-in-out;
     -moz-transition: opacity .55s ease-in-out;
     -webkit-transition: opacity .55s ease-in-out;
+    cursor: pointer;
+
 }
 
-/* .img:hover .edit {
-	display: block;
+
+.profile-img-container {
+    position: relative;
+    display: inline-block; /* added */
+    overflow: hidden; /* added */
+    transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -webkit-transition: opacity 1s ease-in-out;
 }
 
-.edit {
-	padding-top: 7px;	
-	padding-right: 7px;
-	position: absolute;
-	right: 0;
-	top: 0;
-	display: none;
-}
 
-.edit a {
-	color: #000;
-} */
+.profile-img-container img:hover {
+    opacity: 0.5
+    
+}
+.profile-img-container:hover a {
+    opacity: 1; /* added */
+    top: 10%; /* added */
+    bottom: 75%;
+    z-index: 500;
+    cursor: pointer;
+    transition: opacity .55s ease-in-out;
+    -moz-transition: opacity .55s ease-in-out;
+    -webkit-transition: opacity .55s ease-in-out;
+}
+/* added */
+.profile-img-container:hover a span {
+    top: 20%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+}
+/* added */
+.profile-img-container a {
+    display: block;
+    position: absolute;
+    top: -100%;
+    opacity: 0;
+    left: 80%;
+    bottom: 0;
+    right: 0;
+    text-align: center;
+    color: inherit;
+}

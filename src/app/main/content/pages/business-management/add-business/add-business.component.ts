@@ -4,6 +4,7 @@ import { fuseAnimations } from '../../../../../core/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { BusinessCategoriesService } from '../../../../../core/services/business-cat.service';
+import { Location } from '@angular/common';
 
 @Component({
     selector   : 'add-business',
@@ -21,7 +22,8 @@ export class AddBusinessComponent implements OnInit
     categories:any = [];
     category:any;
 
-    constructor(private formBuilder: FormBuilder, private businessServ: BusinessCategoriesService, private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
+    constructor(private formBuilder: FormBuilder, private businessServ: BusinessCategoriesService, private loc: Location,
+        private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
     {
         
     }
@@ -101,6 +103,10 @@ export class AddBusinessComponent implements OnInit
             this.snack.open("Please Re-enter the right Business SubCategory information..","OK")
         }
     )
+    }
+
+    back() {
+        this.loc.back();
     }
 
     onFormValuesChanged()

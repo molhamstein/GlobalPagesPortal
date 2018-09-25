@@ -62,7 +62,6 @@ export class addUsersComponent implements OnInit
         this.newUser.realm = "reg";
         /* this.newUser.emailVerified = true; */
         this.newUser.postCategoriesIds = [];
-        debugger
         this.userServ.addUser(this.newUser).subscribe(res => {
             this.loc.back();
             /* this.route.navigate(['/pages/users-management']); */
@@ -74,6 +73,10 @@ export class addUsersComponent implements OnInit
             this.snack.open("Please Re-enter the right user information..","OK")
         }
     )
+    }
+
+    back() {
+        this.loc.back();
     }
 
     onFormValuesChanged()

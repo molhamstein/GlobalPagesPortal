@@ -46,7 +46,11 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Status" formControlName="status" [(ngModel)]="editedAd.status">
+                        <mat-select placeholder="Status" formControlName="status" [(ngModel)]="editedAd.status">
+                            <mat-option *ngFor="let s of selectStatus" [value]="s">
+                                {{s}}
+                            </mat-option>
+                        </mat-select>
                         <mat-error *ngIf="formErrors.status.required">
                             Required
                         </mat-error>
@@ -99,6 +103,7 @@
 
                     <mat-form-field fxFlex="50" class="rightForm">
                         <mat-select placeholder="Location" formControlName="location" [(ngModel)]="subRegion">
+                            <!-- (change)="eventSelection($event.value)" -->
                             <mat-option *ngFor="let l of region.locations" [value]="l">
                                 {{l.nameEn}}
                             </mat-option>
@@ -112,14 +117,12 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Owner" formControlName="owner" [(ngModel)]="owner">
-                            <mat-option *ngFor="let o of owners" [value]="o">
-                                {{o.username}}
+                        <input type="text" placeholder="Owner" aria-label="Owner" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="selectedOwner">
+                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                                {{option.username}}
                             </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="formErrors.owner.required">
-                            Required
-                        </mat-error>
+                        </mat-autocomplete>
                     </mat-form-field>
 
                 </div>
@@ -138,12 +141,10 @@
                     <input hidden type="file" accept="image/*" (change)="onFileChanged($event)" #fileInput/>
                 </div>
                 <div class="file-uploader">
-
-                    <img *ngFor="let i of imgs" [src]="i" width="256px" height="256px" class="img" style="padding:10px" (click)="dd($event)">
-                    <!-- <div class="edit"><a href="#"><mat-icon style="color:black">
-                                                delete
-                                            </mat-icon></a></div> -->
-
+                    <div *ngFor="let i of imgs" class="profile-img-container">
+                        <img [src]="i" width="256px" height="256px" class="img img-thumbnail img-circle img-responsive" style="padding:10px">
+                        <a (click)="deleteImage($event)"><mat-icon>close</mat-icon></a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -154,6 +155,10 @@
                 </button> -->
             <button mat-raised-button class="btn-save" [disabled]="form.invalid " (click)="updateAd()">
                 Update Advertisement
+            </button>
+
+            <button mat-raised-button class="btn-back" (click)="back()">
+                Back
             </button>
         </div>
 
