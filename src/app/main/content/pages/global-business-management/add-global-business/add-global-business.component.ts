@@ -42,6 +42,8 @@ export class AddGlobalBusinessComponent implements OnInit {
     covers: any = [];
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
+    reorderable = true;
+
     days: any[] = [{ value: 0, valueName: "Monday" }, { value: 1, valueName: "Tuesday" }, { value: 2, valueName: "Wednesday" },
     { value: 3, valueName: "Thursday" }, { value: 4, valueName: "Friday" }, { value: 5, valueName: "Saturday" }, { value: 6, valueName: "Sunday" },]
     openingDays: any = [];
@@ -53,7 +55,6 @@ export class AddGlobalBusinessComponent implements OnInit {
     myData: Products[] = [];
     newProduct: any = {};
     order = 0;
-    empty: any = [];
     selectStatus = ['pending', 'activated', 'deactivated'];
 
     constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
@@ -100,7 +101,6 @@ export class AddGlobalBusinessComponent implements OnInit {
             subCategory: [],
             city: [],
             location: [],
-            openingDays: [],
         };
 
         this.form = this.formBuilder.group({
@@ -117,7 +117,6 @@ export class AddGlobalBusinessComponent implements OnInit {
             subCategory: [{}, Validators.required],
             city: [{}, Validators.required],
             location: ['', Validators.required],
-            openingDays: [{}, Validators.required],
             productName: '',
             productPrice: '',
             productDescription: '',
@@ -135,9 +134,14 @@ export class AddGlobalBusinessComponent implements OnInit {
 
     private _filter(own: string): Owners[] {
         const filterValue = own.toLowerCase();
+        return this.owners.filter(own => {
+            if (own.username == undefined) {
+                own.username = "";
+            }
+            own.username.toLowerCase().indexOf(filterValue) === 0
 
-        return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
-    }   
+        });
+    }
 
     markerDragEnd($event) {
         this.lat = $event.coords.lat;
@@ -146,15 +150,24 @@ export class AddGlobalBusinessComponent implements OnInit {
         console.log(this.lng);
     }
 
-    pushDay(day) {
-        for (let index = 0; index < this.openingDays.length; index++) {
-            if (day.valueName == this.openingDays[index].valueName) {
-                var i = this.openingDays.indexOf(this.openingDays[index], 0);
-                this.openingDays.splice(i, 1);
-                return
+    markerPosition(event) {
+        this.lat = event.coords.lat;
+        console.log(this.lat);
+        this.lng = event.coords.lng;
+        console.log(this.lng);
+    }
+
+    checked(event, day) {
+        if (event.checked == true) {
+            this.openingDays.push(day.value);
+        }
+        else {
+            for (let index = 0; index < this.openingDays.length; index++) {
+                if (this.openingDays[index] == day.value) {
+                    this.openingDays.splice(this.openingDays.indexOf(this.openingDays[index], 0), 1);
+                }
             }
         }
-        this.openingDays.push(day);
     }
 
     onFileChangedLogo(event) {
@@ -256,22 +269,21 @@ export class AddGlobalBusinessComponent implements OnInit {
     }
 
     saveBusiness() {
-        var isThere :boolean = false;
+        var isThere: boolean = false;
         for (let index = 0; index < this.owners.length; index++) {
-            if(this.selectedOwner.id == this.owners[index].id){
+            if (this.selectedOwner.id == this.owners[index].id) {
                 this.newBusiness.ownerId = this.selectedOwner.id;
                 isThere = true;
                 break;
             }
         }
-        if(isThere == false) {
+        if (isThere == false) {
             this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
             return;
         }
-
         if (this.newBusiness.openingDaysEnabled == true) {
             for (let index = 0; index < this.openingDays.length; index++) {
-                this.newBusiness.openingDays.push(this.openingDays[index].value)
+                this.newBusiness.openingDays.push(this.openingDays[index])
             }
         }
         else { this.newBusiness.openingDays = [] }
@@ -303,10 +315,27 @@ export class AddGlobalBusinessComponent implements OnInit {
                     tempobj.type = 'image';
                     this.newBusiness.covers.push(tempobj);
                 }
+                if (this.dataFormProductsImgs.length != 0) {
+                    const productFrmData: FormData = new FormData();
+                    for (var i = 0; i < this.dataFormProductsImgs.length; i++) {
+                        productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
+                    }
+                    this.busServ.uploadImages(productFrmData).subscribe(res => {
+                        for (let j = 0; j < res.length; j++) {
+                            this.myData[j].image = res[j].url;
+                            delete this.myData[j].order;
+                            this.newBusiness.products.push(this.myData[j]);
+                        }
+                        this.saveAPI();
+                    })
+                }
+                else {
+                    this.saveAPI();
+                }
             })
         }
 
-        if (this.dataFormProductsImgs.length != 0) {
+        else if (this.dataFormProductsImgs.length != 0) {
             const productFrmData: FormData = new FormData();
             for (var i = 0; i < this.dataFormProductsImgs.length; i++) {
                 productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
@@ -316,14 +345,19 @@ export class AddGlobalBusinessComponent implements OnInit {
                     this.myData[j].image = res[j].url;
                     delete this.myData[j].order;
                     this.newBusiness.products.push(this.myData[j]);
-                    debugger
                 }
+                this.saveAPI();
             })
         }
-        setTimeout(() => {
+
+        if (this.dataFormCoversImgs.length == 0 && this.dataFormProductsImgs.length == 0) {
+            this.saveAPI();
+        }
+        /* setTimeout(() => {
+            debugger
             this.busServ.addNewGlobalBusiness(this.newBusiness).subscribe(res => {
                 this.loc.back();
-                /* this.route.navigate(['/pages/global-business-management']); */
+                this.route.navigate(['/pages/global-business-management']);
                 this.snack.open("You Succesfully entered a new Business", "Done", {
                     duration: 2000,
                 })
@@ -332,8 +366,22 @@ export class AddGlobalBusinessComponent implements OnInit {
                     this.snack.open("Please Re-enter the right Business information..", "OK")
                 }
             )
-        },2000);
+        },2000); */
 
+    }
+
+    saveAPI() {
+        this.busServ.addNewGlobalBusiness(this.newBusiness).subscribe(res => {
+            this.loc.back();
+            /* this.route.navigate(['/pages/global-business-management']); */
+            this.snack.open("You Succesfully entered a new Business", "Done", {
+                duration: 2000,
+            })
+        },
+            err => {
+                this.snack.open("Please Re-enter the right Business information..", "OK")
+            }
+        )
     }
 
     back() {
@@ -374,6 +422,6 @@ export interface Owners {
     email: string;
     status: string;
     gender: string;
-    id:number;
+    id: number;
 }
 

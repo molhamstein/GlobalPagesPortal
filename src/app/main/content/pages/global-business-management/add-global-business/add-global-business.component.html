@@ -1,13 +1,15 @@
 <div class="page-layout simple left-sidenav inner-sidenav">
     <!-- HEADER -->
-    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+        fxLayoutAlign.gt-xs="space-between center">
 
         <!-- APP TITLE -->
         <div fxLayout="row" fxLayoutAlign="start center">
 
             <div class="logo" fxLayout="row" fxLayoutAlign="start center">
                 <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">library_add</mat-icon>
-                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Add Business</span>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Add
+                    Business</span>
             </div>
 
         </div>
@@ -21,8 +23,8 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
 
-            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto"
-                name="form" [formGroup]="form">
+            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start"
+                fxFlex="1 0 auto" name="form" [formGroup]="form">
 
                 <div class="h2 mb-24">New Business</div>
 
@@ -140,7 +142,8 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input type="text" placeholder="Owner" aria-label="Owner" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="selectedOwner">
+                        <input type="text" placeholder="Owner" aria-label="Owner" matInput [formControl]="myControl"
+                            [matAutocomplete]="auto" [(ngModel)]="selectedOwner">
                         <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
                             <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
                                 {{option.username}}
@@ -154,30 +157,39 @@
                     <mat-slide-toggle class="tog" formControlName="openingDaysEnabled" [(ngModel)]="newBusiness.openingDaysEnabled"></mat-slide-toggle>
 
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field *ngIf="newBusiness.openingDaysEnabled" fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Opening Days" formControlName="openingDays" multiple [(ngModel)]="empty">
-                            <mat-option *ngFor="let d of days" [value]="d.value" (click)="pushDay(d)">
-                                {{d.valueName}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="formErrors.owner.required">
-                            Required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+
+                <ngx-datatable *ngIf="newBusiness.openingDaysEnabled" class="material" [rows]="days" style="margin-top:15px;"
+                    [columnMode]="'force'" [headerHeight]="48" [footerHeight]="56" [rowHeight]="'auto'" [scrollbarH]="true"
+                    [reorderable]="reorderable" [limit]="7">
+
+                    <ngx-datatable-column [width]="150" name="Opening Days" prop="valueName">
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column [width]="200" name="id">
+                        <ng-template let-column="column" ngx-datatable-header-template>
+                            <div class="table-header-font">
+                                Action
+                            </div>
+                        </ng-template>
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <mat-checkbox (change)="checked($event, row)" style="margin-right:30px;"></mat-checkbox>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
 
                 <div class="h2 mb-24" style="margin-top:20px">Business Logo
-                    <button mat-mini-fab class="btn-push" (click)="fileInput1.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
-                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                    <button mat-mini-fab class="btn-push" (click)="fileInput1.click()" style="margin-left: 15px;"
+                        aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
-                    <input hidden type="file" accept="image/*" (change)="onFileChangedLogo($event)" #fileInput1/>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedLogo($event)" #fileInput1 />
                     <div class="profile-img-container">
                         <img src="{{newBusiness.logo}}" width="150" height="60" style="margin-left:15px;" class="img img-thumbnail img-circle img-responsive">
-                        <a (click)="deleteImageLogo($event)"><mat-icon>close</mat-icon></a>
+                        <a (click)="deleteImageLogo($event)">
+                            <mat-icon>close</mat-icon>
+                        </a>
                     </div>
 
                 </div>
@@ -185,8 +197,9 @@
 
                 <div class="h2 mb-24" style="margin-top:30px">Business Location</div>
                 <div>
-                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng">
-                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"> </agm-marker>
+                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng" (mapDblClick)="markerPosition($event)" [disableDoubleClickZoom]="true">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)">
+                        </agm-marker>
                     </agm-map>
                 </div>
 
@@ -203,20 +216,23 @@
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:15px;">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Product Description" formControlName="productDescription" [(ngModel)]="newProduct.description">
+                        <input matInput placeholder="Product Description" formControlName="productDescription"
+                            [(ngModel)]="newProduct.description">
                     </mat-form-field>
 
                     <div class="rightForm product-image">
                         Product Image
                     </div>
-                    <button mat-mini-fab class="btn-push" (click)="fileInput.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
-                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                    <button mat-mini-fab class="btn-push" (click)="fileInput.click()" style="margin-left: 15px;"
+                        aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
-                    <input hidden type="file" accept="image/*" (change)="onFileChangedProducts($event)" #fileInput/>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedProducts($event)" #fileInput />
                     <div class="profile-img-container">
                         <img src="{{newProduct.image}}" width="150" height="60" style="margin-left:15px;" class="img img-thumbnail img-circle img-responsive">
-                        <a (click)="deleteImageProduct($event)"><mat-icon>close</mat-icon></a>
+                        <a (click)="deleteImageProduct($event)">
+                            <mat-icon>close</mat-icon>
+                        </a>
                     </div>
                 </div>
 
@@ -280,17 +296,20 @@
                 </div>
 
                 <div class="h2 mb-24" style="margin-top:30px">Business Covers
-                    <button mat-mini-fab class="btn-push" (click)="fileInput2.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
-                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                    <button mat-mini-fab class="btn-push" (click)="fileInput2.click()" style="margin-left: 15px;"
+                        aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
-                    <input hidden type="file" accept="image/*" (change)="onFileChangedCovers($event)" #fileInput2/>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedCovers($event)" #fileInput2 />
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
                     <form class="form-max-width">
                         <div *ngFor="let c of covers" class="profile-img-container">
-                            <img [src]="c" width="256px" height="256px" class="img img-thumbnail img-circle img-responsive" style="margin-left:15px; padding: 10px">
-                            <a (click)="deleteImageCover($event)"><mat-icon>close</mat-icon></a>
+                            <img [src]="c" width="256px" height="256px" class="img img-thumbnail img-circle img-responsive"
+                                style="margin-left:15px; padding: 10px">
+                            <a (click)="deleteImageCover($event)">
+                                <mat-icon>close</mat-icon>
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -298,7 +317,8 @@
                 <div style="margin-top:20px;">
                     <button mat-raised-button class="btn-save" [disabled]="!newBusiness.nameAr || !newBusiness.nameEn 
                     || !newBusiness.nameUnique || !newBusiness.description || !category.titleEn || !subCategory.titleEn 
-                    || !region.nameEn || !subRegion.nameEn || !selectedOwner" (click)="saveBusiness()">
+                    || !region.nameEn || !subRegion.nameEn || !selectedOwner"
+                        (click)="saveBusiness()">
                         Save Business
                     </button>
 

@@ -17,7 +17,7 @@ export class EditRegionComponent implements OnInit {
     formErrors: any;
     editedReg: any = {};
     id: any;
-    city: any;
+    city: any = {};
     cities: any = [];
     isParent = false;
     isChild = false;
@@ -79,6 +79,11 @@ export class EditRegionComponent implements OnInit {
 
                     this.regServ.getAllCities().subscribe(res => {
                         this.cities = res;
+                        for (let index = 0; index < this.cities.length; index++) {
+                            if (this.editedReg.cityId == this.cities[index].id) {
+                                this.city = this.cities[index];
+                            }
+                        }
                     })
 
                     this.formErrors = {
@@ -90,7 +95,7 @@ export class EditRegionComponent implements OnInit {
                     this.form = this.formBuilder.group({
                         nameEn: ['', Validators.required],
                         nameAr: ['', Validators.required],
-                        city: ['', Validators.required]
+                        city: [ Validators.required]
                     });
 
                     this.form.valueChanges.subscribe(() => {

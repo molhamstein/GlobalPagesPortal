@@ -17,7 +17,7 @@
     <!-- / HEADER -->
 
     <!-- CONTENT -->
-    <mat-card>
+    <mat-card *ngIf="editedBusiness">
 
         <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
 
@@ -88,7 +88,7 @@
                     </mat-form-field>
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                <div *ngIf="categories" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
                         <mat-select placeholder="Category" formControlName="category" [(ngModel)]="category">
                             <mat-option *ngFor="let c of categories" [value]="c">
@@ -102,7 +102,7 @@
 
                     <mat-form-field fxFlex="50" class="rightForm">
                         <mat-select placeholder="SubCategory" formControlName="subCategory" [(ngModel)]="subCategory">
-                            <mat-option *ngFor="let s of category.subCategories" [value]="s">
+                            <mat-option *ngFor="let s of subCategories" [value]="s">
                                 {{s.titleEn}}
                             </mat-option>
                         </mat-select>
@@ -113,7 +113,7 @@
 
                 </div>
 
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                <div *ngIf="regions" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
                         <mat-select placeholder="City" formControlName="city" [(ngModel)]="region">
                             <mat-option *ngFor="let r of regions" [value]="r">
@@ -127,7 +127,7 @@
 
                     <mat-form-field fxFlex="50" class="rightForm">
                         <mat-select placeholder="Location" formControlName="location" [(ngModel)]="subRegion">
-                            <mat-option *ngFor="let l of region.locations" [value]="l">
+                            <mat-option *ngFor="let l of subRegions" [value]="l">
                                 {{l.nameEn}}
                             </mat-option>
                         </mat-select>
@@ -154,18 +154,25 @@
                     <mat-slide-toggle class="tog" formControlName="openingDaysEnabled" [(ngModel)]="editedBusiness.openingDaysEnabled"></mat-slide-toggle>
 
                 </div>
-                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field *ngIf="editedBusiness.openingDaysEnabled" fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Opening Days" formControlName="openingDays" multiple [(ngModel)]="empty">
-                            <mat-option *ngFor="let d of days" [value]="d.value" (click)="pushDay(d)">
-                                {{d.valueName}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="formErrors.owner.required">
-                            Required
-                        </mat-error>
-                    </mat-form-field>
-                </div>
+
+                <ngx-datatable *ngIf="editedBusiness.openingDaysEnabled" class="material" [rows]="days" style="margin-top:15px;"
+                    [columnMode]="'force'" [headerHeight]="48" [footerHeight]="56" [rowHeight]="'auto'" [scrollbarH]="true"
+                    [reorderable]="reorderable" [limit]="7">
+
+                    <ngx-datatable-column [width]="150" name="Opening Days" prop="valueName">
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column [width]="200" name="id">
+                        <ng-template let-column="column" ngx-datatable-header-template>
+                            <div class="table-header-font">
+                                Action
+                            </div>
+                        </ng-template>
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <mat-checkbox (change)="checked($event, row)" style="margin-right:30px;" [checked]="row.checked" ></mat-checkbox>
+                        </ng-template>
+                    </ngx-datatable-column>
+                </ngx-datatable>
 
                 <div class="h2 mb-24" style="margin-top:20px">Business Logo
                     <button mat-mini-fab class="btn-push" (click)="fileInput1.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
@@ -184,7 +191,7 @@
 
                 <div class="h2 mb-24" style="margin-top:30px">Business Location</div>
                 <div>
-                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng">
+                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng" (mapDblClick)="markerPosition($event)" [disableDoubleClickZoom]="true">
                         <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
                     </agm-map>
                 </div>

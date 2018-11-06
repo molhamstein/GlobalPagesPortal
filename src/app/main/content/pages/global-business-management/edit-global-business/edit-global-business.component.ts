@@ -11,6 +11,7 @@ import { BusinessCategoriesService } from '../../../../../core/services/business
 import { Location } from '../../../../../../../node_modules/@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
+import { isString } from 'util';
 
 @Component({
     selector: 'edit-global-business',
@@ -27,32 +28,35 @@ export class EditGlobalBusinessComponent implements OnInit {
     filteredOptions: Observable<Owners[]>;
     selectedOwner: any = {};
     categories: any = [];
+    subCategories: any = [];
     category: any = {};
     subCategory: any = {};
     owners: any = [];
     owner: any = {};
     regions: any = [];
+    subRegions: any = [];
     region: any = {};
     subRegion: any = {};
     prodcutFile: File = null;
     logoFile: File = null;
     coverFile: File = null;
     url: any;
+    url1:any;
     covers: any = [];
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
-    days: any[] = [{ value: 0, valueName: "Monday" }, { value: 1, valueName: "Tuesday" }, { value: 2, valueName: "Wednesday" },
-    { value: 3, valueName: "Thursday" }, { value: 4, valueName: "Friday" }, { value: 5, valueName: "Saturday" }, { value: 6, valueName: "Sunday" },]
+    days: any[] = [{ value: 0, valueName: "Monday", checked: false }, { value: 1, valueName: "Tuesday", checked: false }, { value: 2, valueName: "Wednesday", checked: false },
+    { value: 3, valueName: "Thursday", checked: false }, { value: 4, valueName: "Friday", checked: false }, { value: 5, valueName: "Saturday", checked: false }, { value: 6, valueName: "Sunday", checked: false },]
     openingDays: any = [];
     lat = -34.397;
     lng = 150.644;
+    reorderable = true;
 
     displayedColumns = ['order', 'name', 'price', 'description', 'image', 'icons'];
     dataSource = new MatTableDataSource<Products>([]);
     myData: Products[] = [];
     editedProduct: any = {};
     order = 0;
-    empty: any = [];
     selectStatus = ['pending', 'activated', 'deactivated'];
 
     constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
@@ -70,9 +74,16 @@ export class EditGlobalBusinessComponent implements OnInit {
                 this.selectedOwner = this.editedBusiness.owner;
                 this.lat = this.editedBusiness.locationPoint.lat;
                 this.lng = this.editedBusiness.locationPoint.lng;
+                for (let index = 0; index < this.editedBusiness.openingDays.length; index++) {
+                    for (let i = 0; i < this.days.length; i++) {
+                        if (this.editedBusiness.openingDays[index] == this.days[i].value) {
+                            this.days[i].checked = true;
+                            this.openingDays.push(this.days[i]);
+                        }
+                    }
+                }
                 for (let index = 0; index < this.editedBusiness.covers.length; index++) {
-                   this.covers[index] = this.editedBusiness.covers[index];
-                    
+                    this.covers[index] = this.editedBusiness.covers[index];
                 }
                 for (let index = 0; index < this.editedBusiness.products.length; index++) {
                     this.order++;
@@ -81,6 +92,38 @@ export class EditGlobalBusinessComponent implements OnInit {
                     this.myData.push(temp);
                 }
                 this.dataSource.data = this.myData;
+
+                this.busCatServ.getBusinessCategories().subscribe(res => {
+                    this.categories = res;
+                    for (let index = 0; index < this.categories.length; index++) {
+                        if (this.categories[index].id == this.editedBusiness.categoryId) {
+                            this.category = this.categories[index];
+                            for (let j = 0; j < this.categories[index].subCategories.length; j++) {
+                                this.subCategories.push(this.categories[index].subCategories[j]);
+                                if (this.categories[index].subCategories[j].id == this.editedBusiness.subCategoryId) {
+                                    this.subCategory = this.categories[index].subCategories[j];
+                                }
+                            }
+                            break;
+                        }
+                    }
+                })
+        
+                this.regServ.getAllCities().subscribe(res => {
+                    this.regions = res;
+                    for (let index = 0; index < this.regions.length; index++) {
+                        if (this.regions[index].id == this.editedBusiness.cityId) {
+                            this.region = this.regions[index];
+                            for (let i = 0; i < this.regions[index].locations.length; i++) {
+                                this.subRegions.push(this.regions[index].locations[i]);
+                                if (this.regions[index].locations[i].id == this.editedBusiness.locationId) {
+                                    this.subRegion = this.regions[index].locations[i];
+                                }
+                            }
+                            break;
+                        }
+                    }
+                })
             })
 
         });
@@ -96,13 +139,7 @@ export class EditGlobalBusinessComponent implements OnInit {
                 );
         })
 
-        this.busCatServ.getBusinessCategories().subscribe(res => {
-            this.categories = res;
-        })
-
-        this.regServ.getAllCities().subscribe(res => {
-            this.regions = res;
-        })
+        
 
         this.formErrors = {
             nameAr: {},
@@ -115,7 +152,6 @@ export class EditGlobalBusinessComponent implements OnInit {
             subCategory: [],
             city: [],
             location: [],
-            openingDays: [],
         };
 
         this.form = this.formBuilder.group({
@@ -128,11 +164,10 @@ export class EditGlobalBusinessComponent implements OnInit {
             description: ['', Validators.required],
             status: ['', Validators.required],
             openingDaysEnabled: [''],
-            category: [this.categories[0], Validators.required],
+            category: [Validators.required],
             subCategory: [{}, Validators.required],
             city: [{}, Validators.required],
             location: ['', Validators.required],
-            openingDays: [{}, Validators.required],
             productName: [],
             productPrice: [],
             productDescription: '',
@@ -150,14 +185,26 @@ export class EditGlobalBusinessComponent implements OnInit {
 
     private _filter(own: string): Owners[] {
         const filterValue = own.toLowerCase();
+        return this.owners.filter(own => {
+            if (own.username == undefined) {
+                own.username = "";
+            }
+            own.username.toLowerCase().indexOf(filterValue) === 0
 
-        return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
+        });
     }
 
     markerDragEnd($event) {
         this.lat = $event.coords.lat;
         console.log(this.lat);
         this.lng = $event.coords.lng;
+        console.log(this.lng);
+    }
+
+    markerPosition(event) {
+        this.lat = event.coords.lat;
+        console.log(this.lat);
+        this.lng = event.coords.lng;
         console.log(this.lng);
     }
 
@@ -170,6 +217,19 @@ export class EditGlobalBusinessComponent implements OnInit {
             }
         }
         this.openingDays.push(day);
+    }
+
+    checked(event, day) {
+        if (event.checked == true) {
+            this.openingDays.push(day);
+        }
+        else {
+            for (let index = 0; index < this.openingDays.length; index++) {
+                if (this.openingDays[index].value == day.value) {
+                    this.openingDays.splice(this.openingDays.indexOf(this.openingDays[index], 0), 1);
+                }
+            }
+        }
     }
 
     onFileChangedLogo(event) {
@@ -202,9 +262,10 @@ export class EditGlobalBusinessComponent implements OnInit {
         this.coverFile = <File>event.target.files[0]
         var reader = new FileReader();
 
-        reader.onload = (event: ProgressEvent) => {
-            this.url = (<FileReader>event.target).result;
-            this.covers.push(this.url);
+        reader.onload = (event1: ProgressEvent) => {
+            this.url1 = (<FileReader>event1.target).result;
+            var u = {url :this.url1};
+            this.covers.push(u);
         }
         reader.readAsDataURL(event.target.files[0]);
         event.target.value = '';
@@ -231,7 +292,7 @@ export class EditGlobalBusinessComponent implements OnInit {
     deleteImageCover(event) {
         var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
         for (let index = 0; index < this.covers.length; index++) {
-            if (temp == this.covers[index]) {
+            if (temp == this.covers[index].url) {
                 const i: number = this.covers.indexOf(this.covers[index]);
                 if (i !== -1) {
                     if (temp.startsWith('http')) {
@@ -282,46 +343,40 @@ export class EditGlobalBusinessComponent implements OnInit {
 
 
     updateBusiness() {
-        var isThere :boolean = false;
+        var isThere: boolean = false;
         for (let index = 0; index < this.owners.length; index++) {
-            if(this.selectedOwner.id == this.owners[index].id){
+            if (this.selectedOwner.id == this.owners[index].id) {
                 this.editedBusiness.ownerId = this.selectedOwner.id;
                 isThere = true;
                 break;
             }
         }
-        if(isThere == false) {
+        if (isThere == false) {
             this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
             return;
         }
         if (this.editedBusiness.openingDaysEnabled == true) {
-            this.editedBusiness.openingDays = this.openingDays;
+            var tempDays = [];
+            for (let index = 0; index < this.openingDays.length; index++) {
+                tempDays.push(this.openingDays[index].value);
+            }
+            this.editedBusiness.openingDays = tempDays;
         }
         else { this.editedBusiness.openingDays = [] }
-        this.editedBusiness.ownerId = this.owner.id;
+        this.editedBusiness.ownerId = this.selectedOwner.id;
         this.editedBusiness.categoryId = this.category.id;
         this.editedBusiness.subCategoryId = this.subCategory.id;
         this.editedBusiness.cityId = this.region.id;
         this.editedBusiness.locationId = this.subRegion.id;
+        delete this.editedBusiness.category;
+        delete this.editedBusiness.subCategory;
+        delete this.editedBusiness.owner;
+        this.editedBusiness.locationPoint = { lat: this.lat, lng: this.lng };
         if (this.logoFile != null) {
             const logoFrmData: FormData = new FormData();
             logoFrmData.append("file", this.logoFile, this.logoFile.name);
             this.busServ.uploadImages(logoFrmData).subscribe(res => {
                 this.editedBusiness.logo = res[0].url;
-            })
-        }
-
-        if (this.dataFormProductsImgs.length != 0) {
-            const productFrmData: FormData = new FormData();
-            for (var i = 0; i < this.dataFormProductsImgs.length; i++) {
-                productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
-            }
-            this.busServ.uploadImages(productFrmData).subscribe(res => {
-                for (let j = 0; j < res.length; j++) {
-                    this.myData[j + this.editedBusiness.products.length].image = res[j].url;
-                    delete this.myData[j + this.editedBusiness.products.length].order;
-                    this.editedBusiness.products.push(this.myData[j + this.editedBusiness.products.length]);
-                }
             })
         }
 
@@ -338,9 +393,62 @@ export class EditGlobalBusinessComponent implements OnInit {
                     tempobj.type = 'image';
                     this.editedBusiness.covers.push(tempobj);
                 }
+                if (this.dataFormProductsImgs.length != 0) {
+                    const productFrmData: FormData = new FormData();
+                    for (var i = 0; i < this.dataFormProductsImgs.length; i++) {
+                        productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
+                    }
+                    this.busServ.uploadImages(productFrmData).subscribe(res => {
+                        for (let j = 0; j < res.length; j++) {
+                            this.myData[j + this.editedBusiness.products.length].image = res[j].url;
+                            delete this.myData[j + this.editedBusiness.products.length].order;
+                            this.editedBusiness.products.push(this.myData[j + this.editedBusiness.products.length]);
+                        }
+                        this.updateAPI();
+                    })
+                }
+                else {
+                    this.updateAPI();
+                }
             })
         }
-        this.editedBusiness.locationPoint = { lat: this.lat, lng: this.lng };
+
+        else if (this.dataFormProductsImgs.length != 0) {
+            const productFrmData: FormData = new FormData();
+            for (var i = 0; i < this.dataFormProductsImgs.length; i++) {
+                productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
+            }
+            this.busServ.uploadImages(productFrmData).subscribe(res => {
+                for (let j = 0; j < res.length; j++) {
+                    this.myData[j + this.editedBusiness.products.length].image = res[j].url;
+                    delete this.myData[j + this.editedBusiness.products.length].order;
+                    this.editedBusiness.products.push(this.myData[j + this.editedBusiness.products.length]);
+                }
+                this.updateAPI();
+            })
+        }
+
+        if (this.dataFormCoversImgs.length == 0 && this.dataFormProductsImgs.length == 0) {
+            this.updateAPI();
+        }
+
+        /*  setTimeout(() => {
+             this.busServ.editGlobalBusiness(this.editedBusiness, this.editedBusiness.id).subscribe(res => {
+                 this.loc.back();
+                 this.route.navigate(['/pages/global-business-management']);
+                 this.snack.open("You Succesfully update this Business", "Done", {
+                     duration: 2000,
+                 })
+             },
+                 err => {
+                     this.snack.open("Please Re-enter the right Business information..", "OK")
+                 }
+             )
+         }, 2000); */
+
+    }
+
+    updateAPI() {
         setTimeout(() => {
             this.busServ.editGlobalBusiness(this.editedBusiness, this.editedBusiness.id).subscribe(res => {
                 this.loc.back();
@@ -354,7 +462,6 @@ export class EditGlobalBusinessComponent implements OnInit {
                 }
             )
         }, 2000);
-
     }
 
     back() {
@@ -393,5 +500,5 @@ export interface Owners {
     email: string;
     status: string;
     gender: string;
-    id:number;
+    id: number;
 }

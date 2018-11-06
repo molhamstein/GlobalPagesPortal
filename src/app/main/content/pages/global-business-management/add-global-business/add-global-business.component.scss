@@ -22,6 +22,17 @@
     }
 }
 
+.table-header-font {
+    font-size: 18px;
+    padding-right : 17px;
+    padding-top:12px;
+}
+
+:host ::ng-deep .datatable-header .datatable-header-cell.sortable .datatable-header-cell-wrapper {
+    font-size: 18px !important;
+    cursor: pointer;
+  }
+
 .btn-save {
     float: right; 
     color:white; 
