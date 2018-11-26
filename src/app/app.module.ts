@@ -67,7 +67,7 @@ const appRoutes: Routes = [
         HttpModule,
         HttpClientModule,
         BrowserAnimationsModule,
-        RouterModule.forRoot(appRoutes),
+        RouterModule.forRoot(appRoutes , { enableTracing: false, useHash: true }),
         SharedModule,
         MarkdownModule.forRoot(),
         TranslateModule.forRoot(),
