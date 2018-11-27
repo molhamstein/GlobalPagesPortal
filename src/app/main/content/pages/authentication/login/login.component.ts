@@ -58,7 +58,7 @@ export class FuseLoginComponent implements OnInit
     login(){
         this.loginServ.login(this.user).subscribe(res => {
              this.userDetails = res;
-            if(this.userDetails.user.username == "Alan"){
+            if(this.userDetails.user.roles[0].name == "admin"){
                 localStorage.setItem('authtoken', this.userDetails.id);
                 localStorage.setItem('userFullName', this.userDetails.user.username);
                 /* localStorage.setItem('userPermissions', JSON.stringify(res.userPermissions)); */
