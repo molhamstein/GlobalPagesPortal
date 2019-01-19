@@ -62,11 +62,11 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Phone Number 1" formControlName="phoneNumber1" [(ngModel)]="editedBusiness.phoneNumber1">
+                        <input matInput type="tel" placeholder="Phone Number 1" formControlName="phoneNumber1" [(ngModel)]="editedBusiness.phoneNumber1">
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput placeholder="Phone Number 2" formControlName="phoneNumber2" [(ngModel)]="editedBusiness.phoneNumber2">
+                        <input matInput type="tel" placeholder="Phone Number 2" formControlName="phoneNumber2" [(ngModel)]="editedBusiness.phoneNumber2">
                     </mat-form-field>
 
                 </div>
@@ -204,7 +204,7 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput placeholder="Product Price" formControlName="productPrice" [(ngModel)]="editedProduct.price">
+                        <input matInput type="number" placeholder="Product Price" formControlName="productPrice" [(ngModel)]="editedProduct.price">
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:15px;">

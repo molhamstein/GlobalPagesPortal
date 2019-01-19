@@ -242,12 +242,16 @@ export class AddGlobalBusinessComponent implements OnInit {
     }
 
     pushProduct() {
-        if (this.newProduct.name && this.newProduct.price && this.newProduct.description && this.newProduct.image) {
+        if (this.newProduct.name && this.newProduct.price && this.newProduct.description) {
             this.order++;
             this.newProduct.order = this.order;
+            if (!this.newProduct.image) {
+                this.newProduct.image = "";
+            }
+            else {
+                this.dataFormProductsImgs.push(this.prodcutFile);
+            }
             this.myData.push(this.newProduct);
-            debugger
-            this.dataFormProductsImgs.push(this.prodcutFile);
             this.dataSource.data = this.myData;
             this.newProduct = {};
         }
@@ -287,7 +291,6 @@ export class AddGlobalBusinessComponent implements OnInit {
             }
         }
         else { this.newBusiness.openingDays = [] }
-        this.newBusiness.ownerId = this.owner.id;
         this.newBusiness.categoryId = this.category.id;
         this.newBusiness.subCategoryId = this.subCategory.id;
         this.newBusiness.cityId = this.region.id;
@@ -321,10 +324,20 @@ export class AddGlobalBusinessComponent implements OnInit {
                         productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
                     }
                     this.busServ.uploadImages(productFrmData).subscribe(res => {
+                        var tempdata = [];
+                        for (let z = 0; z < this.myData.length; z++) {
+                            if (this.myData[z].image != "") {
+                                tempdata.push(this.myData[z]);
+                            }
+                            else {
+                                delete this.myData[z].order;
+                                this.newBusiness.products.push(this.myData[z]);
+                            }
+                        }
                         for (let j = 0; j < res.length; j++) {
-                            this.myData[j].image = res[j].url;
-                            delete this.myData[j].order;
-                            this.newBusiness.products.push(this.myData[j]);
+                            tempdata[j].image = res[j].url;
+                            delete tempdata[j].order;
+                            this.newBusiness.products.push(tempdata[j]);
                         }
                         this.saveAPI();
                     })
@@ -341,10 +354,20 @@ export class AddGlobalBusinessComponent implements OnInit {
                 productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
             }
             this.busServ.uploadImages(productFrmData).subscribe(res => {
+                var tempdata = [];
+                for (let z = 0; z < this.myData.length; z++) {
+                    if (this.myData[z].image != "") {
+                        tempdata.push(this.myData[z]);
+                    }
+                    else {
+                        delete this.myData[z].order;
+                        this.newBusiness.products.push(this.myData[z]);
+                    }
+                }
                 for (let j = 0; j < res.length; j++) {
-                    this.myData[j].image = res[j].url;
-                    delete this.myData[j].order;
-                    this.newBusiness.products.push(this.myData[j]);
+                    tempdata[j].image = res[j].url;
+                    delete tempdata[j].order;
+                    this.newBusiness.products.push(tempdata[j]);
                 }
                 this.saveAPI();
             })

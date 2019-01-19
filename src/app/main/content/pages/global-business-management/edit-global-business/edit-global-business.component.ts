@@ -41,7 +41,7 @@ export class EditGlobalBusinessComponent implements OnInit {
     logoFile: File = null;
     coverFile: File = null;
     url: any;
-    url1:any;
+    url1: any;
     covers: any = [];
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
@@ -108,7 +108,7 @@ export class EditGlobalBusinessComponent implements OnInit {
                         }
                     }
                 })
-        
+
                 this.regServ.getAllCities().subscribe(res => {
                     this.regions = res;
                     for (let index = 0; index < this.regions.length; index++) {
@@ -139,7 +139,7 @@ export class EditGlobalBusinessComponent implements OnInit {
                 );
         })
 
-        
+
 
         this.formErrors = {
             nameAr: {},
@@ -264,7 +264,7 @@ export class EditGlobalBusinessComponent implements OnInit {
 
         reader.onload = (event1: ProgressEvent) => {
             this.url1 = (<FileReader>event1.target).result;
-            var u = {url :this.url1};
+            var u = { url: this.url1 };
             this.covers.push(u);
         }
         reader.readAsDataURL(event.target.files[0]);
@@ -309,11 +309,16 @@ export class EditGlobalBusinessComponent implements OnInit {
     }
 
     pushProduct() {
-        if (this.editedProduct.name && this.editedProduct.price && this.editedProduct.description && this.editedProduct.image) {
+        if (this.editedProduct.name && this.editedProduct.price && this.editedProduct.description) {
             this.order++;
             this.editedProduct.order = this.order;
+            if (!this.editedProduct.image) {
+                this.editedProduct.image = "";
+            }
+            else {
+                this.dataFormProductsImgs.push(this.prodcutFile);
+            }
             this.myData.push(this.editedProduct);
-            this.dataFormProductsImgs.push(this.prodcutFile);
             this.dataSource.data = this.myData;
             this.editedProduct = {};
         }
@@ -363,7 +368,6 @@ export class EditGlobalBusinessComponent implements OnInit {
             this.editedBusiness.openingDays = tempDays;
         }
         else { this.editedBusiness.openingDays = [] }
-        this.editedBusiness.ownerId = this.selectedOwner.id;
         this.editedBusiness.categoryId = this.category.id;
         this.editedBusiness.subCategoryId = this.subCategory.id;
         this.editedBusiness.cityId = this.region.id;
@@ -399,10 +403,21 @@ export class EditGlobalBusinessComponent implements OnInit {
                         productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
                     }
                     this.busServ.uploadImages(productFrmData).subscribe(res => {
+                        var tempData = [];
+                        const length = this.editedBusiness.products.length;
+                        for (let z = 0; z < this.myData.length - length; z++) {
+                            if (this.myData[z + length].image != "") {
+                                tempData.push(this.myData[z + length]);
+                            }
+                            else {
+                                delete this.myData[ this.editedBusiness.products.length].order;
+                                this.editedBusiness.products.push(this.myData[ z + length]);
+                            }
+                        }
                         for (let j = 0; j < res.length; j++) {
-                            this.myData[j + this.editedBusiness.products.length].image = res[j].url;
-                            delete this.myData[j + this.editedBusiness.products.length].order;
-                            this.editedBusiness.products.push(this.myData[j + this.editedBusiness.products.length]);
+                            tempData[j].image = res[j].url;
+                            delete tempData[j].order;
+                            this.editedBusiness.products.push(tempData[j]);
                         }
                         this.updateAPI();
                     })
@@ -419,10 +434,21 @@ export class EditGlobalBusinessComponent implements OnInit {
                 productFrmData.append("file", this.dataFormProductsImgs[i], this.dataFormProductsImgs[i].name);
             }
             this.busServ.uploadImages(productFrmData).subscribe(res => {
+                var tempData = [];
+                const length = this.editedBusiness.products.length;
+                for (let z = 0; z < this.myData.length - length; z++) {
+                    if (this.myData[z + length].image != "") {
+                        tempData.push(this.myData[z + length]);
+                    }
+                    else {
+                        delete this.myData[ this.editedBusiness.products.length].order;
+                        this.editedBusiness.products.push(this.myData[ z + length]);
+                    }
+                }
                 for (let j = 0; j < res.length; j++) {
-                    this.myData[j + this.editedBusiness.products.length].image = res[j].url;
-                    delete this.myData[j + this.editedBusiness.products.length].order;
-                    this.editedBusiness.products.push(this.myData[j + this.editedBusiness.products.length]);
+                    tempData[j].image = res[j].url;
+                    delete tempData[j].order;
+                    this.editedBusiness.products.push(tempData[j]);
                 }
                 this.updateAPI();
             })

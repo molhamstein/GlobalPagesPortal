@@ -28,6 +28,8 @@ export class EditAdComponent implements OnInit {
     categories: any = [];
     category: any = {};
     subCategory: any = {};
+    subCategories:any = [];
+    subRegions:any = [];
     owners: any = [];
     owner: any = {};
     regions: any = [];
@@ -76,10 +78,34 @@ export class EditAdComponent implements OnInit {
 
         this.catServ.getCategories().subscribe(res => {
             this.categories = res;
+            for (let index = 0; index < this.categories.length; index++) {
+                if (this.categories[index].id == this.editedAd.categoryId) {
+                    this.category = this.categories[index];
+                    for (let j = 0; j < this.categories[index].subCategories.length; j++) {
+                        this.subCategories.push(this.categories[index].subCategories[j]);
+                        if (this.categories[index].subCategories[j].id == this.editedAd.subCategoryId) {
+                            this.subCategory = this.categories[index].subCategories[j];
+                        }
+                    }
+                    break;
+                }
+            }
         })
 
         this.regServ.getAllCities().subscribe(res => {
             this.regions = res;
+            for (let index = 0; index < this.regions.length; index++) {
+                if (this.regions[index].id == this.editedAd.cityId) {
+                    this.region = this.regions[index];
+                    for (let i = 0; i < this.regions[index].locations.length; i++) {
+                        this.subRegions.push(this.regions[index].locations[i]);
+                        if (this.regions[index].locations[i].id == this.editedAd.locationId) {
+                            this.subRegion = this.regions[index].locations[i];
+                        }
+                    }
+                    break;
+                }
+            }
         })
 
         this.formErrors = {
@@ -150,8 +176,11 @@ export class EditAdComponent implements OnInit {
         this.editedAd.subCategoryId = this.subCategory.id;
         this.editedAd.cityId = this.region.id;
         this.editedAd.locationId = this.subRegion.id;
-
-        if (this.dataFormImgs,length != 0) {
+        delete this.editedAd.category;
+        delete this.editedAd.subCategory;
+        delete this.editedAd.city;
+        delete this.editedAd.location;
+        if (this.dataFormImgs.length != 0) {
             const frmData: FormData = new FormData();
             for (var i = 0; i < this.dataFormImgs.length; i++) {
                 frmData.append("file", this.dataFormImgs[i], this.dataFormImgs[i].name);
@@ -164,9 +193,20 @@ export class EditAdComponent implements OnInit {
                     tempobj.type = 'image';
                     this.editedAd.media.push(tempobj);
                 }
+                this.adServ.editAd(this.editedAd, this.editedAd.id).subscribe(res => {
+                    this.loc.back();
+                    /* this.route.navigate(['/pages/ads-management']); */
+                    this.snack.open("You Succesfully updated an Advertisement", "Done", {
+                        duration: 2000,
+                    })
+                },
+                    err => {
+                        this.snack.open("Please Re-enter the right Advertisement information..", "OK")
+                    }
+                )
             })
         }
-        setTimeout(() => {
+        else {
             this.adServ.editAd(this.editedAd, this.editedAd.id).subscribe(res => {
                 this.loc.back();
                 /* this.route.navigate(['/pages/ads-management']); */
@@ -178,8 +218,7 @@ export class EditAdComponent implements OnInit {
                     this.snack.open("Please Re-enter the right Advertisement information..", "OK")
                 }
             )
-        },2000);
-
+        }
     }
 
     /* eventSelection(event) {

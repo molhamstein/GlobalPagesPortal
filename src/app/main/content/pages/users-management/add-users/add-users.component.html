@@ -63,7 +63,7 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput placeholder="Phone Number" formControlName="phoneNumber" [(ngModel)]="newUser.phoneNumber">
+                        <input matInput type="tel" placeholder="Phone Number" formControlName="phoneNumber" [(ngModel)]="newUser.phoneNumber">
                         <mat-error *ngIf="formErrors.phoneNumber.required">
                             Required
                         </mat-error>

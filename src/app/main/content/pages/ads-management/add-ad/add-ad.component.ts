@@ -139,6 +139,7 @@ export class AddAdComponent implements OnInit {
 
     saveAd() {
         var dateTemp = new Date();
+        console.log(this.newAd);
         this.newAd.creationDate = dateTemp.toISOString();
         this.newAd.viewsCount = 0;
         var isThere :boolean = false;
@@ -172,10 +173,20 @@ export class AddAdComponent implements OnInit {
                     tempobj.type = 'image';
                     this.newAd.media.push(tempobj);
                 }
+                this.adServ.addNewAd(this.newAd).subscribe(res => {
+                    this.loc.back();
+                    /* this.route.navigate(['/pages/ads-management']); */
+                    this.snack.open("You Succesfully entered a new Advertisement", "Done", {
+                        duration: 2000,
+                    })
+                },
+                    err => {
+                        this.snack.open("Please Re-enter the right Advertisement information..", "OK")
+                    }
+                )
             })
         }
-        setTimeout(() => {
-
+        else {
             this.adServ.addNewAd(this.newAd).subscribe(res => {
                 this.loc.back();
                 /* this.route.navigate(['/pages/ads-management']); */
@@ -187,8 +198,7 @@ export class AddAdComponent implements OnInit {
                     this.snack.open("Please Re-enter the right Advertisement information..", "OK")
                 }
             )
-        },2000);
-
+        }
     }
 
     back() {
