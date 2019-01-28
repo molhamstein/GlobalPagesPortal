@@ -23,6 +23,7 @@ export class EditRegionComponent implements OnInit {
     isChild = false;
     cityExists: any;
     locExists: any;
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private regServ: RegionsService, private loc : Location,
         private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
@@ -108,27 +109,33 @@ export class EditRegionComponent implements OnInit {
     }
 
     updateCity() {
+        this.loadingIndicator = true;
         this.regServ.editCity(this.editedReg, this.id).subscribe(() => {
             this.route.navigate(['/pages/regions-management']);
             this.snack.open("You Succesfully updated this City", "Done", {
                 duration: 2000,
             })
+            this.loadingIndicator = false;
         },
             err => {
+                this.loadingIndicator = false;
                 this.snack.open("Please Re-enter the right City information..", "OK")
             }
         )
     }
 
     updateLocation() {
+        this.loadingIndicator = true;
         this.editedReg.cityId = this.city.id;
         this.regServ.editLocation(this.editedReg, this.id).subscribe(() => {
             this.route.navigate(['/pages/regions-management']);
             this.snack.open("You Succesfully updated this Location", "Done", {
                 duration: 2000,
             })
+            this.loadingIndicator = false;
         },
             err => {
+                this.loadingIndicator = false;
                 this.snack.open("Please Re-enter the right Location information..", "OK")
             }
         )

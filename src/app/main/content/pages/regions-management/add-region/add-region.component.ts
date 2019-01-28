@@ -21,6 +21,7 @@ export class AddRegionComponent implements OnInit
     id:any;
     cities:any = [];
     city:any;
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private regServ: RegionsService, private loc: Location,
         private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
@@ -78,28 +79,33 @@ export class AddRegionComponent implements OnInit
     }
 
     saveCity(){
-
+        this.loadingIndicator = true;
         this.regServ.addCity(this.newCity).subscribe(res => {
             this.route.navigate(['/pages/regions-management']);
             this.snack.open("You Succesfully entered a new City","Done", {
                 duration: 2000,
               })
+              this.loadingIndicator = false;
         },
         err => {
+            this.loadingIndicator = false;
             this.snack.open("Please Re-enter the right City information..","OK")
         }
     )
     }
 
     saveLocation(){
+        this.loadingIndicator = true;
         this.newLocation.cityId = this.city.id;
         this.regServ.addLocation( this.newLocation).subscribe(res => {
             this.route.navigate(['/pages/regions-management']);
             this.snack.open("You Succesfully entered a new Location","Done", {
                 duration: 2000,
               })
+              this.loadingIndicator = false;
         },
         err => {
+            this.loadingIndicator = false;
             this.snack.open("Please Re-enter the right Location information..","OK")
         }
     )

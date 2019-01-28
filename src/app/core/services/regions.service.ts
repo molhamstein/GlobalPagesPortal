@@ -16,11 +16,11 @@ export class RegionsService {
   }
 
   getAllCities(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'cities/?filter[include]=locations');
+    return this.httpclient.get(GlobalURL.URL + 'cities/?filter[include]=locations&filter[order]=creationDate Desc');
   }
 
   getAllLocations(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'locations');
+    return this.httpclient.get(GlobalURL.URL + 'locations/?filter[order]=creationDate Desc');
   }
 
   cityExist(id): Observable<any> {

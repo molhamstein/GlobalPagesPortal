@@ -23,6 +23,7 @@ export class EditCategoryComponent implements OnInit {
     isChild = false;
 
     catFile: File = null;
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private catServ: CategoriesService, private loc: Location,
         private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
@@ -110,6 +111,7 @@ export class EditCategoryComponent implements OnInit {
         if (this.editedCat.parentCategoryId) {
             this.editedCat.parentCategoryId = this.category.id;
         }
+        this.loadingIndicator = true;
         if (this.catFile != null) {
             const logoFrmData: FormData = new FormData();
             logoFrmData.append("file", this.catFile, this.catFile.name);
@@ -121,8 +123,10 @@ export class EditCategoryComponent implements OnInit {
                     this.snack.open("You Succesfully updated this Category", "Done", {
                         duration: 2000,
                     })
+                    this.loadingIndicator = false;
                 },
                     err => {
+                        this.loadingIndicator = false;
                         this.snack.open("Please Re-enter the right Category information..", "OK")
                     }
                 )
@@ -136,8 +140,10 @@ export class EditCategoryComponent implements OnInit {
                 this.snack.open("You Succesfully updated this Category", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right Category information..", "OK")
                 }
             )

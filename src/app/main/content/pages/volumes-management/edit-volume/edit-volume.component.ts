@@ -29,6 +29,7 @@ export class EditVolumeComponent implements OnInit {
     selectedAd: any = {};
     order = 0;
     selectStatus = ['pending', 'activated','deactivated'];
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService, private volServ:VolumesService,
         private route: Router, private snack: MatSnackBar, private activatedRoute : ActivatedRoute, private loc : Location) {
@@ -128,6 +129,7 @@ export class EditVolumeComponent implements OnInit {
 
 
     updateVolume() {
+        this.loadingIndicator = true;
         this.editedVolume.postsIds = [];
         for (let index = 0; index < this.myData.length; index++) {
             this.editedVolume.postsIds.push(this.myData[index].id);
@@ -138,8 +140,10 @@ export class EditVolumeComponent implements OnInit {
             this.snack.open("You Succesfully updated the Volume", "Done", {
                 duration: 2000,
             })
+            this.loadingIndicator = false;
         },
             err => {
+                this.loadingIndicator = false;
                 this.snack.open("Please Re-enter the right Volume information..", "OK")
             }
         )

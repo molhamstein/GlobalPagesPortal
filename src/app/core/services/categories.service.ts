@@ -20,11 +20,11 @@ export class CategoriesService {
   }
 
   getCategories() : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'postCategories/?filter={"where":{"parentCategoryId":{"exists":false}},"include":"subCategories"}')
+    return this.httpclient.get(GlobalURL.URL + 'postCategories/?filter={"where":{"parentCategoryId":{"exists":false}},"include":"subCategories","order":"createdAt DESC"}')
   }
 
   getSubCategories() : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'postCategories/?filter={"where":{"parentCategoryId":{"exists":true}}}')
+    return this.httpclient.get(GlobalURL.URL + 'postCategories/?filter={"where":{"parentCategoryId":{"exists":true}},"order":"createdAt DESC"}')
   }
 
   getCategoriesChildren(id):  Observable<any> {

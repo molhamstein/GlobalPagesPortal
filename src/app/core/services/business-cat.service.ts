@@ -20,11 +20,11 @@ export class BusinessCategoriesService {
   }
 
   getBusinessCategories() : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'businessCategories/?filter={"where":{"parentCategoryId":{"exists":false}},"include":"subCategories"}')
+    return this.httpclient.get(GlobalURL.URL + 'businessCategories/?filter={"where":{"parentCategoryId":{"exists":false}},"include":"subCategories","order":"createdAt DESC"}')
   }
 
   getBusinessSubCategories() : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'businessCategories/?filter={"where":{"parentCategoryId":{"exists":true}}}')
+    return this.httpclient.get(GlobalURL.URL + 'businessCategories/?filter={"where":{"parentCategoryId":{"exists":true}},"order":"createdAt DESC"}')
   }
 
   getBusinessById(id): Observable<any> {

@@ -1,4 +1,4 @@
-<div *ngIf="id == 'Cat'" class="page-layout simple left-sidenav inner-sidenav">
+<div *ngIf="id == 'Cat'" class="page-layout simple left-sidenav inner-sidenav" [class.backdrop-loading]="loadingIndicator == true">
     <!-- HEADER -->
     <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
 
@@ -78,7 +78,7 @@
 </div>
 
 
-<div *ngIf="id == 'subCat'" class="page-layout simple left-sidenav inner-sidenav">
+<div *ngIf="id == 'subCat'" class="page-layout simple left-sidenav inner-sidenav" [class.backdrop-loading]="loadingIndicator == true">
     <!-- HEADER -->
     <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
 
@@ -165,4 +165,8 @@
 
     <!-- / CONTENT -->
 
+</div>
+
+<div *ngIf="loadingIndicator == true" class="loadingIndicator">
+    <mat-spinner></mat-spinner>
 </div>

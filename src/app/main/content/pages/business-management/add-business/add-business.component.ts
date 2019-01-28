@@ -21,6 +21,7 @@ export class AddBusinessComponent implements OnInit
     id:any;
     categories:any = [];
     category:any;
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private businessServ: BusinessCategoriesService, private loc: Location,
         private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
@@ -76,14 +77,17 @@ export class AddBusinessComponent implements OnInit
 
     saveCat(){
         var dateTemp = new Date();
+        this.loadingIndicator = true;
         this.newCat.creationDate = dateTemp.toISOString();
         this.businessServ.addBusiness(this.newCat).subscribe(res => {
             this.route.navigate(['/pages/business-management']);
             this.snack.open("You Succesfully entered a new Business Category","Done", {
                 duration: 2000,
               })
+              this.loadingIndicator = false;
         },
         err => {
+            this.loadingIndicator = false;
             this.snack.open("Please Re-enter the right Business Category information..","OK")
         }
     )
@@ -91,6 +95,7 @@ export class AddBusinessComponent implements OnInit
 
     saveSubCat(){
         var dateTemp = new Date();
+        this.loadingIndicator = true;
         this.newSubCat.creationDate = dateTemp.toISOString();
         this.newSubCat.parentCategoryId = this.category.id;
         this.businessServ.addBusiness(this.newSubCat).subscribe(res => {
@@ -98,8 +103,10 @@ export class AddBusinessComponent implements OnInit
             this.snack.open("You Succesfully entered a new Business SubCategory","Done", {
                 duration: 2000,
               })
+              this.loadingIndicator = false;
         },
         err => {
+            this.loadingIndicator = false;
             this.snack.open("Please Re-enter the right Business SubCategory information..","OK")
         }
     )

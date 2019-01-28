@@ -45,7 +45,6 @@ export class RegionsManagementComponent implements OnInit {
     }
 
     onSelect() {
-
         setTimeout(() => {
             if (this.choose == "Cities") {
                 this.dataSource.paginator = this.paginator;

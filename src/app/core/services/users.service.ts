@@ -20,7 +20,7 @@ export class usersService {
   }
 
   getUsers(skip) : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'users/?filter[limit]=5&filter[skip]='+ skip)
+    return this.httpclient.get(GlobalURL.URL + 'users/?filter[limit]=5&filter[skip]='+ skip +'&filter[order]=creationDate Desc')
   }
 
   getUsersCount() : Observable<any> {

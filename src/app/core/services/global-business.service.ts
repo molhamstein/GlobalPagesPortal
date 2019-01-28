@@ -23,7 +23,7 @@ export class GlobalBusinessService {
   }
 
   getGlobalBusiness(skip) : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'businesses/?filter[limit]=5&filter[skip]='+ skip)
+    return this.httpclient.get(GlobalURL.URL + 'businesses/?filter[limit]=5&filter[skip]='+ skip + '&filter[order]=creationDate Desc')
   }
 
   getGlobalBusinessCount() : Observable<any> {

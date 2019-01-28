@@ -59,6 +59,8 @@ export class EditGlobalBusinessComponent implements OnInit {
     order = 0;
     selectStatus = ['pending', 'activated', 'deactivated'];
 
+    loadingIndicator = false;
+
     constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
         private route: Router, private snack: MatSnackBar, private busCatServ: BusinessCategoriesService, private loc: Location,
         private regServ: RegionsService, private userServ: usersService, private activatedRoute: ActivatedRoute) {
@@ -177,6 +179,14 @@ export class EditGlobalBusinessComponent implements OnInit {
             this.onFormValuesChanged();
         });
 
+    }
+
+    showSubCat() {
+        this.subCategories = this.category.subCategories;
+    }
+
+    showSubReg() {
+        this.subRegions = this.region.locations;
     }
 
     displayFn(own?: Owners): string | undefined {
@@ -349,6 +359,7 @@ export class EditGlobalBusinessComponent implements OnInit {
 
     updateBusiness() {
         var isThere: boolean = false;
+        this.loadingIndicator = true;
         for (let index = 0; index < this.owners.length; index++) {
             if (this.selectedOwner.id == this.owners[index].id) {
                 this.editedBusiness.ownerId = this.selectedOwner.id;
@@ -357,6 +368,7 @@ export class EditGlobalBusinessComponent implements OnInit {
             }
         }
         if (isThere == false) {
+            this.loadingIndicator = false;
             this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
             return;
         }
@@ -482,8 +494,10 @@ export class EditGlobalBusinessComponent implements OnInit {
                 this.snack.open("You Succesfully update this Business", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right Business information..", "OK")
                 }
             )

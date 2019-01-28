@@ -1,4 +1,4 @@
-<div class="page-layout simple left-sidenav inner-sidenav">
+<div class="page-layout simple left-sidenav inner-sidenav" [class.backdrop-loading]="loadingIndicator == true">
     <!-- HEADER -->
     <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
 
@@ -62,11 +62,11 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput type="tel" placeholder="Phone Number 1" formControlName="phoneNumber1" [(ngModel)]="editedBusiness.phoneNumber1">
+                        <input matInput type="tel" placeholder="Phone Number 1" formControlName="phoneNumber1" [(ngModel)]="editedBusiness.phone1">
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput type="tel" placeholder="Phone Number 2" formControlName="phoneNumber2" [(ngModel)]="editedBusiness.phoneNumber2">
+                        <input matInput type="tel" placeholder="Phone Number 2" formControlName="phoneNumber2" [(ngModel)]="editedBusiness.phone2">
                     </mat-form-field>
 
                 </div>
@@ -90,7 +90,7 @@
 
                 <div *ngIf="categories" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Category" formControlName="category" [(ngModel)]="category">
+                        <mat-select placeholder="Category" formControlName="category" [(ngModel)]="category" (selectionChange)="showSubCat()">
                             <mat-option *ngFor="let c of categories" [value]="c">
                                 {{c.titleEn}}
                             </mat-option>
@@ -101,7 +101,7 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <mat-select placeholder="SubCategory" formControlName="subCategory" [(ngModel)]="subCategory">
+                        <mat-select placeholder="SubCategory" formControlName="subCategory" [(ngModel)]="subCategory" >
                             <mat-option *ngFor="let s of subCategories" [value]="s">
                                 {{s.titleEn}}
                             </mat-option>
@@ -115,7 +115,7 @@
 
                 <div *ngIf="regions" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <mat-select placeholder="City" formControlName="city" [(ngModel)]="region">
+                        <mat-select placeholder="City" formControlName="city" [(ngModel)]="region" (selectionChange)="showSubReg()">
                             <mat-option *ngFor="let r of regions" [value]="r">
                                 {{r.nameEn}}
                             </mat-option>
@@ -319,4 +319,8 @@
 
     <!-- / CONTENT -->
 
+</div>
+
+<div *ngIf="loadingIndicator == true" class="loadingIndicator">
+    <mat-spinner></mat-spinner>
 </div>

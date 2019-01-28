@@ -40,6 +40,7 @@ export class EditAdComponent implements OnInit {
     url: any;
     dataFormImgs: any = [];
     selectStatus = ['pending', 'activated', 'deactivated'];
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService, private loc: Location,
         private route: Router, private snack: MatSnackBar, private catServ: CategoriesService,
@@ -161,6 +162,7 @@ export class EditAdComponent implements OnInit {
 
     updateAd() {
         var isThere :boolean = false;
+        this.loadingIndicator = true;
         for (let index = 0; index < this.owners.length; index++) {
             if(this.selectedOwner.id == this.owners[index].id){
                 this.editedAd.ownerId = this.selectedOwner.id;
@@ -169,6 +171,7 @@ export class EditAdComponent implements OnInit {
             }
         }
         if(isThere == false) {
+            this.loadingIndicator = false;
             this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
             return;
         }
@@ -199,8 +202,10 @@ export class EditAdComponent implements OnInit {
                     this.snack.open("You Succesfully updated an Advertisement", "Done", {
                         duration: 2000,
                     })
+                    this.loadingIndicator = false;
                 },
                     err => {
+                        this.loadingIndicator = false;
                         this.snack.open("Please Re-enter the right Advertisement information..", "OK")
                     }
                 )
@@ -213,8 +218,10 @@ export class EditAdComponent implements OnInit {
                 this.snack.open("You Succesfully updated an Advertisement", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right Advertisement information..", "OK")
                 }
             )

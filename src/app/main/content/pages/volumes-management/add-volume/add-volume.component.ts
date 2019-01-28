@@ -29,6 +29,7 @@ export class AddVolumeComponent implements OnInit {
     selectedAd: any = {};
     order = 0;
     selectStatus = ['pending', 'activated','deactivated'];
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService,private loc : Location,
         private route: Router, private snack: MatSnackBar, private volServ: VolumesService) {
@@ -110,6 +111,7 @@ export class AddVolumeComponent implements OnInit {
 
     saveVolume() {
         var dateTemp = new Date();
+        this.loadingIndicator = true;
         this.newVolume.creationDate = dateTemp.toISOString();
         this.newVolume.postsIds = [];
         for (let index = 0; index < this.myData.length; index++) {
@@ -121,8 +123,10 @@ export class AddVolumeComponent implements OnInit {
             this.snack.open("You Succesfully entered a new Volume", "Done", {
                 duration: 2000,
             })
+            this.loadingIndicator = false;
         },
             err => {
+                this.loadingIndicator = false;
                 this.snack.open("Please Re-enter the right Volume information..", "OK")
             }
         )

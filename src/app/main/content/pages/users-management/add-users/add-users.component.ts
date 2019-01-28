@@ -20,6 +20,8 @@ export class addUsersComponent implements OnInit
     selectStatus = ['pending', 'activated','deactivated'];
     newUser:any ={};
 
+    loadingIndicator = false;
+
     constructor(private formBuilder: FormBuilder, private userServ: usersService, private route : Router,
          private snack: MatSnackBar, private loc : Location)
     {
@@ -54,6 +56,7 @@ export class addUsersComponent implements OnInit
     }
 
     saveUser(){
+        this.loadingIndicator = true;
        /*  this.newUser.status="pending"; */
         this.newUser.imageProfile="";
         var dateTemp = new Date();
@@ -68,8 +71,10 @@ export class addUsersComponent implements OnInit
             this.snack.open("You Succesfully entered a new User","Done", {
                 duration: 2000,
               })
+              this.loadingIndicator = false;
         },
         err => {
+            this.loadingIndicator = false;
             this.snack.open("Please Re-enter the right user information..","OK")
         }
     )

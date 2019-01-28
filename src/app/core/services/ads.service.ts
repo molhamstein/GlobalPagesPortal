@@ -26,7 +26,7 @@ export class AdsService {
   }
 
   getAds(skip) : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'posts/?filter[limit]=5&filter[skip]='+ skip)
+    return this.httpclient.get(GlobalURL.URL + 'posts/?filter[limit]=5&filter[skip]='+ skip + '&filter[order]=creationDate Desc')
   }
 
   getAdsCount() : Observable<any> {

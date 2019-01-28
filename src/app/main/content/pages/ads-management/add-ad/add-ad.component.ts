@@ -37,6 +37,7 @@ export class AddAdComponent implements OnInit {
     url: any;
     dataFormImgs: any = [];
     selectStatus = ['pending', 'activated', 'deactivated'];
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService, private loc: Location,
         private route: Router, private snack: MatSnackBar, private catServ: CategoriesService,
@@ -104,7 +105,6 @@ export class AddAdComponent implements OnInit {
 
     private _filter(own: string): Owners[] {
         const filterValue = own.toLowerCase();
-
         return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
     }
 
@@ -139,7 +139,7 @@ export class AddAdComponent implements OnInit {
 
     saveAd() {
         var dateTemp = new Date();
-        console.log(this.newAd);
+        this.loadingIndicator = true;
         this.newAd.creationDate = dateTemp.toISOString();
         this.newAd.viewsCount = 0;
         var isThere :boolean = false;
@@ -152,6 +152,7 @@ export class AddAdComponent implements OnInit {
         }
         if(isThere == false) {
             this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
+            this.loadingIndicator = false;
             return;
         }
         
@@ -179,8 +180,10 @@ export class AddAdComponent implements OnInit {
                     this.snack.open("You Succesfully entered a new Advertisement", "Done", {
                         duration: 2000,
                     })
+                    this.loadingIndicator = false;
                 },
                     err => {
+                        this.loadingIndicator = false;
                         this.snack.open("Please Re-enter the right Advertisement information..", "OK")
                     }
                 )
@@ -193,8 +196,10 @@ export class AddAdComponent implements OnInit {
                 this.snack.open("You Succesfully entered a new Advertisement", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right Advertisement information..", "OK")
                 }
             )

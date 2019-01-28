@@ -73,3 +73,19 @@ fuse-main {
         @include mat-elevation(8);
     }
 }
+
+.loadingIndicator {
+    position: fixed;
+    top: 40%;
+    bottom: 60%;
+    left: 50%;
+    right: 50%;
+    display: block;
+    z-index: 1050;
+    opacity: 1;
+}
+
+.backdrop-loading {
+    opacity: 0.5;
+    pointer-events:none;
+}

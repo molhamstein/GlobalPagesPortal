@@ -21,6 +21,7 @@ export class EditBusinessComponent implements OnInit {
     categories: any = [];
     isParent = false;
     isChild = false;
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private businessServ: BusinessCategoriesService, private loc : Location,
         private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
@@ -89,14 +90,16 @@ export class EditBusinessComponent implements OnInit {
         if (this.editedBusiness.parentCategoryId) {
             this.editedBusiness.parentCategoryId = this.category.id;
         }
-
+        this.loadingIndicator = true;
         this.businessServ.editBusiness(this.editedBusiness, this.id).subscribe(() => {
             this.route.navigate(['/pages/business-management']);
             this.snack.open("You Succesfully updated this Business", "Done", {
                 duration: 2000,
             })
+            this.loadingIndicator = false;
         },
             err => {
+                this.loadingIndicator = false;
                 this.snack.open("Please Re-enter the right Business information..", "OK")
             }
         )

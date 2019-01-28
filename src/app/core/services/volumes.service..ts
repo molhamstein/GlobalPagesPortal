@@ -23,7 +23,7 @@ export class VolumesService {
   }
 
   getVolumes(skip) : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'volumes/?filter[limit]=5&filter[skip]='+ skip)
+    return this.httpclient.get(GlobalURL.URL + 'volumes/?filter[limit]=5&filter[skip]='+ skip + '&filter[order]=creationDate Desc')
   }
 
   getVolumesCount() : Observable<any> {

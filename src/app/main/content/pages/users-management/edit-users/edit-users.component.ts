@@ -21,6 +21,8 @@ export class editUsersComponent implements OnInit
     editedUser:any ={};
     id:any;
 
+    loadingIndicator = false;
+
     constructor(private formBuilder: FormBuilder, private userServ: usersService,private loc : Location,
          private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
     {
@@ -61,6 +63,7 @@ export class editUsersComponent implements OnInit
     }
 
     updateUser(){
+        this.loadingIndicator = true;
         if(this.editedUser.birthDate instanceof Date) {
             this.editedUser.birthDate = this.editedUser.birthDate.toISOString();
         } 
@@ -71,8 +74,10 @@ export class editUsersComponent implements OnInit
             this.snack.open("You Succesfully updated this User","Done", {
                 duration: 2000,
               })
+              this.loadingIndicator = false;
         },
         err => {
+            this.loadingIndicator = false;
             this.snack.open("Please Re-enter the right user information..","OK")
         }
     )

@@ -22,6 +22,7 @@ export class AddCategoryComponent implements OnInit {
     category: any;
     catFile: File = null;
     subCatFile: File = null;
+    loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private catServ: CategoriesService, private loc: Location,
         private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
@@ -116,6 +117,7 @@ export class AddCategoryComponent implements OnInit {
 
     saveCat() {
         var dateTemp = new Date();
+        this.loadingIndicator = true;
         this.newCat.creationDate = dateTemp.toISOString();
         if (this.catFile != null) {
             const logoFrmData: FormData = new FormData();
@@ -128,8 +130,10 @@ export class AddCategoryComponent implements OnInit {
                     this.snack.open("You Succesfully entered a new Category", "Done", {
                         duration: 2000,
                     })
+                    this.loadingIndicator = false;
                 },
                     err => {
+                        this.loadingIndicator = false;
                         this.snack.open("Please Re-enter the right Category information..", "OK")
                     }
                 )
@@ -142,8 +146,10 @@ export class AddCategoryComponent implements OnInit {
                 this.snack.open("You Succesfully entered a new Category", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right Category information..", "OK")
                 }
             )
@@ -153,6 +159,7 @@ export class AddCategoryComponent implements OnInit {
 
     saveSubCat() {
         var dateTemp = new Date();
+        this.loadingIndicator = true;
         this.newSubCat.creationDate = dateTemp.toISOString();
         this.newSubCat.parentCategoryId = this.category.id;
         if (this.subCatFile != null) {
@@ -166,8 +173,10 @@ export class AddCategoryComponent implements OnInit {
                 this.snack.open("You Succesfully entered a new SubCategory", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right SubCategory information..", "OK")
                 }
             )
@@ -179,8 +188,10 @@ export class AddCategoryComponent implements OnInit {
                 this.snack.open("You Succesfully entered a new SubCategory", "Done", {
                     duration: 2000,
                 })
+                this.loadingIndicator = false;
             },
                 err => {
+                    this.loadingIndicator = false;
                     this.snack.open("Please Re-enter the right SubCategory information..", "OK")
                 }
             )
