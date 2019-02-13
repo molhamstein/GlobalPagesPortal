@@ -1,0 +1,107 @@
+<div class="page-layout simple left-sidenav inner-sidenav" [class.backdrop-loading]="loadingIndicator == true">
+    <!-- HEADER -->
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+        fxLayoutAlign.gt-xs="space-between center">
+
+        <!-- APP TITLE -->
+        <div fxLayout="row" fxLayoutAlign="start center">
+
+            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">notifications_active</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Push
+                    Notifications</span>
+            </div>
+
+        </div>
+        <!-- / APP TITLE -->
+
+    </div>
+    <!-- / HEADER -->
+
+
+    <mat-card>
+        <div>
+            <mat-form-field style="width: 40%;">
+                <textarea matInput style="margin-top: -6px;" placeholder="Message" [(ngModel)]="newNotification.message"></textarea>
+            </mat-form-field>
+
+            <!-- <mat-form-field style="width: 40%; margin-left: 8%;">
+                <mat-select placeholder="Type" [(ngModel)]="newNotification._type">
+                    <mat-option *ngFor="let t of types" [value]="t">
+                        {{t}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div> -->
+            <mat-form-field style="width: 37%; margin-left: 8%;">
+                <input type="text" placeholder="Select User" matInput [formControl]="myControl" [matAutocomplete]="auto"
+                    [(ngModel)]="selectedUser">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                        {{option.username}}
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+            <button mat-raised-button class="btn-push" (click)="pushUser()">
+                Add User
+            </button>
+        </div>
+
+        <div class="example-container mat-elevation-z8" style="margin-top:35px;">
+
+            <mat-table [dataSource]="dataSource">
+
+                <!-- ID Column -->
+                <ng-container matColumnDef="order">
+                    <mat-header-cell *matHeaderCellDef style=" flex: 0 0 300px;"> Order </mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 300px;"> {{row.order}}</mat-cell>
+                </ng-container>
+
+                <!-- title Column -->
+                <ng-container matColumnDef="username">
+                    <mat-header-cell *matHeaderCellDef style=" flex: 0 0 300px;">Username</mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 300px;"> {{row.username}}</mat-cell>
+                </ng-container>
+
+                <!-- description Column -->
+                <ng-container matColumnDef="email">
+                    <mat-header-cell *matHeaderCellDef style=" flex: 0 0 230px;"> Email </mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 230px;"> {{row.email}}</mat-cell>
+                </ng-container>
+
+                <!-- icons Column -->
+                <ng-container matColumnDef="icons">
+                    <mat-header-cell *matHeaderCellDef style=" flex: 0 0 105px;"> </mat-header-cell>
+                    <mat-cell *matCellDef="let row" style=" flex: 0 0 105px;">
+
+                        <button mat-icon-button matTooltip="delete" [matTooltipPosition]="'above'" (click)="deleteUser(row)">
+                            <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
+                        </button>
+
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;">
+                </mat-row>
+            </mat-table>
+
+            <!--  <mat-paginator [pageSize]="5" [length]="count" (page)="onPaginateChange($event)"></mat-paginator> -->
+        </div>
+
+        <div style="margin-top:35px;">
+            <button mat-raised-button class="btn-save" [disabled]="!newNotification.message || myData.length == 0" (click)="sendNotificaion()">
+                Send Notification
+            </button>
+
+            <button mat-raised-button class="btn-back" (click)="back()">
+                Back
+            </button>
+        </div>
+    </mat-card>
+
+</div>
+
+<div *ngIf="loadingIndicator == true" class="loadingIndicator">
+    <mat-spinner></mat-spinner>
+</div>

@@ -8,11 +8,15 @@ import { GlobalURL } from "../global-url";
 
 export class usersService {
 
-  headers = new HttpHeaders();
-
+  accessToken = localStorage.getItem('authtoken');
+  /* headers = new HttpHeaders(); */
+  headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'Authorization': this.accessToken,
+  })
 
   constructor(private http: Http, private httpclient: HttpClient) {
-    this.headers.append('Content-Type', 'application/json');
+    /* this.headers.append('Content-Type', 'application/json'); */
   }
 
   getAllUsers(): Observable<any> {

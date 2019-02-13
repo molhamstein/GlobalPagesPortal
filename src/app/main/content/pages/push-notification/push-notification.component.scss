@@ -1,0 +1,48 @@
+.example-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+
+.example-header {
+    min-height: 64px;
+    padding: 8px 24px 0;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+.mat-table {
+    overflow: auto;
+    max-height: 500px;
+}
+
+.btn-add {
+    margin-top: 15px; 
+    float: right; 
+    color:white; 
+    background-color:rgb(41, 158, 17);
+}
+
+.btn-push {
+    margin-top: 15px; 
+    /* float: right;  */
+    margin-left : 25px;
+    color:white; 
+    background-color:rgb(41, 158, 17);
+}
+
+.btn-save {
+    float: right; 
+    color:white; 
+    background-color:rgb(21, 122, 168);
+}
+
+.btn-back {
+    float: right; 
+    color:white; 
+    background-color:#f44336;
+    margin-right: 20px;
+}

@@ -86,6 +86,13 @@ export class NavigationModel
                         'icon'    : 'business',
                         'url'     : '/pages/global-business-management'
                     },
+                    {
+                        'id'      : 'push-notification',
+                        'title'   : 'Push Notifications',
+                        'type'    : 'item',
+                        'icon'    : 'notifications_active',
+                        'url'     : '/pages/push-notification'
+                    },
                  
                 ]}
          

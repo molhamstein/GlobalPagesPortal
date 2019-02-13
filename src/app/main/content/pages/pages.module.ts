@@ -10,6 +10,7 @@ import { RegionsManagementModule } from './regions-management/regions-management
 import { AdsManagementModule } from './ads-management/ads-management.module';
 import { VolumesManagementModule } from './volumes-management/volumes-management.module';
 import { GlobalBusinessManagementModule } from './global-business-management/global-business-management.module';
+import { PushNotificationModule } from './push-notification/push-notification.module';
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import { GlobalBusinessManagementModule } from './global-business-management/glo
         AdsManagementModule,
         VolumesManagementModule,
         GlobalBusinessManagementModule,
+        PushNotificationModule
     ]
 })
 export class PagesModule
