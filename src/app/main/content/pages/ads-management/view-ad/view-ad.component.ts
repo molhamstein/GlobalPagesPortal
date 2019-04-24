@@ -39,7 +39,12 @@ export class ViewAdComponent implements OnInit {
                     var temp = new Date(this.Adinfo.creationDate);
                     this.Adinfo.creationDate = temp.toLocaleDateString('en-US');
                     for (let index = 0; index < this.Adinfo.media.length; index++) {
-                        this.imgs.push( this.Adinfo.media[index].url);
+                        if(this.Adinfo.media[index].type == 'video/*') {
+                            this.imgs.push(this.Adinfo.media[index].thumbnail);
+                        }
+                        else {
+                            this.imgs.push(this.Adinfo.media[index].url);
+                        }
                     }
 
                     if (this.Adinfo.creationDate == undefined) {

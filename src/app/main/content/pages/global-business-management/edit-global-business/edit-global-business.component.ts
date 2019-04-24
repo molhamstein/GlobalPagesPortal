@@ -45,8 +45,8 @@ export class EditGlobalBusinessComponent implements OnInit {
     covers: any = [];
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
-    days: any[] = [{ value: 0, valueName: "Monday", checked: false }, { value: 1, valueName: "Tuesday", checked: false }, { value: 2, valueName: "Wednesday", checked: false },
-    { value: 3, valueName: "Thursday", checked: false }, { value: 4, valueName: "Friday", checked: false }, { value: 5, valueName: "Saturday", checked: false }, { value: 6, valueName: "Sunday", checked: false },]
+    days: any[] = [{ value: 2, valueName: "Monday" }, { value: 3, valueName: "Tuesday" }, { value: 4, valueName: "Wednesday" },
+    { value: 5, valueName: "Thursday" }, { value: 6, valueName: "Friday" }, { value: 7, valueName: "Saturday" }, { value: 1, valueName: "Sunday" },]
     openingDays: any = [];
     lat = -34.397;
     lng = 150.644;
@@ -85,6 +85,9 @@ export class EditGlobalBusinessComponent implements OnInit {
                     }
                 }
                 for (let index = 0; index < this.editedBusiness.covers.length; index++) {
+                    if(this.editedBusiness.covers[index].type == 'video/*') {
+                        this.editedBusiness.covers[index].url = this.editedBusiness.covers[index].thumbnail;
+                    }
                     this.covers[index] = this.editedBusiness.covers[index];
                 }
                 for (let index = 0; index < this.editedBusiness.products.length; index++) {

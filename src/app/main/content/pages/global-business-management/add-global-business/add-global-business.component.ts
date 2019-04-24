@@ -44,8 +44,8 @@ export class AddGlobalBusinessComponent implements OnInit {
     dataFormCoversImgs: any = [];
     reorderable = true;
 
-    days: any[] = [{ value: 0, valueName: "Monday" }, { value: 1, valueName: "Tuesday" }, { value: 2, valueName: "Wednesday" },
-    { value: 3, valueName: "Thursday" }, { value: 4, valueName: "Friday" }, { value: 5, valueName: "Saturday" }, { value: 6, valueName: "Sunday" },]
+    days: any[] = [{ value: 2, valueName: "Monday" }, { value: 3, valueName: "Tuesday" }, { value: 4, valueName: "Wednesday" },
+    { value: 5, valueName: "Thursday" }, { value: 6, valueName: "Friday" }, { value: 7, valueName: "Saturday" }, { value: 1, valueName: "Sunday" },]
     openingDays: any = [];
     lat = 33.51380000000012;
     lng = 36.27649999999994;

@@ -129,11 +129,12 @@ export class AdsManagementComponent implements OnInit {
 
             for (let index = 0; index < this.myData.length; index++) {
                 this.myData[index].order = index + 1;
-                debugger
                 if (res[index].media.length != 0) {
-                    this.myData[index].thumbnail = res[index].media[0].url;
-                    if (this.myData[index].thumbnail == undefined) {
-                        this.myData[index].thumbnail = "";
+                    if(res[index].media[0].type != 'video/*') {
+                        this.myData[index].thumbnail = res[index].media[0].url;
+                        if (this.myData[index].thumbnail == undefined) {
+                            this.myData[index].thumbnail = "";
+                        }
                     }
                 }
                 else {

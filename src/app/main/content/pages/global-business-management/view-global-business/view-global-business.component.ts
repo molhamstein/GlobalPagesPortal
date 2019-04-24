@@ -46,6 +46,11 @@ export class ViewGlobalBusinessComponent implements OnInit {
 
         this.busServ.getGlobalBusinessById(this.id).subscribe(res => {
             this.businessInfo = res;
+            for (let i = 0; i < this.businessInfo.covers.length; i++) {
+                if(this.businessInfo.covers[i].type == 'video/*') {
+                    this.businessInfo.covers[i].url = this.businessInfo.covers[i].thumbnail;
+                }
+            }
             
            /*  this.businessInfo.logo = "http://104.217.253.15:3000/images/" + this.businessInfo.logo;
             for (let index = 0; index < this.businessInfo.products.length; index++) {

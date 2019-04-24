@@ -60,7 +60,12 @@ export class EditAdComponent implements OnInit {
                 this.selectedOwner = this.editedAd.owner;
                 if (this.editedAd.media) {
                     for (let index = 0; index < this.editedAd.media.length; index++) {
-                        this.imgs.push(this.editedAd.media[index].url);
+                        if(this.editedAd.media[index].type == 'video/*') {
+                            this.imgs.push(this.editedAd.media[index].thumbnail);
+                        }
+                        else {
+                            this.imgs.push(this.editedAd.media[index].url);
+                        }
                     }
                 }
                 else { this.editedAd.media = [] }
