@@ -1,2 +1,14 @@
 // Import Fuse main library
 @import "app/core/scss/core";
+
+
+// global css 
+
+.status-pending{
+}
+.status-activated{
+    background-color:#09D261 !important;
+}
+.status-deactivated{
+    background-color:#F44336 !important;
+}

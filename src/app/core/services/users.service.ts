@@ -48,7 +48,8 @@ export class usersService {
   }
 
   filterUser(value): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'users/?filter={"where":{"username":{"like":"' + value +'"}},"limit":50}');
+   
+    return this.httpclient.get(GlobalURL.URL + `users/?filter={"where":{"username":{ "like":".*${value}.*" , "options":"i" }},"limit":50}`);
   }
 
 

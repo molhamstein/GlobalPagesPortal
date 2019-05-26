@@ -53,7 +53,13 @@
                 <!-- Gender Column -->
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef  > Status </mat-header-cell>
-                    <mat-cell *matCellDef="let row"> {{row.status}}</mat-cell>
+                    <mat-cell *matCellDef="let row"> <mat-chip-list> <mat-chip
+                        [ngClass]="{
+                         'status-pending' : row.status == 'pending',
+                          'status-activated' : row.status == 'activated', 
+                          'status-deactivated' : row.status == 'deactivated'
+                        }"
+                        selected>{{row.status}}</mat-chip> </mat-chip-list></mat-cell>
                 </ng-container>
 
 

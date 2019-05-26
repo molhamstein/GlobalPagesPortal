@@ -47,7 +47,9 @@ export class VolumesService {
   }
 
   filterVolume(value): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'volumes/?filter={"where":{"titleEn":{"like":"' + value +'"}},"limit":50}');
+
+    
+    return this.httpclient.get(GlobalURL.URL + 'volumes/?filter={"where":{"titleEn":{"like":"' + value +'" , "options":"i" }},"limit":50}');
   }
 
   /* uploadImages(data) : Observable<any> {

@@ -50,7 +50,7 @@ export class AdsService {
   }
 
   filterAd(value): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'posts/?filter={"where":{"title":{"like":"' + value +'"}},"limit":50}');
+    return this.httpclient.get(GlobalURL.URL + 'posts/?filter={"where":{"title":{"like":"' + value +'" , "options":"i" }},"limit":50}');
   }
 
   uploadImages(data) : Observable<any> {

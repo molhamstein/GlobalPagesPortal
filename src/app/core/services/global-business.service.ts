@@ -47,7 +47,7 @@ export class GlobalBusinessService {
   }
 
   filterGlobalBusiness(value): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'businesses/?filter={"where":{"nameEn":{"like":"' + value +'"}},"limit":50}');
+    return this.httpclient.get(GlobalURL.URL + 'businesses/?filter={"where":{"nameEn":{"like":"' + value +'" , "options":"i" }},"limit":50}');
   }
 
   uploadImages(data) : Observable<any> {

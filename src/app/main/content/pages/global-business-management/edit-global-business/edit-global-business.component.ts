@@ -45,8 +45,13 @@ export class EditGlobalBusinessComponent implements OnInit {
     covers: any = [];
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
-    days: any[] = [{ value: 2, valueName: "Monday" }, { value: 3, valueName: "Tuesday" }, { value: 4, valueName: "Wednesday" },
-    { value: 5, valueName: "Thursday" }, { value: 6, valueName: "Friday" }, { value: 7, valueName: "Saturday" }, { value: 1, valueName: "Sunday" },]
+    days: any[] = [{ value: 2, valueName: "Monday" },
+     { value: 3, valueName: "Tuesday" },
+      { value: 4, valueName: "Wednesday" },
+    { value: 5, valueName: "Thursday" },
+     { value: 6, valueName: "Friday" }, 
+     { value: 7, valueName: "Saturday" }, 
+     { value: 1, valueName: "Sunday" },]
     openingDays: any = [];
     lat = -34.397;
     lng = 150.644;
