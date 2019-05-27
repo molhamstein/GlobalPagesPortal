@@ -104,7 +104,7 @@ export class ViewAdComponent implements OnInit {
     deleteAd() {
 
         this.Adinfo.status = "deactivated";
-        this.adServ.deleteAd(this.Adinfo, this.Adinfo.id).subscribe(() => {
+        this.adServ.deleteAd(this.Adinfo.id).subscribe(() => {
             console.log("deactivated");
             this.route.navigate(['/pages/ads-management']);
         })

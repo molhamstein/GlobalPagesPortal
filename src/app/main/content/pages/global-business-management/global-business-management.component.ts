@@ -120,9 +120,9 @@ export class GlobalBusinessManagementComponent implements OnInit {
 
     deleteGlobalBusiness(bus, id) {
         delete bus.order;
-        bus.status = "deactivated";
-        this.gbusServ.deleteGlobalBusiness(bus, id).subscribe(() => {
-            console.log("deactivated");
+        console.log(id);
+
+        this.gbusServ.deleteGlobalBusiness(id).subscribe(() => {
             this.pagOrder = this.pagOrder - this.tempLength;
             this.gbusServ.getGlobalBusiness(this.skip).subscribe(res => {
                 this.myData = res;

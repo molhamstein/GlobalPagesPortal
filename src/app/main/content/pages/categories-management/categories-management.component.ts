@@ -98,17 +98,7 @@ export class CategoriesManagementComponent implements OnInit {
     }
 
     deleteCategory(cat, id) {
-        delete cat.order;
-        if (cat.subCategories.length > 0) {
-            for (let index = 0; index < cat.subCategories.length; index++) {
-                this.catServ.deleteCategory(cat.subCategories[index].id).subscribe(res => {
-                    console.log("sub deleted" + index);
-                });
-            }
-        }
-
-        delete cat.subCategories;
-
+        
         this.catServ.deleteCategory(id).subscribe(() => {
             console.log("deleted");
             this.getCategories();

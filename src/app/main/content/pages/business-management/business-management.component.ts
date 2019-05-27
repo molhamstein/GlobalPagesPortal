@@ -81,31 +81,21 @@ export class BusinessManagementComponent implements OnInit {
             this.j = 1;
             var temp = res;
             for (let index = 0; index < temp.length; index++) {
-                    this.busServ.getBusinessById(temp[index].parentCategoryId).subscribe(res => {
-                        temp[index].parentCategory = res;
-                        temp[index].order = this.j;
-                        this.j++;
-                        this.myData1.push(temp[index]);
-                        this.dataSource1._updateChangeSubscription();
-                        this.dataSource1.paginator = this.paginator1;
-                        this.dataSource1.sort = this.sort1;
-                    })
+                this.busServ.getBusinessById(temp[index].parentCategoryId).subscribe(res => {
+                    temp[index].parentCategory = res;
+                    temp[index].order = this.j;
+                    this.j++;
+                    this.myData1.push(temp[index]);
+                    this.dataSource1._updateChangeSubscription();
+                    this.dataSource1.paginator = this.paginator1;
+                    this.dataSource1.sort = this.sort1;
+                })
             }
             this.dataSource1 = new MatTableDataSource(this.myData1);
         })
     }
 
     deleteBusinessCategory(business, id) {
-        delete business.order;
-        if (business.subCategories.length > 0) {
-            for (let index = 0; index < business.subCategories.length; index++) {
-                this.busServ.deleteBusiness(business.subCategories[index].id).subscribe(res => {
-                    console.log("sub deleted" + index);
-                });
-            }
-        }
-
-        delete business.subCategories;
 
         this.busServ.deleteBusiness(id).subscribe(() => {
             console.log("deleted");

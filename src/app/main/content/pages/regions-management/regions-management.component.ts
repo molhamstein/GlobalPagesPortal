@@ -101,18 +101,10 @@ export class RegionsManagementComponent implements OnInit {
 
     deleteCity(city, id) {
         delete city.order;
-        if (city.locations.length > 0) {
-            for (let index = 0; index < city.locations.length; index++) {
-                this.regServ.deleteLocation(city.locations[index].id).subscribe(res => {
-                    console.log("location deleted" + index);
-                });
-            }
-        }
 
         delete city.locations;
 
         this.regServ.deleteCity(id).subscribe(() => {
-            console.log("deleted");
             this.getCities();
             this.getLocations();
         })

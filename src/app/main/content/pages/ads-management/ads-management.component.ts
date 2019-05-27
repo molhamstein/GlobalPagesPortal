@@ -23,7 +23,7 @@ export class AdsManagementComponent implements OnInit {
     pagOrder = 0;
     pagIndex = 0;
     tempLength = 0;
-    fValue:any="";
+    fValue: any = "";
 
     private paginator: MatPaginator; private sort: MatSort;
     @ViewChild(MatSort) set matSort(ms: MatSort) { this.sort = ms }
@@ -51,7 +51,7 @@ export class AdsManagementComponent implements OnInit {
 
     onPaginateChange(event) {
         debugger
-        if(this.fValue != "") {
+        if (this.fValue != "") {
             return;
         }
         if (event.pageIndex > this.pagIndex) {
@@ -130,7 +130,7 @@ export class AdsManagementComponent implements OnInit {
             for (let index = 0; index < this.myData.length; index++) {
                 this.myData[index].order = index + 1;
                 if (res[index].media.length != 0) {
-                    if(res[index].media[0].type != 'video/*') {
+                    if (res[index].media[0].type != 'video/*') {
                         this.myData[index].thumbnail = res[index].media[0].url;
                         if (this.myData[index].thumbnail == undefined) {
                             this.myData[index].thumbnail = "";
@@ -140,7 +140,7 @@ export class AdsManagementComponent implements OnInit {
                 else {
                     this.myData[index].thumbnail = "";
                 }
-                
+
                 this.pagOrder = this.myData[index].order;
             }
             this.dataSource = new MatTableDataSource(this.myData);
@@ -156,8 +156,8 @@ export class AdsManagementComponent implements OnInit {
         delete ad.city;
         delete ad.location;
         delete ad.thumbnail;
-        ad.status = "deactivated";
-        this.adServ.deleteAd(ad, id).subscribe(() => {
+        // ad.status = "deactivated";
+        this.adServ.deleteAd(id).subscribe(() => {
             console.log("deactivated");
             this.pagOrder = this.pagOrder - this.tempLength;
             this.adServ.getAds(this.skip).subscribe(res => {

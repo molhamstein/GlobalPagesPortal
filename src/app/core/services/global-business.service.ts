@@ -42,8 +42,8 @@ export class GlobalBusinessService {
     return this.httpclient.put(GlobalURL.URL + 'businesses/' + id, bus, { headers: this.headers })
   }
 
-  deleteGlobalBusiness(bus, id): Observable<any> {
-    return this.httpclient.put(GlobalURL.URL + 'businesses/' + id, bus, { headers: this.headers })
+  deleteGlobalBusiness(id): Observable<any> {
+    return this.httpclient.delete(GlobalURL.URL + 'businesses/' + id,  { headers: this.headers })
   }
 
   filterGlobalBusiness(value): Observable<any> {

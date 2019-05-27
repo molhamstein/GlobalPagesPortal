@@ -8,8 +8,8 @@ import { GlobalURL } from "../global-url";
 
 export class AdsService {
 
-/*   headers = new HttpHeaders(); */
- accessToken = localStorage.getItem('authtoken');
+  /*   headers = new HttpHeaders(); */
+  accessToken = localStorage.getItem('authtoken');
 
   constructor(private httpclient: HttpClient) {
     /* this.headers.append('Content-Type', 'application/json');
@@ -22,65 +22,65 @@ export class AdsService {
   })
 
   getAllAds(): Observable<any> {
-      return this.httpclient.get(GlobalURL.URL + 'posts');
+    return this.httpclient.get(GlobalURL.URL + 'posts');
   }
 
-  getAds(skip) : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'posts/?filter[limit]=5&filter[skip]='+ skip + '&filter[order]=creationDate Desc')
+  getAds(skip): Observable<any> {
+    return this.httpclient.get(GlobalURL.URL + 'posts/?filter[limit]=5&filter[skip]=' + skip + '&filter[order]=creationDate Desc')
   }
 
-  getAdsCount() : Observable<any> {
+  getAdsCount(): Observable<any> {
     return this.httpclient.get(GlobalURL.URL + 'posts/count')
   }
 
   getAdById(id): Observable<any> {
     return this.httpclient.get(GlobalURL.URL + 'posts/' + id);
-}
+  }
 
   addNewAd(ad): Observable<any> {
-    return this.httpclient.post(GlobalURL.URL + 'posts', ad, {headers : this.headers})
+    return this.httpclient.post(GlobalURL.URL + 'posts', ad, { headers: this.headers })
   }
 
   editAd(ad, id): Observable<any> {
     return this.httpclient.put(GlobalURL.URL + 'posts/' + id, ad, { headers: this.headers })
   }
 
-  deleteAd(ad, id): Observable<any> {
-    return this.httpclient.put(GlobalURL.URL + 'posts/' + id, ad, { headers: this.headers })
+  deleteAd(id): Observable<any> {
+    return this.httpclient.delete(GlobalURL.URL + 'posts/' + id, { headers: this.headers })
   }
 
   filterAd(value): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'posts/?filter={"where":{"title":{"like":"' + value +'" , "options":"i" }},"limit":50}');
+    return this.httpclient.get(GlobalURL.URL + 'posts/?filter={"where":{"title":{"like":"' + value + '" , "options":"i" }},"limit":50}');
   }
 
-  uploadImages(data) : Observable<any> {
-   var headers1 = new HttpHeaders({
+  uploadImages(data): Observable<any> {
+    var headers1 = new HttpHeaders({
       /* 'Content-Type': 'multipart/form-data', */
       'Authorization': this.accessToken
     })
     headers1.delete('Content Type');
-    return this.httpclient.post(GlobalURL.URL + 'attachments/images/upload', data );
+    return this.httpclient.post(GlobalURL.URL + 'attachments/images/upload', data);
   }
-    /* return new Promise((resolve, reject) => {
-      this.httpclient.post(GlobalURL.URL + 'attachments/images/upload?access_token=' + this.accessToken, data)
-          .subscribe(
-            data => {
-             // console.log('data ', data);
-              resolve(data);
-              debugger
-            },
-            error => {
-              console.log('error ', error);
-               reject();
-            }
-          );
-    }
-  })
- */
-    
-   /*  reportProgress: true,
-    observe: 'events' */
-    
+  /* return new Promise((resolve, reject) => {
+    this.httpclient.post(GlobalURL.URL + 'attachments/images/upload?access_token=' + this.accessToken, data)
+        .subscribe(
+          data => {
+           // console.log('data ', data);
+            resolve(data);
+            debugger
+          },
+          error => {
+            console.log('error ', error);
+             reject();
+          }
+        );
+  }
+})
+*/
+
+  /*  reportProgress: true,
+   observe: 'events' */
+
 
 
 }
