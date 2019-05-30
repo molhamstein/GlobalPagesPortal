@@ -7,7 +7,7 @@
     "start": "ng serve",
     "start-hmr": "ng serve --hmr -e=hmr -sm=false",
     "start-hmr-sourcemaps": "ng serve --hmr -e=hmr",
-    "build": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --dev",
+    "build": "ng build --base-href=http://104.217.253.15/adminportal/ --dev ",
     "build-prod": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
