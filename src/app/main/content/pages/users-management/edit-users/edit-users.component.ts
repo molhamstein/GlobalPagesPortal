@@ -7,37 +7,44 @@ import { MatSnackBar } from '@angular/material';
 import { Location } from '../../../../../../../node_modules/@angular/common';
 
 @Component({
-    selector   : 'edit-users',
+    selector: 'edit-users',
     templateUrl: './edit-users.component.html',
-    styleUrls  : ['./edit-users.component.scss'],
-    animations : fuseAnimations
+    styleUrls: ['./edit-users.component.scss'],
+    animations: fuseAnimations
 })
-export class editUsersComponent implements OnInit
-{
+export class editUsersComponent implements OnInit {
     form: FormGroup;
+    passwordForm: FormGroup =
+        this.formBuilder.group(
+            {
+                password: ['', [Validators.required, Validators.minLength(8)]]
+            }
+        )
+        ;
     formErrors: any;
-    genders = [{value:"male", viewValue:"Male"}, {value: "female", viewValue:"Female"}];
-    selectStatus = ['pending', 'activated','deactivated'];
-    editedUser:any ={};
-    id:any;
+    genders = [{ value: "male", viewValue: "Male" }, { value: "female", viewValue: "Female" }];
+    roles = [{ value: "admin", viewValue: "Admin" }, { value: "user", viewValue: "User" }, { value: "operator", viewValue: "Operator" }];
+
+    selectStatus = ['pending', 'activated', 'deactivated'];
+    editedUser: any = {};
+    id: any;
 
     loadingIndicator = false;
 
-    constructor(private formBuilder: FormBuilder, private userServ: usersService,private loc : Location,
-         private route : Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute)
-    {
+    constructor(private formBuilder: FormBuilder, private userServ: usersService, private loc: Location,
+        private route: Router, private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
         this.formErrors = {
-            username   : {},
-            email : {},
-            phoneNumber  : {},
-            gender   : {},
-            birthDate  : {},
-            status: {}
+            username: {},
+            email: {},
+            phoneNumber: {},
+            gender: {},
+            birthDate: {},
+            status: {},
+            roleId: {},
         };
     }
 
-    ngOnInit()
-    {
+    ngOnInit() {
         this.activatedRoute.params.subscribe((params: any) => {
             this.id = params.id;
 
@@ -48,51 +55,51 @@ export class editUsersComponent implements OnInit
         });
 
         this.form = this.formBuilder.group({
-            username : ['', Validators.required],
-            email  : ['', Validators.required],
-            phoneNumber   : ['', Validators.required],
-            gender  : ['', Validators.required],
-            birthDate      : ['', Validators.required],
-            status      : ['', Validators.required],
-            emailVerified      : ['']
+            username: ['', Validators.required],
+            email: ['', Validators.required],
+            phoneNumber: ['', Validators.required],
+            gender: ['', Validators.required],
+            birthDate: ['', Validators.required],
+            status: ['', Validators.required],
+            emailVerified: [''],
+            roleId: ['', Validators.required]
         });
+
+
 
         this.form.valueChanges.subscribe(() => {
             this.onFormValuesChanged();
         });
     }
 
-    updateUser(){
+    updateUser() {
         this.loadingIndicator = true;
-        if(this.editedUser.birthDate instanceof Date) {
+        if (this.editedUser.birthDate instanceof Date) {
             this.editedUser.birthDate = this.editedUser.birthDate.toISOString();
-        } 
+        }
 
         this.userServ.editUser(this.editedUser, this.id).subscribe(() => {
             this.loc.back();
             /* this.route.navigate(['/pages/users-management']); */
-            this.snack.open("You Succesfully updated this User","Done", {
+            this.snack.open("You Succesfully updated this User", "Done", {
                 duration: 2000,
-              })
-              this.loadingIndicator = false;
-        },
-        err => {
+            })
             this.loadingIndicator = false;
-            this.snack.open("Please Re-enter the right user information..","OK")
-        }
-    )
+        },
+            err => {
+                this.loadingIndicator = false;
+                this.snack.open("Please Re-enter the right user information..", "OK")
+            }
+        )
     }
 
     back() {
         this.loc.back();
     }
 
-    onFormValuesChanged()
-    {
-        for ( const field in this.formErrors )
-        {
-            if ( !this.formErrors.hasOwnProperty(field) )
-            {
+    onFormValuesChanged() {
+        for (const field in this.formErrors) {
+            if (!this.formErrors.hasOwnProperty(field)) {
                 continue;
             }
 
@@ -102,10 +109,11 @@ export class editUsersComponent implements OnInit
             // Get the control
             const control = this.form.get(field);
 
-            if ( control && control.dirty && !control.valid )
-            {
+            if (control && control.dirty && !control.valid) {
                 this.formErrors[field] = control.errors;
             }
         }
     }
+
+    get passwordControl() { return this.passwordForm.get('password') }
 }

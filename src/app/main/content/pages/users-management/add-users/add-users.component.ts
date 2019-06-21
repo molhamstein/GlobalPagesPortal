@@ -17,6 +17,7 @@ export class addUsersComponent implements OnInit
     form: FormGroup;
     formErrors: any;
     genders = [{value:"male", viewValue:"Male"}, {value: "female", viewValue:"Female"}];
+    roles = [{ value: "admin", viewValue: "Admin" }, { value: "user", viewValue: "User" }, { value: "operator", viewValue: "Operator" }];
     selectStatus = ['pending', 'activated','deactivated'];
     newUser:any ={};
 
@@ -32,7 +33,8 @@ export class addUsersComponent implements OnInit
             phoneNumber  : {},
             gender   : {},
             birthDate  : {},
-            status: {}
+            status: {} , 
+            roleId : {}
         };
     }
 
@@ -47,7 +49,8 @@ export class addUsersComponent implements OnInit
             gender  : ['', Validators.required],
             birthDate      : ['', Validators.required],
             status      : ['', Validators.required],
-            emailVerified : ['']
+            emailVerified : [''] , 
+            roleId : ['' , Validators.required]
         });
 
         this.form.valueChanges.subscribe(() => {

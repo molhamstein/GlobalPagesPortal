@@ -46,13 +46,13 @@ export class viewUsersComponent implements OnInit {
             gender: [''],
             birthDate: [''],
             status: [''],
-            emailVerified: ['']
+            emailVerified: [''],
         });
     }
 
     back() {
         this.loc.back();
-      
+
     }
 
     deleteUser() {

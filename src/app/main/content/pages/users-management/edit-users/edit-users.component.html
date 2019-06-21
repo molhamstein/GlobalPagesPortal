@@ -1,13 +1,16 @@
 <div class="page-layout simple left-sidenav inner-sidenav" [class.backdrop-loading]="loadingIndicator == true">
     <!-- HEADER -->
-    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+        fxLayoutAlign.gt-xs="space-between center">
 
         <!-- APP TITLE -->
         <div fxLayout="row" fxLayoutAlign="start center">
 
             <div class="logo" fxLayout="row" fxLayoutAlign="start center">
-                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">person_pin</mat-icon>
-                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit User</span>
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                    [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">person_pin</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit
+                    User</span>
             </div>
 
         </div>
@@ -21,14 +24,15 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
 
-            <form class="mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto" name="form"
-                [formGroup]="form">
+            <form class="mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start"
+                fxFlex="1 0 auto" name="form" [formGroup]="form">
 
                 <div class="h2 mb-24">User Information</div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Username" formControlName="username" [(ngModel)]="editedUser.username">
+                        <input matInput placeholder="Username" formControlName="username"
+                            [(ngModel)]="editedUser.username">
                         <mat-error *ngIf="formErrors.username.required">
                             Required
                         </mat-error>
@@ -37,7 +41,8 @@
                     <div class="rightForm verify">
                         Email Verified
                     </div>
-                    <mat-slide-toggle class="tog" formControlName="emailVerified" [(ngModel)]="editedUser.emailVerified"></mat-slide-toggle>
+                    <mat-slide-toggle class="tog" formControlName="emailVerified"
+                        [(ngModel)]="editedUser.emailVerified"></mat-slide-toggle>
 
                 </div>
 
@@ -52,7 +57,8 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput type="tel" placeholder="Phone Number" formControlName="phoneNumber" [(ngModel)]="editedUser.phoneNumber">
+                        <input matInput type="tel" placeholder="Phone Number" formControlName="phoneNumber"
+                            [(ngModel)]="editedUser.phoneNumber">
                         <mat-error *ngIf="formErrors.phoneNumber.required">
                             Required
                         </mat-error>
@@ -63,7 +69,8 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput [matDatepicker]="picker" readonly placeholder="Choose a Birth Date" formControlName="birthDate" [(ngModel)]="editedUser.birthDate">
+                        <input matInput [matDatepicker]="picker" readonly placeholder="Choose a Birth Date"
+                            formControlName="birthDate" [(ngModel)]="editedUser.birthDate">
                         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="formErrors.birthDate.required">
@@ -95,7 +102,21 @@
                             Required
                         </mat-error>
                     </mat-form-field>
+
+                    <mat-form-field fxFlex="50" class="rightForm">
+                        <mat-select placeholder="Role"  formControlName="roleId"
+                            [(ngModel)]="editedUser.roleId">
+                            <mat-option *ngFor="let role of roles" [value]="role.value">
+                                {{role.viewValue}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="formErrors.roleId.required">
+                            Required
+                        </mat-error>
+                    </mat-form-field>
+
                 </div>
+
 
                 <div style="margin-top: 30px;">
                     <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="updateUser()">
@@ -110,6 +131,43 @@
 
     </mat-card>
 
+    <mat-card>
+
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
+
+            <form class="mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start"
+                fxFlex="1 0 auto" name="form" *ngIf="passwordForm" [formGroup]="passwordForm">
+
+                <div class="h2 mb-24">User Password</div>
+
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <mat-form-field class="full-width" color="primary">
+                        <input type="password" matInput placeholder="Password" formControlName="password"
+                            name="password" required />
+                        <mat-icon matSuffix color="primary">password</mat-icon>
+
+                        <mat-error *ngIf="passwordForm.get('password').hasError('minlength')">
+                            Password length must be at least <strong> 8 characters </strong>
+                        </mat-error>
+
+                    </mat-form-field>
+                </div>
+
+
+
+                <div style="margin-top: 30px;">
+                    <button mat-raised-button class="btn-save" [disabled]="passwordForm.invalid"
+                        (click)="changePassword()">
+                        Change Password
+                    </button>
+                    <button mat-raised-button class="btn-back" (click)="back()">
+                        Back
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </mat-card>
     <!-- / CONTENT -->
 
 </div>
