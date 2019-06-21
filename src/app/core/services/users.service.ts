@@ -8,6 +8,7 @@ import { GlobalURL } from "../global-url";
 
 export class usersService {
 
+
   accessToken = localStorage.getItem('authtoken');
   /* headers = new HttpHeaders(); */
   headers = new HttpHeaders({
@@ -20,14 +21,14 @@ export class usersService {
   }
 
   getAllUsers(): Observable<any> {
-      return this.httpclient.get(GlobalURL.URL + 'users');
+    return this.httpclient.get(GlobalURL.URL + 'users');
   }
 
-  getUsers(skip) : Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'users/?filter[limit]=5&filter[skip]='+ skip +'&filter[order]=creationDate Desc')
+  getUsers(skip): Observable<any> {
+    return this.httpclient.get(GlobalURL.URL + 'users/?filter[limit]=5&filter[skip]=' + skip + '&filter[order]=creationDate Desc')
   }
 
-  getUsersCount() : Observable<any> {
+  getUsersCount(): Observable<any> {
     return this.httpclient.get(GlobalURL.URL + 'users/count')
   }
 
@@ -43,14 +44,20 @@ export class usersService {
     return this.httpclient.put(GlobalURL.URL + 'users/' + id, user, { headers: this.headers })
   }
 
+  changePassword(userId, password) {
+    return this.httpclient.put(GlobalURL.URL + `users/${userId}/changePassword`, { password }, { headers: this.headers })
+  }
+
   deleteUser(user, id): Observable<any> {
     return this.httpclient.put(GlobalURL.URL + 'users/' + id, user, { headers: this.headers })
   }
 
   filterUser(value): Observable<any> {
-   
+
     return this.httpclient.get(GlobalURL.URL + `users/?filter={"where":{"username":{ "like":".*${value}.*" , "options":"i" }},"limit":50}`);
   }
+
+
 
 
 

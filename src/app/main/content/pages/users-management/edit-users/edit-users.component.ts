@@ -115,5 +115,21 @@ export class editUsersComponent implements OnInit {
         }
     }
 
-    get passwordControl() { return this.passwordForm.get('password') }
+    changePassword() {
+
+        this.userServ.changePassword(this.id, this.passwordForm.get('password').value).subscribe(() => {
+            this.loc.back();
+            /* this.route.navigate(['/pages/users-management']); */
+            this.snack.open("You Succesfully updated this User", "Done", {
+                duration: 2000,
+            })
+            this.loadingIndicator = false;
+        },
+            err => {
+                this.loadingIndicator = false;
+                this.snack.open("Please Re-enter the right user information..", "OK")
+            }
+        )
+    }
+
 }

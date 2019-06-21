@@ -108,7 +108,7 @@
                             [(ngModel)]="editedUser.roleId">
                             <mat-option *ngFor="let role of roles" [value]="role.value">
                                 {{role.viewValue}}
-                            </mat-option>
+                            </mat-option> 
                         </mat-select>
                         <mat-error *ngIf="formErrors.roleId.required">
                             Required

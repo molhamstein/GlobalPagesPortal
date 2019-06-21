@@ -16,7 +16,7 @@ import swal from 'sweetalert2';
 export class UsersManagementComponent implements OnInit {
 
 
-    displayedColumns = ['order', 'username', 'email', 'gender', 'phoneNumber', 'icons'];
+    displayedColumns = ['order', 'username', 'email', 'gender', 'phoneNumber', 'role' , 'icons' ];
     dataSource = new MatTableDataSource<Users>([]);
     myData: Users[] = [];
     myData1: any;
