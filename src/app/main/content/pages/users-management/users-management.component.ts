@@ -6,6 +6,7 @@ import { fuseAnimations } from '../../../../core/animations';
 import { usersService } from '../../../../core/services/users.service';
 /* import 'sweetalert2/src/sweetalert2.scss' */
 import swal from 'sweetalert2';
+import { authService } from '../../../../core/services/auth.service';
 
 @Component({
     selector: 'users-management',
@@ -43,7 +44,8 @@ export class UsersManagementComponent implements OnInit {
     /*  @ViewChild(MatPaginator) paginator: MatPaginator;
      @ViewChild(MatSort) sort: MatSort; */
 
-    constructor(private usersServ: usersService) {
+    constructor(private usersServ: usersService , private authservice : authService) {
+  
         // Create 100 users
         /*  const users: UserData[] = [];
          for ( let i = 1; i <= 100; i++ )
@@ -218,6 +220,19 @@ export class UsersManagementComponent implements OnInit {
         filterValue = filterValue.trim(); // Remove whitespace
         filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
         this.dataSource.filter = filterValue;
+    }
+
+
+    get canEdit () : boolean {
+        return this.authservice.hasAnyPrivilege(['crud-users', 'edit-user']); 
+    }
+    
+    get canAdd () : boolean {
+        return this.authservice.hasAnyPrivilege(['crud-users', 'add-user']); 
+    }
+    
+    get canDelete () : boolean {
+        return this.authservice.hasAnyPrivilege(['crud-users', 'delete-user']); 
     }
 }
 

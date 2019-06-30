@@ -30,12 +30,12 @@
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <div class="h2 mb-24">User Information</div>
                     <div class="btn-div-delete">
-                        <button mat-raised-button type="button" class="btn-delete" (click)="deleteModal()"> Delete
+                        <button *ngIf="canDelete" mat-raised-button type="button" class="btn-delete" (click)="deleteModal()"> Delete
                             <mat-icon style="color:white;"> delete </mat-icon>
                         </button>
                     </div>
                     <div class="btn-div-edit">
-                        <button mat-raised-button type="button" class="btn-edit"
+                        <button *ngIf="canEdit" mat-raised-button type="button" class="btn-edit"
                             [routerLink]="['/pages/users-management/edit-users', id]"> Edit
                             <mat-icon style="color:white;"> edit </mat-icon>
                         </button>

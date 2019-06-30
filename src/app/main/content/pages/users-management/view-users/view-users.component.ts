@@ -5,6 +5,7 @@ import { usersService } from '../../../../../core/services/users.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '../../../../../../../node_modules/@angular/common';
 import swal from 'sweetalert2';
+import { authService } from '../../../../../core/services/auth.service';
 
 @Component({
     selector: 'view-users',
@@ -21,7 +22,7 @@ export class viewUsersComponent implements OnInit {
 
 
     constructor(private formBuilder: FormBuilder, private userServ: usersService, private route: Router,
-        private loc: Location, private activatedRoute: ActivatedRoute) {
+        private loc: Location, private activatedRoute: ActivatedRoute, private authservice: authService) {
 
     }
 
@@ -83,6 +84,13 @@ export class viewUsersComponent implements OnInit {
                 )
             }
         })
+    }
+
+    get canEdit(): boolean {
+        return this.authservice.hasAnyPrivilege(['crud-users', 'edit-user']);
+    }
+    get canDelete () : boolean {
+        return this.authservice.hasAnyPrivilege(['crud-users', 'delete-user']); 
     }
 
 }

@@ -40,7 +40,7 @@ export class authService {
     this.route.navigate(['/pages/auth/login']);
   }
   storeUser(user) {
-    localStorage.setItem("user", user);
+    localStorage.setItem("user", JSON.stringify(user));
   }
 
   getUser() {
@@ -50,8 +50,12 @@ export class authService {
     let user = this.getUser();
     if (!user) return false;
 
-    return user.role.privileges.include("*") || user.role.privileges.include(privilege);
+    return user.role.privileges.includes("*") || user.role.privileges.includes(privilege);
 
+  }
+
+  hasAnyPrivilege(privileges : string[]) : boolean {
+    return privileges.find(privilege => this.hasPrivilege(privilege)) != undefined;
   }
 
 
