@@ -12,19 +12,16 @@ import { BrowserModule } from '../../../../../../node_modules/@angular/platform-
 
 const routes = [
     {
-        path     : 'pages/business-management',
+        path: '',
         component: BusinessManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/business-management/add-business/:id',
+        path: 'add-business/:id',
         component: AddBusinessComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/business-management/edit-business/:id',
+        path: 'edit-business/:id',
         component: EditBusinessComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -34,17 +31,15 @@ const routes = [
         AddBusinessComponent,
         EditBusinessComponent,
     ],
-    imports     : [
+    imports: [
         SharedModule,
         CommonModule,
-        BrowserModule,
         RouterModule.forChild(routes),
-        
+
     ],
-    providers:[ BusinessCategoriesService , AuthGuard]
+    providers: [BusinessCategoriesService]
 })
 
-export class BusinessManagementModule
-{
+export class BusinessManagementModule {
 
 }

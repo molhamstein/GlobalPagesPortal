@@ -12,19 +12,16 @@ import { EditCategoryComponent } from './edit-category/edit-category.component';
 
 const routes = [
     {
-        path     : 'pages/categories-management',
+        path: '',
         component: CategoriesManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/categories-management/add-category/:id',
+        path: 'add-category/:id',
         component: AddCategoryComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/categories-management/edit-category/:id',
+        path: 'edit-category/:id',
         component: EditCategoryComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -34,17 +31,15 @@ const routes = [
         AddCategoryComponent,
         EditCategoryComponent,
     ],
-    imports     : [
+    imports: [
         SharedModule,
         CommonModule,
-        BrowserModule,
         RouterModule.forChild(routes),
-        
+
     ],
-    providers:[ CategoriesService , AuthGuard]
+    providers: [CategoriesService]
 })
 
-export class CategoriesManagementModule
-{
+export class CategoriesManagementModule {
 
 }

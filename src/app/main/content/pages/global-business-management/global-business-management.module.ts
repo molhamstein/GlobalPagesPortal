@@ -19,24 +19,20 @@ import { BusinessCategoriesService } from '../../../../core/services/business-ca
 
 const routes = [
     {
-        path     : 'pages/global-business-management',
+        path     : '',
         component: GlobalBusinessManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/global-business-management/add-global-business',
+        path     : 'add-global-business',
         component: AddGlobalBusinessComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/global-business-management/edit-global-business/:id',
+        path     : 'edit-global-business/:id',
         component: EditGlobalBusinessComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/global-business-management/view-global-business/:id',
+        path     : 'view-global-business/:id',
         component: ViewGlobalBusinessComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -50,14 +46,13 @@ const routes = [
     imports     : [
         SharedModule,
         CommonModule,
-        BrowserModule,
         RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
             apiKey: 'AIzaSyAth93MSTOwWPvaw_fmwulZgRhd1IsCyPY'
         })
         
     ],
-    providers:[ GlobalBusinessService, usersService, RegionsService, CategoriesService, BusinessCategoriesService , AuthGuard]
+    providers:[ GlobalBusinessService, usersService, RegionsService, CategoriesService, BusinessCategoriesService ]
 })
 
 export class GlobalBusinessManagementModule

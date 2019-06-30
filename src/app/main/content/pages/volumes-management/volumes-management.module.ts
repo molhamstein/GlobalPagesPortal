@@ -14,24 +14,20 @@ import { VolumesService } from '../../../../core/services/volumes.service.';
 
 const routes = [
     {
-        path     : 'pages/volumes-management',
+        path: '',
         component: VolumesManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/volumes-management/add-volume',
+        path: 'add-volume',
         component: AddVolumeComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/volumes-management/edit-volume/:id',
+        path: 'edit-volume/:id',
         component: EditVolumeComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/volumes-management/view-volume/:id',
+        path: 'view-volume/:id',
         component: ViewVolumeComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -42,17 +38,15 @@ const routes = [
         EditVolumeComponent,
         ViewVolumeComponent
     ],
-    imports     : [
+    imports: [
         SharedModule,
         CommonModule,
-        BrowserModule,
         RouterModule.forChild(routes),
-        
+
     ],
-    providers:[ VolumesService, AdsService , AuthGuard]
+    providers: [VolumesService, AdsService]
 })
 
-export class VolumesManagementModule
-{
+export class VolumesManagementModule {
 
 }

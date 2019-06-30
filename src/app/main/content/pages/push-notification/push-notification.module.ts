@@ -13,9 +13,8 @@ import { usersService } from '../../../../core/services/users.service';
 
 const routes = [
     {
-        path: 'pages/push-notification',
+        path: '',
         component: PushNotificationComponent,
-        canActivate: [AuthGuard]
     }
 ];
 
@@ -26,11 +25,10 @@ const routes = [
     imports: [
         SharedModule,
         CommonModule,
-        BrowserModule,
         RouterModule.forChild(routes),
 
     ],
-    providers: [PushNotificationService, usersService,AuthGuard]
+    providers: [PushNotificationService, usersService]
 })
 
 export class PushNotificationModule {

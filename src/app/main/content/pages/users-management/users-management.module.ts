@@ -11,24 +11,20 @@ import { AuthGuard } from '../../../../core/services/auth.gard';
 
 const routes = [
     {
-        path     : 'pages/users-management',
+        path     : '',
         component: UsersManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/users-management/add-users',
+        path     : 'add-users',
         component: addUsersComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/users-management/edit-users/:id',
+        path     : 'edit-users/:id',
         component: editUsersComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/users-management/view-users/:id',
+        path     : 'view-users/:id',
         component: viewUsersComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -44,7 +40,7 @@ const routes = [
         RouterModule.forChild(routes),
         
     ],
-    providers:[usersService, AuthGuard]
+    providers:[usersService]
 })
 
 export class UsersManagementModule

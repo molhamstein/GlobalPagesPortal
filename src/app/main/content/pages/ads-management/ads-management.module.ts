@@ -16,24 +16,20 @@ import { usersService } from '../../../../core/services/users.service';
 
 const routes = [
     {
-        path     : 'pages/ads-management',
+        path: '',
         component: AdsManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/ads-management/add-ad',
+        path: 'add-ad',
         component: AddAdComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/ads-management/edit-ad/:id',
+        path: 'edit-ad/:id',
         component: EditAdComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/ads-management/view-ad/:id',
+        path: 'view-ad/:id',
         component: ViewAdComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -44,17 +40,15 @@ const routes = [
         EditAdComponent,
         ViewAdComponent
     ],
-    imports     : [
+    imports: [
         SharedModule,
         CommonModule,
-        BrowserModule,
-        RouterModule.forChild(routes),
-        
+        RouterModule.forChild(routes)
+
     ],
-    providers:[ AdsService, usersService, RegionsService, CategoriesService , AuthGuard]
+    providers: [AdsService, usersService, RegionsService, CategoriesService]
 })
 
-export class AdsManagementModule
-{
+export class AdsManagementModule {
 
 }

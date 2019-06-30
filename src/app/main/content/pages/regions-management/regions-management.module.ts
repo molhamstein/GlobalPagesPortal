@@ -12,19 +12,16 @@ import { RegionsService } from '../../../../core/services/regions.service';
 
 const routes = [
     {
-        path     : 'pages/regions-management',
+        path     : '',
         component: RegionsManagementComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/regions-management/add-region/:id',
+        path     : 'add-region/:id',
         component: AddRegionComponent,
-        canActivate: [AuthGuard] 
     },
     {
-        path     : 'pages/regions-management/edit-region/:id',
+        path     : 'edit-region/:id',
         component: EditRegionComponent,
-        canActivate: [AuthGuard] 
     }
 ];
 
@@ -37,11 +34,10 @@ const routes = [
     imports     : [
         SharedModule,
         CommonModule,
-        BrowserModule,
         RouterModule.forChild(routes),
         
     ],
-    providers:[ RegionsService , AuthGuard]
+    providers:[ RegionsService ]
 })
 
 export class RegionsManagementModule

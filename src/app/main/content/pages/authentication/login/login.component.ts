@@ -8,44 +8,41 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
-    selector   : 'fuse-login',
+    selector: 'fuse-login',
     templateUrl: './login.component.html',
-    styleUrls  : ['./login.component.scss'],
-    animations : fuseAnimations
+    styleUrls: ['./login.component.scss'],
+    animations: fuseAnimations
 })
-export class FuseLoginComponent implements OnInit
-{
+export class FuseLoginComponent implements OnInit {
     loginForm: FormGroup;
     loginFormErrors: any;
-    user= {email:"", password:""};
-    userDetails:any;
+    user = { email: "", password: "" };
+    userDetails: any;
 
     constructor(
         private fuseConfig: FuseConfigService,
         private formBuilder: FormBuilder,
         private loginServ: authService,
-        private route : Router,
+        private route: Router,
         private snack: MatSnackBar
-    )
-    {
+    ) {
         this.fuseConfig.setSettings({
             layout: {
                 navigation: 'none',
-                toolbar   : 'none',
-                footer    : 'none'
+                toolbar: 'none',
+                footer: 'none'
             }
         });
 
         this.loginFormErrors = {
-            email   : {},
+            email: {},
             password: {}
         };
     }
 
-    ngOnInit()
-    {
+    ngOnInit() {
         this.loginForm = this.formBuilder.group({
-            email   : ['', [Validators.required, Validators.email]],
+            email: ['', [Validators.required, Validators.email]],
             password: ['', Validators.required]
         });
 
@@ -55,40 +52,46 @@ export class FuseLoginComponent implements OnInit
 
     }
 
-    login(){
+    login() {
         this.loginServ.login(this.user).subscribe(res => {
-             this.userDetails = res;
+            this.userDetails = res;
 
-            if(this.userDetails.user.role && this.userDetails.user.role.key == "admin"){
+            if (this.userDetails.user.role && (this.userDetails.user.role.key == "admin" || this.userDetails.user.role.key == "operator")) {
                 localStorage.setItem('authtoken', this.userDetails.id);
                 localStorage.setItem('userFullName', this.userDetails.user.username);
-                /* localStorage.setItem('userPermissions', JSON.stringify(res.userPermissions)); */
-                this.route.navigate(['/pages/users-management'])
+                let { email, role, username } = this.userDetails.user;
+                this.loginServ.storeUser(
+                    {
+                        email,
+                        role,
+                        username,
+                        authtoken: this.userDetails.id
+                    }
+                );
+
+                this.route.navigate(['/']);
             }
             else {
-                this.snack.open("You have to be an Admin to Login","Close")
-               /*  window.location.href = '/pages/auth/login'; */
+                this.snack.open("You have to be an Admin to Login", "Close")
+                /*  window.location.href = '/pages/auth/login'; */
                 /* this.route.navigate(['/pages/auth/login']) */
             }
         },
-        err => {
-            this.user.email="";
-            this.user.password="";
-            this.snack.open("You Entered a wrong Email or Password.. Please Re-enter", "Close")
-        })
-       /*  .catch((e:any) => {
-            this.route.navigate(['/pages/auth/login']);
-            return Observable.throw(e);
-        }) */
+            err => {
+                this.user.email = "";
+                this.user.password = "";
+                this.snack.open("You Entered a wrong Email or Password.. Please Re-enter", "Close")
+            })
+        /*  .catch((e:any) => {
+             this.route.navigate(['/pages/auth/login']);
+             return Observable.throw(e);
+         }) */
 
     }
 
-    onLoginFormValuesChanged()
-    {
-        for ( const field in this.loginFormErrors )
-        {
-            if ( !this.loginFormErrors.hasOwnProperty(field) )
-            {
+    onLoginFormValuesChanged() {
+        for (const field in this.loginFormErrors) {
+            if (!this.loginFormErrors.hasOwnProperty(field)) {
                 continue;
             }
 
@@ -98,8 +101,7 @@ export class FuseLoginComponent implements OnInit
             // Get the control
             const control = this.loginForm.get(field);
 
-            if ( control && control.dirty && !control.valid )
-            {
+            if (control && control.dirty && !control.valid) {
                 this.loginFormErrors[field] = control.errors;
             }
         }
