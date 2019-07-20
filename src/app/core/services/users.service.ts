@@ -1,12 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/Observable";
 import { Http, Headers } from "@angular/http";
-import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
 import { GlobalURL } from "../global-url";
+import { map } from "rxjs/operators";
+import { ApiServiceBase } from "./api.service";
 
 @Injectable()
 
-export class usersService {
+export class usersService extends ApiServiceBase {
 
 
   accessToken = localStorage.getItem('authtoken');
@@ -14,22 +16,18 @@ export class usersService {
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
     'Authorization': this.accessToken,
-  })
-
-  constructor(private http: Http, private httpclient: HttpClient) {
-    /* this.headers.append('Content-Type', 'application/json'); */
-  }
+  });
 
   getAllUsers(): Observable<any> {
     return this.httpclient.get(GlobalURL.URL + 'users');
   }
 
-  getUsers(skip): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'users/?filter[limit]=5&filter[skip]=' + skip + '&filter[order]=creationDate Desc')
+  getUsers(skip, limit, filter): Observable<any> {
+    return this.getWithCount(`users/?filter={"where":{"username":{ "like":".*${filter}.*" , "options":"i" }},"limit":${limit}, "skip" : ${skip}}`);
   }
 
-  getUsersCount(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'users/count')
+  getUsersCount(): Observable<number> {
+    return this.httpclient.get(GlobalURL.URL + 'users/count').pipe(map((res: any) => res.count));
   }
 
   getUserById(id): Observable<any> {
@@ -52,10 +50,6 @@ export class usersService {
     return this.httpclient.put(GlobalURL.URL + 'users/' + id, user, { headers: this.headers })
   }
 
-  filterUser(value): Observable<any> {
-
-    return this.httpclient.get(GlobalURL.URL + `users/?filter={"where":{"username":{ "like":".*${value}.*" , "options":"i" }},"limit":50}`);
-  }
 
 
 

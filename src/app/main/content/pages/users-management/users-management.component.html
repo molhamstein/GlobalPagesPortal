@@ -24,7 +24,7 @@
 
         <div class="example-header">
             <mat-form-field style="width: 50%;">
-                <input matInput (keyup)="onFilter($event.target.value)" placeholder="Search" [(ngModel)]="fValue">
+                <input matInput  placeholder="Search" [formControl]="filterControl" >
             </mat-form-field>
             <button *ngIf="canAdd" mat-raised-button class="btn-add"
                 [routerLink]="['/pages/users-management/add-users']">
@@ -32,7 +32,7 @@
             </button>
         </div>
 
-        <div *ngIf="dataSource" class="example-container mat-elevation-z8">
+        <div class="example-container mat-elevation-z8">
 
             <mat-table [dataSource]="dataSource">
 
@@ -85,13 +85,12 @@
                             [routerLink]="['/pages/users-management/view-users',row.id]">
                             <mat-icon style="color: rgba(41, 163, 102, 0.993)">streetview</mat-icon>
                         </button>
-                        <button *ngIf="canEdit" mat-icon-button
-                            matTooltip="edit user" [matTooltipPosition]="'above'"
+                        <button *ngIf="canEdit" mat-icon-button matTooltip="edit user" [matTooltipPosition]="'above'"
                             [routerLink]="['/pages/users-management/edit-users',row.id]">
                             <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
                         </button>
-                        <button *ngIf="canDelete" mat-icon-button
-                            matTooltip="delete user" [matTooltipPosition]="'above'" (click)="deleteModal(row, row.id)">
+                        <button *ngIf="canDelete" mat-icon-button matTooltip="delete user"
+                            [matTooltipPosition]="'above'" (click)="deleteModal(row, row.id)">
                             <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
                         </button>
 
@@ -103,7 +102,7 @@
                 </mat-row>
             </mat-table>
 
-            <mat-paginator [pageSize]="5" [length]="count" (page)="onPaginateChange($event)"></mat-paginator>
+            <mat-paginator [pageSize]="2" [length]="count" ></mat-paginator>
         </div>
 
     </mat-card>
