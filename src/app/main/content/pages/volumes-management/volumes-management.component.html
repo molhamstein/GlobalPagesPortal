@@ -1,13 +1,16 @@
 <div class="page-layout simple left-sidenav inner-sidenav">
     <!-- HEADER -->
-    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+        fxLayoutAlign.gt-xs="space-between center">
 
         <!-- APP TITLE -->
         <div fxLayout="row" fxLayoutAlign="start center">
 
             <div class="logo" fxLayout="row" fxLayoutAlign="start center">
-                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">library_books</mat-icon>
-                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Volumes
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                    [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">library_books</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom
+                    [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Volumes
                     Management</span>
             </div>
 
@@ -22,7 +25,7 @@
 
         <div class="example-header">
             <mat-form-field style="width: 50%;">
-                <input matInput (keyup)="onFilter($event.target.value)" placeholder="Search" [(ngModel)]="fValue">
+                <input matInput placeholder="Search" [formControl]="filterControl">
             </mat-form-field>
             <button mat-raised-button class="btn-add" [routerLink]="['/pages/volumes-management/add-volume']">
                 Add new Volume
@@ -41,28 +44,30 @@
 
                 <!-- titleAr Column -->
                 <ng-container matColumnDef="titleAr">
-                    <mat-header-cell *matHeaderCellDef >Arabic Title</mat-header-cell>
-                    <mat-cell *matCellDef="let row" > {{row.titleAr}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef>Arabic Title</mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.titleAr}}</mat-cell>
                 </ng-container>
 
                 <!-- titleEn Column -->
                 <ng-container matColumnDef="titleEn">
-                    <mat-header-cell *matHeaderCellDef > English Title </mat-header-cell>
-                    <mat-cell *matCellDef="let row" > {{row.titleEn}}</mat-cell>
+                    <mat-header-cell *matHeaderCellDef> English Title </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.titleEn}}</mat-cell>
                 </ng-container>
 
                 <!-- status Column -->
                 <ng-container matColumnDef="status">
                     <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
 
-                    <mat-cell *matCellDef="let row"> <mat-chip-list> <mat-chip
-                        [ngClass]="{
+                    <mat-cell *matCellDef="let row">
+                        <mat-chip-list>
+                            <mat-chip [ngClass]="{
                          'status-pending' : row.status == 'pending',
                           'status-activated' : row.status == 'activated', 
                           'status-deactivated' : row.status == 'deactivated'
-                        }"
-                        selected>{{row.status}}</mat-chip> </mat-chip-list></mat-cell>
-                        
+                        }" selected>{{row.status}}</mat-chip>
+                        </mat-chip-list>
+                    </mat-cell>
+
                 </ng-container>
 
 
@@ -83,13 +88,16 @@
                     <mat-header-cell *matHeaderCellDef> </mat-header-cell>
                     <mat-cell *matCellDef="let row">
 
-                        <button matTooltip="view volume" [matTooltipPosition]="'above'" mat-icon-button [routerLink]="['/pages/volumes-management/view-volume',row.id]">
+                        <button matTooltip="view volume" [matTooltipPosition]="'above'" mat-icon-button
+                            [routerLink]="['/pages/volumes-management/view-volume',row.id]">
                             <mat-icon style="color: rgba(41, 163, 102, 0.993)">visibility</mat-icon>
                         </button>
-                        <button mat-icon-button matTooltip="edit volume" [matTooltipPosition]="'above'" [routerLink]="['/pages/volumes-management/edit-volume',row.id]">
+                        <button mat-icon-button matTooltip="edit volume" [matTooltipPosition]="'above'"
+                            [routerLink]="['/pages/volumes-management/edit-volume',row.id]">
                             <mat-icon style="color:rgb(2, 117, 184)">edit</mat-icon>
                         </button>
-                        <button mat-icon-button matTooltip="delete volume" [matTooltipPosition]="'above'" (click)="deleteModal(row, row.id)">
+                        <button mat-icon-button matTooltip="delete volume" [matTooltipPosition]="'above'"
+                            (click)="deleteModal(row, row.id)">
                             <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
                         </button>
 
@@ -101,7 +109,7 @@
                 </mat-row>
             </mat-table>
 
-            <mat-paginator [pageSize]="5" [length]="count" (page)="onPaginateChange($event)"></mat-paginator>
+            <mat-paginator [pageSize]="50" [length]="count"></mat-paginator>
         </div>
 
     </mat-card>

@@ -3,18 +3,15 @@ import { Observable } from "rxjs/Observable";
 import { Http, Headers } from "@angular/http";
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { GlobalURL } from "../global-url";
+import { ApiServiceBase } from "./api.service";
 
 @Injectable()
 
-export class AdsService {
+export class AdsService  extends ApiServiceBase{
 
   /*   headers = new HttpHeaders(); */
   accessToken = localStorage.getItem('authtoken');
 
-  constructor(private httpclient: HttpClient) {
-    /* this.headers.append('Content-Type', 'application/json');
-    this.headers.append('Authorization', accessToken); */
-  }
 
   headers = new HttpHeaders({
     "Content-Type": "application/json",
@@ -25,8 +22,8 @@ export class AdsService {
     return this.httpclient.get(GlobalURL.URL + 'posts');
   }
 
-  getAds(skip): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'posts/?filter[limit]=5&filter[skip]=' + skip + '&filter[order]=creationDate Desc')
+  getAds(skip, limit, filter): Observable<any> {
+    return this.getWithCount(`posts/?filter={"where":{"title":{ "like":".*${filter}.*" , "options":"i" }},"limit":${limit}, "skip" : ${skip}}`);
   }
 
   getAdsCount(): Observable<any> {
@@ -49,10 +46,6 @@ export class AdsService {
     return this.httpclient.delete(GlobalURL.URL + 'posts/' + id, { headers: this.headers })
   }
 
-  filterAd(value): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'posts/?filter={"where":{"title":{"like":"' + value + '" , "options":"i" }},"limit":50}');
-  }
-
   uploadImages(data): Observable<any> {
     var headers1 = new HttpHeaders({
       /* 'Content-Type': 'multipart/form-data', */
@@ -61,25 +54,6 @@ export class AdsService {
     headers1.delete('Content Type');
     return this.httpclient.post(GlobalURL.URL + 'attachments/images/upload', data);
   }
-  /* return new Promise((resolve, reject) => {
-    this.httpclient.post(GlobalURL.URL + 'attachments/images/upload?access_token=' + this.accessToken, data)
-        .subscribe(
-          data => {
-           // console.log('data ', data);
-            resolve(data);
-            debugger
-          },
-          error => {
-            console.log('error ', error);
-             reject();
-          }
-        );
-  }
-})
-*/
-
-  /*  reportProgress: true,
-   observe: 'events' */
 
 
 

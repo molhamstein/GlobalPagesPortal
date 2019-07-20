@@ -23,6 +23,16 @@ import { Observable } from 'rxjs/Observable';
 export class UsersManagementComponent implements AfterViewInit {
     count = 0;
 
+    
+    displayedColumns = ['username', 'email', 'gender', 'phoneNumber', 'role', 'icons'];
+    dataSource: MatTableDataSource<Users[]> = new MatTableDataSource([]);
+
+    filterControl = new FormControl('');
+
+    @ViewChild(MatSort) sort: MatSort;
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+
+    
     refreshSubject = new Subject();
     async ngAfterViewInit() {
 
@@ -49,14 +59,6 @@ export class UsersManagementComponent implements AfterViewInit {
 
     }
 
-
-    displayedColumns = ['username', 'email', 'gender', 'phoneNumber', 'role', 'icons'];
-    dataSource: MatTableDataSource<Users[]> = new MatTableDataSource([]);
-
-    filterControl = new FormControl('');
-
-    @ViewChild(MatSort) sort: MatSort;
-    @ViewChild(MatPaginator) paginator: MatPaginator;
 
     constructor(private usersServ: usersService, private authservice: authService) { }
 

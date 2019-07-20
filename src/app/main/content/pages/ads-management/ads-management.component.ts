@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { fuseAnimations } from '../../../../core/animations';
 import swal from 'sweetalert2';
 import { BusinessCategoriesService } from '../../../../core/services/business-cat.service';
 import { AdsService } from '../../../../core/services/ads.service';
+import { Subject } from 'rxjs/Subject';
+import { debounceTime, startWith, switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'ads-management',
@@ -13,142 +15,57 @@ import { AdsService } from '../../../../core/services/ads.service';
     styleUrls: ['./ads-management.component.scss'],
     animations: fuseAnimations,
 })
-export class AdsManagementComponent implements OnInit {
+export class AdsManagementComponent implements AfterViewInit {
 
-    displayedColumns = ['order', 'title', 'description', 'status', 'thumbnail', 'icons'];
+
+    filterControl = new FormControl('');
+    refreshSubject = new Subject();
+
+
+    displayedColumns = ['title', 'description', 'status', 'thumbnail', 'icons'];
     dataSource = new MatTableDataSource<Ads>([]);
-    myData: Ads[] = [];
-    count: any;
-    skip = 0;
-    pagOrder = 0;
-    pagIndex = 0;
-    tempLength = 0;
-    fValue: any = "";
+    count = 0;
+    @ViewChild(MatSort) sort;
+    @ViewChild(MatPaginator) paginator;
 
-    private paginator: MatPaginator; private sort: MatSort;
-    @ViewChild(MatSort) set matSort(ms: MatSort) { this.sort = ms }
-    @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) { this.paginator = mp }
+
+    ngAfterViewInit() {
+
+
+        let filterInputSubject = this.filterControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), tap(() => {
+            this.paginator.pageIndex = 0;
+        }));
+
+        this.paginator.page.merge(filterInputSubject, this.refreshSubject).pipe(
+            startWith({}),
+            switchMap(() => {
+                let limit = this.paginator.pageSize;
+                let pageIndex = this.paginator.pageIndex;
+                let skip = pageIndex * limit;
+                let filter = this.filterControl.value;
+
+                return this.adServ.getAds(skip, limit, filter);
+            })
+        ).subscribe(response => {
+            let { data, count } = response;
+            this.count = count;
+            this.dataSource.data = data;
+        });
+
+    }
 
     constructor(private adServ: AdsService) {
 
     }
 
     ngOnInit() {
-        setTimeout(() => {
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.pagIndex = this.dataSource.paginator.pageIndex;
-            this.adServ.getAdsCount().subscribe(res => {
-                this.count = res.count;
 
-            })
-        })
-
-        this.getAds();
 
     }
 
 
-    onPaginateChange(event) {
-        debugger
-        if (this.fValue != "") {
-            return;
-        }
-        if (event.pageIndex > this.pagIndex) {
-            this.skip = this.skip + 5;
-            this.adServ.getAds(this.skip).subscribe(res => {
-                this.myData = res;
-                for (let index = 0; index < this.myData.length; index++) {
-                    this.myData[index].order = this.pagOrder + 1;
-                    if (res[index].media.length != 0) {
-                        this.myData[index].thumbnail = res[index].media[0].url;
-                        if (this.myData[index].thumbnail == undefined) {
-                            this.myData[index].thumbnail = "";
-                        }
-                    }
-                    else {
-                        this.myData[index].thumbnail = "";
-                    }
-                    this.pagOrder = this.myData[index].order;
-                }
-                this.tempLength = this.myData.length;
-                this.dataSource.data = this.myData;
 
-            })
-            this.pagIndex = event.pageIndex;
-        }
-        else if (event.pageIndex < this.pagIndex) {
-            this.skip = this.skip - 5;
-            this.pagOrder = this.pagOrder - (this.tempLength + 5);
-            this.adServ.getAds(this.skip).subscribe(res => {
-                this.myData = res;
-                for (let index = 0; index < this.myData.length; index++) {
-                    this.myData[index].order = this.pagOrder + 1;
-                    if (res[index].media.length != 0) {
-                        this.myData[index].thumbnail = res[index].media[0].url;
-                        if (this.myData[index].thumbnail == undefined) {
-                            this.myData[index].thumbnail = "";
-                        }
-                    }
-                    else {
-                        this.myData[index].thumbnail = "";
-                    }
-                    this.pagOrder = this.myData[index].order;
-                }
-                this.tempLength = this.myData.length;
-                this.dataSource.data = this.myData;
-
-            })
-            this.pagIndex = event.pageIndex;
-        }
-
-    }
-
-    onFilter(filterValue) {
-        if (filterValue == "") {
-            this.skip = 0;
-            this.ngOnInit();
-        }
-        else {
-            this.adServ.filterAd(filterValue).subscribe(res => {
-                for (let index = 0; index < res.length; index++) {
-                    res[index].order = index + 1;
-                }
-                this.count = res.length;
-                this.paginator.length = this.count;
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.data = res;
-            })
-        }
-
-    }
-
-    getAds() {
-        this.adServ.getAds(this.skip).subscribe(res => {
-            this.myData = res;
-
-            for (let index = 0; index < this.myData.length; index++) {
-                this.myData[index].order = index + 1;
-                if (res[index].media.length != 0) {
-                    if (res[index].media[0].type != 'video/*') {
-                        this.myData[index].thumbnail = res[index].media[0].url;
-                        if (this.myData[index].thumbnail == undefined) {
-                            this.myData[index].thumbnail = "";
-                        }
-                    }
-                }
-                else {
-                    this.myData[index].thumbnail = "";
-                }
-
-                this.pagOrder = this.myData[index].order;
-            }
-            this.dataSource = new MatTableDataSource(this.myData);
-        })
-
-    }
-
-    deleteAd(ad, id) {
+    async deleteAd(ad, id) {
         delete ad.order;
         delete ad.owner;
         delete ad.category;
@@ -157,29 +74,8 @@ export class AdsManagementComponent implements OnInit {
         delete ad.location;
         delete ad.thumbnail;
         // ad.status = "deactivated";
-        this.adServ.deleteAd(id).subscribe(() => {
-            console.log("deactivated");
-            this.pagOrder = this.pagOrder - this.tempLength;
-            this.adServ.getAds(this.skip).subscribe(res => {
-                this.myData = res;
-                for (let index = 0; index < this.myData.length; index++) {
-                    this.myData[index].order = this.pagOrder + 1;
-                    if (res[index].media.length != 0) {
-                        this.myData[index].thumbnail = res[index].media[0].url;
-                        if (this.myData[index].thumbnail == undefined) {
-                            this.myData[index].thumbnail = "";
-                        }
-                    }
-                    else {
-                        this.myData[index].thumbnail = "";
-                    }
-                    this.pagOrder = this.myData[index].order;
-                }
-                this.tempLength = this.myData.length;
-                this.dataSource.data = this.myData;
-
-            })
-        })
+        await this.adServ.deleteAd(id).toPromise();
+        this.refreshSubject.next();
     }
 
     deleteModal(ad, id) {
@@ -203,11 +99,6 @@ export class AdsManagementComponent implements OnInit {
         })
     }
 
-    applyFilter(filterValue: string) {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.dataSource.filter = filterValue;
-    }
 }
 
 
