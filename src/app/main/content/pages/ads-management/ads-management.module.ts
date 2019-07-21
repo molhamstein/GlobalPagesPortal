@@ -12,6 +12,7 @@ import { ViewAdComponent } from './view-ad/view-ad.component';
 import { RegionsService } from '../../../../core/services/regions.service';
 import { CategoriesService } from '../../../../core/services/categories.service';
 import { usersService } from '../../../../core/services/users.service';
+import { UtilsModule } from '../../../utlis/utils.module';
 
 
 const routes = [
@@ -43,6 +44,7 @@ const routes = [
     imports: [
         SharedModule,
         CommonModule,
+        UtilsModule,
         RouterModule.forChild(routes)
 
     ],

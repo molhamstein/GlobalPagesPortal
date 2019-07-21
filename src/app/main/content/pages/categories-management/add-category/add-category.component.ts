@@ -10,7 +10,8 @@ import { Location } from '@angular/common';
     selector: 'add-category',
     templateUrl: './add-category.component.html',
     styleUrls: ['./add-category.component.scss'],
-    animations: fuseAnimations
+    animations: fuseAnimations,
+
 })
 export class AddCategoryComponent implements OnInit {
     form: FormGroup;

@@ -21,20 +21,7 @@ export class EditAdComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
     id: any;
-    myControl = new FormControl();
-    filteredOptions: Observable<Owners[]>;
-    selectedOwner: any = {};
     editedAd: any = {};
-    categories: any = [];
-    category: any = {};
-    subCategory: any = {};
-    subCategories:any = [];
-    subRegions:any = [];
-    owners: any = [];
-    owner: any = {};
-    regions: any = [];
-    region: any = {};
-    subRegion: any = {};
     imgs: any = [];
     selectedFile: File;
     url: any;
@@ -43,24 +30,57 @@ export class EditAdComponent implements OnInit {
     loadingIndicator = false;
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService, private loc: Location,
-        private route: Router, private snack: MatSnackBar, private catServ: CategoriesService,
-        private regServ: RegionsService, private userServ: usersService, private activatedRoute: ActivatedRoute) {
+        private snack: MatSnackBar, private activatedRoute: ActivatedRoute) {
 
-        this.category.subCategories = [];
-        this.region.locations = [];
     }
 
     ngOnInit() {
+
+        let props = ["title" , "title" , "description", "status", "isFeatured", "category", "subCategory", "city" , "location" , "owner"] ; 
+        this.formErrors = {
+            title: {},
+            description: {},
+            status: {},
+            isFeatured: {},
+            category: {},
+            subCategory: {},
+            city: {},
+            location: {},
+            owner: {}
+
+        };
+
+        this.form = this.formBuilder.group({
+            title: ['', Validators.required],
+            description: ['', Validators.required],
+            status: ['', Validators.required],
+            isFeatured: [''],
+            category: [null, Validators.required],
+            subCategory: [null, Validators.required],
+            city: [null, Validators.required],
+            location: [null, Validators.required],
+            owner: [null, Validators.required],
+
+
+        });
+
+        this.form.valueChanges.subscribe(() => {
+            this.onFormValuesChanged();
+        });
+
 
         this.activatedRoute.params.subscribe((params: any) => {
             this.id = params.id;
 
             this.adServ.getAdById(this.id).subscribe(res => {
                 this.editedAd = res;
-                this.selectedOwner = this.editedAd.owner;
+
+                for (let field of props) {
+                        this.form.controls[field].setValue(res[field]); 
+                }
                 if (this.editedAd.media) {
                     for (let index = 0; index < this.editedAd.media.length; index++) {
-                        if(this.editedAd.media[index].type == 'video/*') {
+                        if (this.editedAd.media[index].type == 'video/*') {
                             this.imgs.push(this.editedAd.media[index].thumbnail);
                         }
                         else {
@@ -72,84 +92,6 @@ export class EditAdComponent implements OnInit {
             })
         });
 
-        this.userServ.getAllUsers().subscribe(res => {
-            this.owners = res;
-            this.filteredOptions = this.myControl.valueChanges
-                .pipe(
-                    startWith<string | Owners>(''),
-                    map(value => typeof value === 'string' ? value : value.username),
-                    map(title => title ? this._filter(title) : this.owners.slice())
-                );
-        })
-
-        this.catServ.getCategories().subscribe(res => {
-            this.categories = res;
-            for (let index = 0; index < this.categories.length; index++) {
-                if (this.categories[index].id == this.editedAd.categoryId) {
-                    this.category = this.categories[index];
-                    for (let j = 0; j < this.categories[index].subCategories.length; j++) {
-                        this.subCategories.push(this.categories[index].subCategories[j]);
-                        if (this.categories[index].subCategories[j].id == this.editedAd.subCategoryId) {
-                            this.subCategory = this.categories[index].subCategories[j];
-                        }
-                    }
-                    break;
-                }
-            }
-        })
-
-        this.regServ.getAllCities().subscribe(res => {
-            this.regions = res;
-            for (let index = 0; index < this.regions.length; index++) {
-                if (this.regions[index].id == this.editedAd.cityId) {
-                    this.region = this.regions[index];
-                    for (let i = 0; i < this.regions[index].locations.length; i++) {
-                        this.subRegions.push(this.regions[index].locations[i]);
-                        if (this.regions[index].locations[i].id == this.editedAd.locationId) {
-                            this.subRegion = this.regions[index].locations[i];
-                        }
-                    }
-                    break;
-                }
-            }
-        })
-
-        this.formErrors = {
-            title: {},
-            description: {},
-            status: {},
-            isFeatured: {},
-            category: [],
-            subCategory: [],
-            city: [],
-            location: [],
-        };
-
-        this.form = this.formBuilder.group({
-            title: ['', Validators.required],
-            description: ['', Validators.required],
-            status: ['', Validators.required],
-            isFeatured: [''],
-            category: ['', [Validators.required]],
-            subCategory: [this.categories[0], Validators.required],
-            city: [this.regions[0], Validators.required],
-            location: [this.regions[0], Validators.required],
-        });
-
-        this.form.valueChanges.subscribe(() => {
-            this.onFormValuesChanged();
-        });
-
-    }
-
-    displayFn(own?: Owners): string | undefined {
-        return own ? own.username : undefined;
-    }
-
-    private _filter(own: string): Owners[] {
-        const filterValue = own.toLowerCase();
-
-        return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
     }
 
     onFileChanged(event) {
@@ -166,28 +108,22 @@ export class EditAdComponent implements OnInit {
     }
 
     updateAd() {
-        var isThere :boolean = false;
         this.loadingIndicator = true;
-        for (let index = 0; index < this.owners.length; index++) {
-            if(this.selectedOwner.id == this.owners[index].id){
-                this.editedAd.ownerId = this.selectedOwner.id;
-                isThere = true;
-                break;
-            }
-        }
-        if(isThere == false) {
-            this.loadingIndicator = false;
-            this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
-            return;
-        }
-        this.editedAd.categoryId = this.category.id;
-        this.editedAd.subCategoryId = this.subCategory.id;
-        this.editedAd.cityId = this.region.id;
-        this.editedAd.locationId = this.subRegion.id;
+
+
+
+        this.editedAd.categoryId = this.form.get('category').value.id;
+        this.editedAd.subCategoryId = this.form.get('subCategory').value.id;
+        this.editedAd.cityId = this.form.get('city').value.id;
+        this.editedAd.locationId = this.form.get('location').value.id;
+        this.editedAd.ownerId = this.form.get('owner').value.id;
+
         delete this.editedAd.category;
         delete this.editedAd.subCategory;
         delete this.editedAd.city;
         delete this.editedAd.location;
+        delete this.editedAd.owner;
+
         if (this.dataFormImgs.length != 0) {
             const frmData: FormData = new FormData();
             for (var i = 0; i < this.dataFormImgs.length; i++) {
@@ -233,9 +169,6 @@ export class EditAdComponent implements OnInit {
         }
     }
 
-    /* eventSelection(event) {
-        console.log(event)
-    } */
 
     deleteImage(event) {
         var temp = event.path[2].attributes[0].ownerElement.firstElementChild.currentSrc;
@@ -277,11 +210,4 @@ export class EditAdComponent implements OnInit {
             }
         }
     }
-}
-export interface Owners {
-    username: string;
-    email: string;
-    status: string;
-    gender: string;
-    id:number;
 }

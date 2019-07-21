@@ -23,21 +23,20 @@ import { authService } from '../core/services/auth.service';
         FuseNavbarHorizontalComponent,
         FuseToolbarComponent,
         FuseNavbarVerticalToggleDirective,
-        FuseThemeOptionsComponent
+        FuseThemeOptionsComponent,
     ],
-    imports     : [
+    imports: [
         SharedModule,
         RouterModule,
         FuseNavigationModule,
         FuseShortcutsModule,
         FuseSearchBarModule
     ],
-    exports     : [
+    exports: [
         FuseMainComponent
     ],
-    providers : [authService]
+    providers: [authService]
 })
 
-export class FuseMainModule
-{
+export class FuseMainModule {
 }

@@ -1,15 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { fuseAnimations } from '../../../../../core/animations';
-import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatAutocomplete } from '@angular/material';
 import { AdsService } from '../../../../../core/services/ads.service';
-import { CategoriesService } from '../../../../../core/services/categories.service';
-import { RegionsService } from '../../../../../core/services/regions.service';
-import { usersService } from '../../../../../core/services/users.service';
 import { Location } from '../../../../../../../node_modules/@angular/common';
-import { Observable } from 'rxjs/Observable';
-import { startWith, map } from 'rxjs/operators';
 
 @Component({
     selector: 'add-ad',
@@ -20,18 +14,7 @@ import { startWith, map } from 'rxjs/operators';
 export class AddAdComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
-    myControl = new FormControl();
-    filteredOptions: Observable<Owners[]>;
-    selectedOwner: any = {};
     newAd: any = {};
-    categories: any = [];
-    category: any = {};
-    subCategory: any = {};
-    owners: any = [];
-    owner: any = {};
-    regions: any = [];
-    region: any = {};
-    subRegion: any = {};
     imgs: any = [];
     selectedFile: File;
     url: any;
@@ -39,45 +22,26 @@ export class AddAdComponent implements OnInit {
     selectStatus = ['pending', 'activated', 'deactivated'];
     loadingIndicator = false;
 
-    constructor(private formBuilder: FormBuilder, private adServ: AdsService, private loc: Location,
-        private route: Router, private snack: MatSnackBar, private catServ: CategoriesService,
-        private regServ: RegionsService, private userServ: usersService) {
+    constructor(private formBuilder: FormBuilder, private adServ: AdsService, private location: Location,private snack: MatSnackBar ) {
 
         this.newAd.isFeatured = false;
         this.newAd.media = [];
-        this.category.subCategories = [];
-        this.region.locations = [];
+
     }
 
     ngOnInit() {
 
-        this.userServ.getAllUsers().subscribe(res => {
-            this.owners = res;
-            this.filteredOptions = this.myControl.valueChanges
-                .pipe(
-                    startWith<string | Owners>(''),
-                    map(value => typeof value === 'string' ? value : value.username),
-                    map(title => title ? this._filter(title) : this.owners.slice())
-                );
-        })
-
-        this.catServ.getCategories().subscribe(res => {
-            this.categories = res;
-        })
-
-        this.regServ.getAllCities().subscribe(res => {
-            this.regions = res;
-        })
 
         this.formErrors = {
             title: {},
             description: {},
             status: {},
             isFeatured: {},
-            category: [],
-            subCategory: [],
-            city: [],
-            location: [],
+            category: {},
+            subCategory: {},
+            city: {},
+            location: {},
+            owner: {} 
 
         };
 
@@ -86,10 +50,12 @@ export class AddAdComponent implements OnInit {
             description: ['', Validators.required],
             status: ['', Validators.required],
             isFeatured: [''],
-            category: [this.categories[0], Validators.required],
-            subCategory: [{}, Validators.required],
-            city: [{}, Validators.required],
-            location: ['', Validators.required],
+            category: [null, Validators.required],
+            subCategory: [null, Validators.required],
+            city: [ null , Validators.required],
+            location: [ null , Validators.required],
+            owner: [null, Validators.required],
+
 
         });
 
@@ -99,14 +65,6 @@ export class AddAdComponent implements OnInit {
 
     }
 
-    displayFn(own?: Owners): string | undefined {
-        return own ? own.username : undefined;
-    }
-
-    private _filter(own: string): Owners[] {
-        const filterValue = own.toLowerCase();
-        return this.owners.filter(own => own.username.toLowerCase().indexOf(filterValue) === 0);
-    }
 
     onFileChanged(event) {
         this.selectedFile = <File>event.target.files[0]
@@ -136,30 +94,22 @@ export class AddAdComponent implements OnInit {
             }
         }
     }
-
+ 
     saveAd() {
+
         var dateTemp = new Date();
-        this.loadingIndicator = true;
         this.newAd.creationDate = dateTemp.toISOString();
         this.newAd.viewsCount = 0;
-        var isThere :boolean = false;
-        for (let index = 0; index < this.owners.length; index++) {
-            if(this.selectedOwner.id == this.owners[index].id){
-                this.newAd.ownerId = this.selectedOwner.id;
-                isThere = true;
-                break;
-            }
-        }
-        if(isThere == false) {
-            this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
-            this.loadingIndicator = false;
-            return;
-        }
-        
-        this.newAd.categoryId = this.category.id;
-        this.newAd.subCategoryId = this.subCategory.id;
-        this.newAd.cityId = this.region.id;
-        this.newAd.locationId = this.subRegion.id;
+
+
+        this.loadingIndicator = true;
+        // @todd refactor this shit to use Reactive Form only 
+        this.newAd.categoryId = this.form.get('category').value.id;
+        this.newAd.subCategoryId = this.form.get('subCategory').value.id; 
+        this.newAd.cityId = this.form.get('city').value.id;
+        this.newAd.locationId = this.form.get('location').value.id;
+        this.newAd.ownerId = this.form.get('owner').value.id;
+
 
         if (this.dataFormImgs.length != 0) {
             const frmData: FormData = new FormData();
@@ -175,7 +125,7 @@ export class AddAdComponent implements OnInit {
                     this.newAd.media.push(tempobj);
                 }
                 this.adServ.addNewAd(this.newAd).subscribe(res => {
-                    this.loc.back();
+                    this.location.back();
                     /* this.route.navigate(['/pages/ads-management']); */
                     this.snack.open("You Succesfully entered a new Advertisement", "Done", {
                         duration: 2000,
@@ -191,7 +141,7 @@ export class AddAdComponent implements OnInit {
         }
         else {
             this.adServ.addNewAd(this.newAd).subscribe(res => {
-                this.loc.back();
+                this.location.back();
                 /* this.route.navigate(['/pages/ads-management']); */
                 this.snack.open("You Succesfully entered a new Advertisement", "Done", {
                     duration: 2000,
@@ -207,11 +157,13 @@ export class AddAdComponent implements OnInit {
     }
 
     back() {
-        this.loc.back();
+        this.location.back();
     }
 
     onFormValuesChanged() {
+
         for (const field in this.formErrors) {
+            
             if (!this.formErrors.hasOwnProperty(field)) {
                 continue;
             }
@@ -221,18 +173,11 @@ export class AddAdComponent implements OnInit {
 
             // Get the control
             const control = this.form.get(field);
+            
 
             if (control && control.dirty && !control.valid) {
                 this.formErrors[field] = control.errors;
             }
         }
     }
-}
-
-export interface Owners {
-    username: string;
-    email: string;
-    status: string;
-    gender: string;
-    id:number;
 }

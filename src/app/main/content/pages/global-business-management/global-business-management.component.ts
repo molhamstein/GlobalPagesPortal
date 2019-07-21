@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatTableDataSource, MatPaginator, MatSort } from '@angular/material';
 import { fuseAnimations } from '../../../../core/animations';
 import swal from 'sweetalert2';
 import { VolumesService } from '../../../../core/services/volumes.service.';
 import { GlobalBusinessService } from '../../../../core/services/global-business.service';
+import { Subject } from 'rxjs/Subject';
+import { debounceTime, distinctUntilChanged, tap, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'global-business-management',
@@ -13,128 +15,53 @@ import { GlobalBusinessService } from '../../../../core/services/global-business
     styleUrls: ['./global-business-management.component.scss'],
     animations: fuseAnimations,
 })
-export class GlobalBusinessManagementComponent implements OnInit {
+export class GlobalBusinessManagementComponent implements AfterViewInit {
+
 
     displayedColumns = ['order', 'nameAr', 'nameEn', 'status', 'description', 'icons'];
     dataSource = new MatTableDataSource<GlobalBusiness>([]);
-    myData: GlobalBusiness[] = [];
-    count: any;
-    skip = 0;
-    pagOrder = 0;
-    pagIndex = 0;
-    tempLength = 0;
-    fValue: any = "";
 
-    private paginator: MatPaginator; private sort: MatSort;
-    @ViewChild(MatSort) set matSort(ms: MatSort) { this.sort = ms }
-    @ViewChild(MatPaginator) set matPaginator(mp: MatPaginator) { this.paginator = mp }
+    filterControl = new FormControl('');
+    refreshSubject = new Subject();
+
+    count = 0;
+    @ViewChild(MatSort) sort;
+    @ViewChild(MatPaginator) paginator;
+
+
+    ngAfterViewInit() {
+
+
+        let filterInputSubject = this.filterControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), tap(() => {
+            this.paginator.pageIndex = 0;
+        }));
+
+        this.paginator.page.merge(filterInputSubject, this.refreshSubject).pipe(
+            startWith({}),
+            switchMap(() => {
+                let limit = this.paginator.pageSize;
+                let pageIndex = this.paginator.pageIndex;
+                let skip = pageIndex * limit;
+                let filter = this.filterControl.value;
+
+                return this.gbusServ.getGlobalBusiness(skip, limit, filter);
+            })
+        ).subscribe(response => {
+            let { data, count } = response;
+            this.count = count;
+            this.dataSource.data = data;
+        });
+
+    }
 
     constructor(private gbusServ: GlobalBusinessService) {
 
     }
 
-    ngOnInit() {
-        setTimeout(() => {
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.pagIndex = this.dataSource.paginator.pageIndex;
-            this.gbusServ.getGlobalBusinessCount().subscribe(res => {
-                this.count = res.count;
 
-            })
-        })
-
-        this.getGlobalBusiness();
-
-    }
-
-
-    onPaginateChange(event) {
-        if (this.fValue != "") {
-            return;
-        }
-        if (event.pageIndex > this.pagIndex) {
-            this.skip = this.skip + 5;
-            this.gbusServ.getGlobalBusiness(this.skip).subscribe(res => {
-                this.myData = res;
-                for (let index = 0; index < this.myData.length; index++) {
-                    this.myData[index].order = this.pagOrder + 1;
-                    this.pagOrder = this.myData[index].order;
-                }
-                this.tempLength = this.myData.length;
-                this.dataSource.data = this.myData;
-
-            })
-            this.pagIndex = event.pageIndex;
-        }
-        else if (event.pageIndex < this.pagIndex) {
-            this.skip = this.skip - 5;
-            this.pagOrder = this.pagOrder - (this.tempLength + 5);
-            this.gbusServ.getGlobalBusiness(this.skip).subscribe(res => {
-                this.myData = res;
-                for (let index = 0; index < this.myData.length; index++) {
-                    this.myData[index].order = this.pagOrder + 1;
-                    this.pagOrder = this.myData[index].order;
-                }
-                this.tempLength = this.myData.length;
-                this.dataSource.data = this.myData;
-
-            })
-            this.pagIndex = event.pageIndex;
-        }
-
-    }
-
-    onFilter(filterValue) {
-        if (filterValue == "") {
-            this.skip = 0;
-            this.ngOnInit();
-        }
-        else {
-            this.gbusServ.filterGlobalBusiness(filterValue).subscribe(res => {
-                for (let index = 0; index < res.length; index++) {
-                    res[index].order = index + 1;
-                }
-                this.count = res.length;
-                this.paginator.length = this.count;
-                this.dataSource.paginator = this.paginator;
-                this.dataSource.data = res;
-            })
-        }
-
-    }
-
-    getGlobalBusiness() {
-        this.gbusServ.getGlobalBusiness(this.skip).subscribe(res => {
-            this.myData = res;
-
-            for (let index = 0; index < this.myData.length; index++) {
-                this.myData[index].order = index + 1;
-                this.pagOrder = this.myData[index].order;
-            }
-            this.tempLength = this.myData.length;
-            this.dataSource = new MatTableDataSource(this.myData);
-        })
-
-    }
-
-    deleteGlobalBusiness(bus, id) {
-        delete bus.order;
-        console.log(id);
-
-        this.gbusServ.deleteGlobalBusiness(id).subscribe(() => {
-            this.pagOrder = this.pagOrder - this.tempLength;
-            this.gbusServ.getGlobalBusiness(this.skip).subscribe(res => {
-                this.myData = res;
-                for (let index = 0; index < this.myData.length; index++) {
-                    this.myData[index].order = this.pagOrder + 1;
-                    this.pagOrder = this.myData[index].order;
-                }
-                this.tempLength = this.myData.length;
-                this.dataSource.data = this.myData;
-
-            })
-        })
+    async deleteGlobalBusiness(bus, id) {
+        await this.gbusServ.deleteGlobalBusiness(id).toPromise();
+        this.refreshSubject.next();
     }
 
     deleteModal(bus, id) {
@@ -158,11 +85,7 @@ export class GlobalBusinessManagementComponent implements OnInit {
         })
     }
 
-    applyFilter(filterValue: string) {
-        filterValue = filterValue.trim(); // Remove whitespace
-        filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-        this.dataSource.filter = filterValue;
-    }
+   
 }
 
 

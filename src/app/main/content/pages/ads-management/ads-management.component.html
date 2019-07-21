@@ -31,7 +31,7 @@
             </button>
         </div>
 
-        <div *ngIf="dataSource" class="example-container mat-elevation-z8">
+        <div  class="example-container mat-elevation-z8">
 
             <mat-table [dataSource]="dataSource">
 
@@ -101,7 +101,7 @@
                 </mat-row>
             </mat-table>
 
-            <mat-paginator [pageSize]="50" [length]="count" ></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"  [pageSize]="50" [length]="count" ></mat-paginator>
         </div>
 
     </mat-card>

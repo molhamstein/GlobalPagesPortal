@@ -68,7 +68,7 @@ const appRoutes: Routes = [
         HttpClientModule,
         BrowserAnimationsModule,
         PagesModule,
-        RouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true , preloadingStrategy : PreloadAllModules }),
+        RouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true  }),
         SharedModule,
         MarkdownModule.forRoot(),
         TranslateModule.forRoot(),
