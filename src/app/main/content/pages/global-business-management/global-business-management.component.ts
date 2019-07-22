@@ -21,11 +21,11 @@ export class GlobalBusinessManagementComponent implements AfterViewInit {
 
     displayedColumns = ['nameAr', 'nameEn', 'status', 'description', 'icons'];
     dataSource = new MatTableDataSource<GlobalBusiness>([]);
+    selectStatus = [{ value: null, title: 'All' }, { value: 'pending', title: 'pending' }, { value: 'activated', title: 'activated' }, { value: 'deactivated', title: 'deactivated' }];
 
 
     filterForm = this.formBuilder.group({
-        nameEn: [null],
-        nameAr: [null],
+        name: [null],
         city: [null],
         location: [null],
         status: [null],

@@ -22,40 +22,43 @@ export class AdsService extends ApiServiceBase {
     return this.httpclient.get(GlobalURL.URL + 'posts');
   }
   makeFilter(filter: any) {
-    let where: any = {};
+
+
+    let filters = [];
+
+
     if (filter.title)
-      where.title = { "like": `.*${filter.title}.*`, "options": "i" };
+      filters.push({ title: { "like": `.*${filter.title}.*`, "options": "i" } });
 
 
-    let dateFilter = [];
     if (filter.from)
-      dateFilter.push({ creationDate: { gte: filter.from } });
+      filters.push({ creationDate: { gte: new Date(filter.from) } });
 
     if (filter.to)
-      dateFilter.push({ creationDate: { lte: filter.to } });
-
-    if (dateFilter.length)
-      where.and = dateFilter;
+      filters.push({ creationDate: { lte: new Date(filter.to) } });
 
 
     if (filter.city)
-      where.cityId = filter.city.id;
+      filters.push({ cityId: filter.city.id });
+
     if (filter.status)
-      where.status = filter.status;
+      filters.push({ status: filter.status });
 
     if (filter.location)
-      where.locationId = filter.location.id;
+      filters.push({ locationId: filter.location.id });
 
     if (filter.subCategory)
-      where.subCategoryId = filter.subCategory.id;
+      filters.push({ subCategoryId: filter.subCategory.id });
 
     if (filter.category)
-      where.categoryId = filter.category.id;
+      filters.push({ categoryId: filter.category.id });
 
     if (filter.owner)
-      where.ownerId = filter.owner.id;
+      filters.push({ ownerId: filter.owner.id });
+    if (filters.length)
+      return { and: filters };
+    return {};
 
-    return where;
   }
   getAds(skip, limit, filter): Observable<any> {
     let where = this.makeFilter(filter);

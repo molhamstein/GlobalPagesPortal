@@ -20,43 +20,46 @@ export class GlobalBusinessService extends ApiServiceBase {
     return this.httpclient.get(GlobalURL.URL + 'businesses');
   }
 
-  makeFilter(filter: any) {
-    let where: any = {};
-    if (filter.nameEn)
-      where.nameEn = { "like": `.*${filter.nameEn}.*`, "options": "i" };
+  makeFilter(filter: any): any {
+    let filters = [];
 
-    if (filter.nameAr)
-      where.nameAr = { "like": `.*${filter.nameAr}.*`, "options": "i" };
+    let nameFilter = [];
 
-    let dateFilter = [];
+    if (filter.name) {
+      nameFilter.push({ nameAr: { "like": `.*${filter.name}.*`, "options": "i" } });
+      nameFilter.push({ nameEn: { "like": `.*${filter.name}.*`, "options": "i" } });
+    }
+
+    if (nameFilter.length)
+      filters.push({ or: nameFilter });
+
     if (filter.from)
-      dateFilter.push({ creationDate: { gte: filter.from } });
+      filters.push({ creationDate: { gte: new Date(filter.from) } });
 
     if (filter.to)
-      dateFilter.push({ creationDate: { lte: filter.to } });
-
-    if (dateFilter.length)
-      where.and = dateFilter;
+      filters.push({ creationDate: { lte: new Date(filter.to) } });
 
 
     if (filter.city)
-      where.cityId = filter.city.id;
+      filters.push({ cityId: filter.city.id });
+
     if (filter.status)
-      where.status = filter.status;
+      filters.push({ status: filter.status });
 
     if (filter.location)
-      where.locationId = filter.location.id;
+      filters.push({ locationId: filter.location.id });
 
     if (filter.subCategory)
-      where.subCategoryId = filter.subCategory.id;
+      filters.push({ subCategoryId: filter.subCategory.id });
 
     if (filter.category)
-      where.categoryId = filter.category.id;
+      filters.push({ categoryId: filter.category.id });
 
     if (filter.owner)
-      where.ownerId = filter.owner.id;
-
-    return where;
+      filters.push({ ownerId: filter.owner.id });
+    if (filters.length)
+      return { and: filters };
+    return {};
   }
 
   getGlobalBusiness(skip, limit, filter): Observable<any> {
