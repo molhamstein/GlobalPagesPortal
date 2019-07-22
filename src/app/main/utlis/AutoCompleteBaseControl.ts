@@ -2,16 +2,18 @@ import { ControlValueAccessor, FormControl } from '@angular/forms';
 import { BaseControlValueAccessor } from './BaseControlValueAccessort';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
+import { Subject } from 'rxjs/Subject';
 
 export class AutoCompleteBaseControl<T> extends BaseControlValueAccessor<T> {
 
   filterControl = new FormControl('');
   filteredOptions: Observable<any>;
+  refreshSubject = new Subject(); 
 
   constructor() {
     super();
-
-    this.filteredOptions = this.filterControl.valueChanges
+    
+    this.filteredOptions = this.filterControl.valueChanges.merge(this.refreshSubject)
       .pipe(
         startWith(''),
         map(value => this.filter(value)),

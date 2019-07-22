@@ -1,13 +1,16 @@
 <div class="page-layout simple left-sidenav inner-sidenav" [class.backdrop-loading]="loadingIndicator == true">
     <!-- HEADER -->
-    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+        fxLayoutAlign.gt-xs="space-between center">
 
         <!-- APP TITLE -->
         <div fxLayout="row" fxLayoutAlign="start center">
 
             <div class="logo" fxLayout="row" fxLayoutAlign="start center">
-                <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">edit</mat-icon>
-                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit Business</span>
+                <mat-icon class="logo-icon mr-16" *fuseIfOnDom
+                    [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">edit</mat-icon>
+                <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Edit
+                    Business</span>
             </div>
 
         </div>
@@ -21,21 +24,23 @@
 
         <div fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-md="row">
 
-            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column" fxLayoutAlign="start" fxFlex="1 0 auto"
-                name="form" [formGroup]="form">
+            <form class="form-max-width mat-white-bg mat-elevation-z4 p-24 mr-24 mb-24" fxLayout="column"
+                fxLayoutAlign="start" fxFlex="1 0 auto" name="form" [formGroup]="form">
 
                 <div class="h2 mb-24">Business Information</div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Arabic Name" formControlName="nameAr" [(ngModel)]="editedBusiness.nameAr">
+                        <input matInput placeholder="Arabic Name" formControlName="nameAr"
+                            [(ngModel)]="editedBusiness.nameAr">
                         <mat-error *ngIf="formErrors.nameAr.required">
                             Required
                         </mat-error>
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput placeholder="English Name" formControlName="nameEn" [(ngModel)]="editedBusiness.nameEn">
+                        <input matInput placeholder="English Name" formControlName="nameEn"
+                            [(ngModel)]="editedBusiness.nameEn">
                         <mat-error *ngIf="formErrors.nameEn.required">
                             Required
                         </mat-error>
@@ -45,14 +50,16 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Unique Name" formControlName="nameUnique" [(ngModel)]="editedBusiness.nameUnique">
+                        <input matInput placeholder="Unique Name" formControlName="nameUnique"
+                            [(ngModel)]="editedBusiness.nameUnique">
                         <mat-error *ngIf="formErrors.nameUnique.required">
                             Required
                         </mat-error>
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm" style="margin-top: -16px;">
-                        <textarea matInput placeholder="Description" formControlName="description" [(ngModel)]="editedBusiness.description">
+                        <textarea matInput placeholder="Description" formControlName="description"
+                            [(ngModel)]="editedBusiness.description">
                             </textarea>
                         <mat-error *ngIf="formErrors.description.required">
                             Required
@@ -62,11 +69,13 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput type="tel" placeholder="Phone Number 1" formControlName="phoneNumber1" [(ngModel)]="editedBusiness.phone1">
+                        <input matInput type="tel" placeholder="Phone Number 1" formControlName="phoneNumber1"
+                            [(ngModel)]="editedBusiness.phone1">
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput type="tel" placeholder="Phone Number 2" formControlName="phoneNumber2" [(ngModel)]="editedBusiness.phone2">
+                        <input matInput type="tel" placeholder="Phone Number 2" formControlName="phoneNumber2"
+                            [(ngModel)]="editedBusiness.phone2">
                     </mat-form-field>
 
                 </div>
@@ -88,76 +97,58 @@
                     </mat-form-field>
                 </div>
 
-                <div *ngIf="categories" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field fxFlex="50" class="leftForm">
-                        <mat-select placeholder="Category" formControlName="category" [(ngModel)]="category" (selectionChange)="showSubCat()">
-                            <mat-option *ngFor="let c of categories" [value]="c">
-                                {{c.titleEn}}
-                            </mat-option>
-                        </mat-select>
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <div fxFlex="50" class="leftForm full-width">
+                        <app-business-categories-autocomplete formControlName="category" #categoryAutoComplete>
+                        </app-business-categories-autocomplete>
+
                         <mat-error *ngIf="formErrors.category.required">
                             Required
                         </mat-error>
-                    </mat-form-field>
+                    </div>
+                    <div fxFlex="50" class="rightForm full-width">
+                        <app-business-sub-categories-autocomplete class=" full-width" formControlName="subCategory"
+                            [category]="categoryAutoComplete.value">
+                        </app-business-sub-categories-autocomplete>
 
-                    <mat-form-field fxFlex="50" class="rightForm">
-                        <mat-select placeholder="SubCategory" formControlName="subCategory" [(ngModel)]="subCategory" >
-                            <mat-option *ngFor="let s of subCategories" [value]="s">
-                                {{s.titleEn}}
-                            </mat-option>
-                        </mat-select>
+
                         <mat-error *ngIf="formErrors.subCategory.required">
                             Required
                         </mat-error>
-                    </mat-form-field>
-
-                </div>
-
-                <div *ngIf="regions" fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field fxFlex="50" class="leftForm">
-                        <mat-select placeholder="City" formControlName="city" [(ngModel)]="region" (selectionChange)="showSubReg()">
-                            <mat-option *ngFor="let r of regions" [value]="r">
-                                {{r.nameEn}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="formErrors.city.required">
-                            Required
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field fxFlex="50" class="rightForm">
-                        <mat-select placeholder="Location" formControlName="location" [(ngModel)]="subRegion">
-                            <mat-option *ngFor="let l of subRegions" [value]="l">
-                                {{l.nameEn}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="formErrors.location.required">
-                            Required
-                        </mat-error>
-                    </mat-form-field>
+                    </div>
 
                 </div>
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
-                    <mat-form-field fxFlex="50" class="leftForm">
-                        <input type="text" placeholder="Owner" aria-label="Owner" matInput [formControl]="myControl" [matAutocomplete]="auto" [(ngModel)]="selectedOwner">
-                        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                            <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                                {{option.username}}
-                            </mat-option>
-                        </mat-autocomplete>
-                    </mat-form-field>
-
-                    <div class="rightForm verify">
-                        Opening Days Enabled
+                    <div fxFlex="50" class="leftForm full-width">
+                        <app-cities-autocomplete formControlName="city" class="leftForm" #cityAutoComplete>
+                        </app-cities-autocomplete>
+                        <mat-error *ngIf="formErrors.city.required">
+                            Required
+                        </mat-error>
                     </div>
-                    <mat-slide-toggle class="tog" formControlName="openingDaysEnabled" [(ngModel)]="editedBusiness.openingDaysEnabled"></mat-slide-toggle>
+                    <div fxFlex="50" class="rightForm full-width">
+                        <app-locations-autocomplete class=" full-width" formControlName="location"
+                            [city]="cityAutoComplete.value"></app-locations-autocomplete>
+                        <mat-error *ngIf="formErrors.location.required">
+                            Required
+                        </mat-error>
+                    </div>
 
                 </div>
 
-                <ngx-datatable *ngIf="editedBusiness.openingDaysEnabled" class="material" [rows]="days" style="margin-top:15px;"
-                    [columnMode]="'force'" [headerHeight]="48" [footerHeight]="56" [rowHeight]="'auto'" [scrollbarH]="true"
-                    [reorderable]="reorderable" [limit]="7">
+                <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                    <div fxFlex="50" class="leftForm full-width">
+                        <app-owners-autocomplete formControlName="owner"></app-owners-autocomplete>
+                        <mat-error *ngIf="formErrors.owner.required">
+                            Required
+                        </mat-error>
+                    </div>
+                </div>
+
+                <ngx-datatable *ngIf="editedBusiness.openingDaysEnabled" class="material" [rows]="days"
+                    style="margin-top:15px;" [columnMode]="'force'" [headerHeight]="48" [footerHeight]="56"
+                    [rowHeight]="'auto'" [scrollbarH]="true" [reorderable]="reorderable" [limit]="7">
 
                     <ngx-datatable-column [width]="150" name="Opening Days" prop="valueName">
                     </ngx-datatable-column>
@@ -169,30 +160,36 @@
                             </div>
                         </ng-template>
                         <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-                            <mat-checkbox (change)="checked($event, row)" style="margin-right:30px;" [checked]="row.checked" ></mat-checkbox>
+                            <mat-checkbox (change)="checked($event, row)" style="margin-right:30px;"
+                                [checked]="row.checked"></mat-checkbox>
                         </ng-template>
                     </ngx-datatable-column>
                 </ngx-datatable>
 
                 <div class="h2 mb-24" style="margin-top:20px">Business Logo
-                    <button mat-mini-fab class="btn-push" (click)="fileInput1.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
-                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                    <button mat-mini-fab class="btn-push" (click)="fileInput1.click()" style="margin-left: 15px;"
+                        aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
-                    <input hidden type="file" accept="image/*" (change)="onFileChangedLogo($event)" #fileInput1/>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedLogo($event)" #fileInput1 />
                     <div class="profile-img-container">
-                        <img src="{{editedBusiness.logo}}" width="150" height="60" style="margin-left:15px;" class="img img-thumbnail img-circle img-responsive">
-                        <a (click)="deleteImageLogo($event)"><mat-icon>close</mat-icon></a>
+                        <img src="{{editedBusiness.logo}}" width="150" height="60" style="margin-left:15px;"
+                            class="img img-thumbnail img-circle img-responsive">
+                        <a (click)="deleteImageLogo($event)">
+                            <mat-icon>close</mat-icon>
+                        </a>
                     </div>
                 </div>
 
 
                 <div class="h2 mb-24" style="margin-top:30px">Business Location</div>
                 <div>
-                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng" (mapDblClick)="markerPosition($event)" [disableDoubleClickZoom]="true">
-                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true" (dragEnd)="markerDragEnd($event)"></agm-marker>
+                    <agm-map [zoom]="17" [latitude]="lat" [longitude]="lng" (mapDblClick)="markerPosition($event)"
+                        [disableDoubleClickZoom]="true">
+                        <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="true"
+                            (dragEnd)="markerDragEnd($event)"></agm-marker>
                     </agm-map>
                 </div>
 
@@ -200,29 +197,35 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Product Name" formControlName="productName" [(ngModel)]="editedProduct.name">
+                        <input matInput placeholder="Product Name" formControlName="productName"
+                            [(ngModel)]="editedProduct.name">
                     </mat-form-field>
 
                     <mat-form-field fxFlex="50" class="rightForm">
-                        <input matInput type="number" placeholder="Product Price" formControlName="productPrice" [(ngModel)]="editedProduct.price">
+                        <input matInput type="number" placeholder="Product Price" formControlName="productPrice"
+                            [(ngModel)]="editedProduct.price">
                     </mat-form-field>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:15px;">
                     <mat-form-field fxFlex="50" class="leftForm">
-                        <input matInput placeholder="Product Description" formControlName="productDescription" [(ngModel)]="editedProduct.description">
+                        <input matInput placeholder="Product Description" formControlName="productDescription"
+                            [(ngModel)]="editedProduct.description">
                     </mat-form-field>
 
                     <div class="rightForm product-image">
                         Product Image
                     </div>
-                    <button mat-mini-fab class="btn-push" (click)="fileInput.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
-                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                    <button mat-mini-fab class="btn-push" (click)="fileInput.click()" style="margin-left: 15px;"
+                        aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
-                    <input hidden type="file" accept="image/*" (change)="onFileChangedProducts($event)" #fileInput/>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedProducts($event)" #fileInput />
                     <div class="profile-img-container">
-                        <img src="{{editedProduct.image}}" width="150" height="60" style="margin-left:15px;" class="img img-thumbnail img-circle img-responsive">
-                        <a (click)="deleteImageProduct($event)"><mat-icon>close</mat-icon></a>
+                        <img src="{{editedProduct.image}}" width="150" height="60" style="margin-left:15px;"
+                            class="img img-thumbnail img-circle img-responsive">
+                        <a (click)="deleteImageProduct($event)">
+                            <mat-icon>close</mat-icon>
+                        </a>
                     </div>
                 </div>
 
@@ -272,7 +275,8 @@
                             <mat-header-cell *matHeaderCellDef style=" flex: 0 0 90px;"> </mat-header-cell>
                             <mat-cell *matCellDef="let row" style=" flex: 0 0 90px;">
 
-                                <button mat-icon-button matTooltip="delete" [matTooltipPosition]="'above'" (click)="deleteProduct(row)">
+                                <button mat-icon-button matTooltip="delete" [matTooltipPosition]="'above'"
+                                    (click)="deleteProduct(row)">
                                     <mat-icon style="color: rgba(219, 18, 18, 0.808)">delete</mat-icon>
                                 </button>
 
@@ -286,25 +290,27 @@
                 </div>
 
                 <div class="h2 mb-24" style="margin-top:30px">Business Covers
-                    <button mat-mini-fab class="btn-push" (click)="fileInput2.click()" style="margin-left: 15px;" aria-label="Add file" *fuseIfOnDom
-                        [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
+                    <button mat-mini-fab class="btn-push" (click)="fileInput2.click()" style="margin-left: 15px;"
+                        aria-label="Add file" *fuseIfOnDom [@animate]="{value:'*', params:{delay:'300ms',scale:'0.2'}}">
                         <mat-icon style="color:white">add</mat-icon>
                     </button>
-                    <input hidden type="file" accept="image/*" (change)="onFileChangedCovers($event)" #fileInput2/>
+                    <input hidden type="file" accept="image/*" (change)="onFileChangedCovers($event)" #fileInput2 />
                 </div>
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto" style="margin-top:3px;">
                     <form class="form-max-width">
                         <div *ngFor="let c of covers" class="profile-img-container">
-                            <img [src]="c.url" width="256px" height="256px" class="img img-thumbnail img-circle img-responsive" style="margin-left:15px; padding: 10px">
-                            <a (click)="deleteImageCover($event)"><mat-icon>close</mat-icon></a>
+                            <img [src]="c.url" width="256px" height="256px"
+                                class="img img-thumbnail img-circle img-responsive"
+                                style="margin-left:15px; padding: 10px">
+                            <a (click)="deleteImageCover($event)">
+                                <mat-icon>close</mat-icon>
+                            </a>
                         </div>
                     </form>
                 </div>
 
                 <div style="margin-top:20px;">
-                    <button mat-raised-button class="btn-save" [disabled]="!editedBusiness.nameAr || !editedBusiness.nameEn 
-                    || !editedBusiness.nameUnique || !editedBusiness.description || !category.titleEn || !subCategory.titleEn 
-                    || !region.nameEn || !subRegion.nameEn || !selectedOwner" (click)="updateBusiness()">
+                    <button mat-raised-button class="btn-save" [disabled]="form.invalid" (click)="updateBusiness()">
                         Update Business
                     </button>
 

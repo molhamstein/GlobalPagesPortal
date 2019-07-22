@@ -24,17 +24,8 @@ export class AddGlobalBusinessComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
     newBusiness: any = {};
-    myControl = new FormControl();
-    filteredOptions: Observable<Owners[]>;
-    selectedOwner: any = {};
-    categories: any = [];
-    category: any = {};
-    subCategory: any = {};
-    owners: any = [];
-    owner: any = {};
-    regions: any = [];
-    region: any = {};
-    subRegion: any = {};
+
+
     prodcutFile: File = null;
     logoFile: File = null;
     coverFile: File = null;
@@ -67,30 +58,12 @@ export class AddGlobalBusinessComponent implements OnInit {
         this.newBusiness.openingDays = [];
         this.newBusiness.covers = [];
         this.newBusiness.products = [];
-        this.category.subCategories = [];
-        this.region.locations = [];
+
     }
 
     ngOnInit() {
 
         this.dataSource = new MatTableDataSource(this.myData);
-        this.userServ.getAllUsers().subscribe(res => {
-            this.owners = res;
-            this.filteredOptions = this.myControl.valueChanges
-                .pipe(
-                    startWith<string | Owners>(''),
-                    map(value => typeof value === 'string' ? value : value.username),
-                    map(title => title ? this._filter(title) : this.owners.slice())
-                );
-        })
-
-        this.busCatServ.getBusinessCategories().subscribe(res => {
-            this.categories = res;
-        })
-
-        this.regServ.getAllCities().subscribe(res => {
-            this.regions = res;
-        })
 
         this.formErrors = {
             nameAr: {},
@@ -99,10 +72,13 @@ export class AddGlobalBusinessComponent implements OnInit {
             description: {},
             status: {},
             openingDaysEnabled: {},
-            category: [],
-            subCategory: [],
-            city: [],
-            location: [],
+
+            category: {},
+            subCategory: {},
+            city: {},
+            location: {},
+            owner: {},
+
         };
 
         this.form = this.formBuilder.group({
@@ -115,10 +91,14 @@ export class AddGlobalBusinessComponent implements OnInit {
             description: ['', Validators.required],
             status: ['', Validators.required],
             openingDaysEnabled: [''],
-            category: [this.categories[0], Validators.required],
-            subCategory: [{}, Validators.required],
-            city: [{}, Validators.required],
-            location: ['', Validators.required],
+
+            category: [null, Validators.required],
+            subCategory: [null, Validators.required],
+            city: [null, Validators.required],
+            location: [null, Validators.required],
+            owner: [null, Validators.required],
+
+
             productName: '',
             productPrice: '',
             productDescription: '',
@@ -130,20 +110,6 @@ export class AddGlobalBusinessComponent implements OnInit {
 
     }
 
-    displayFn(own?: Owners): string | undefined {
-        return own ? own.username : undefined;
-    }
-
-    private _filter(own: string): Owners[] {
-        const filterValue = own.toLowerCase();
-        return this.owners.filter(own => {
-            if (own.username == undefined) {
-                own.username = "";
-            }
-            own.username.toLowerCase().indexOf(filterValue) === 0
-
-        });
-    }
 
     markerDragEnd($event) {
         this.lat = $event.coords.lat;
@@ -275,30 +241,22 @@ export class AddGlobalBusinessComponent implements OnInit {
     }
 
     saveBusiness() {
-        var isThere: boolean = false;
         this.loadingIndicator = true;
-        for (let index = 0; index < this.owners.length; index++) {
-            if (this.selectedOwner.id == this.owners[index].id) {
-                this.newBusiness.ownerId = this.selectedOwner.id;
-                isThere = true;
-                break;
-            }
-        }
-        if (isThere == false) {
-            this.loadingIndicator = false;
-            this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
-            return;
-        }
+
+
         if (this.newBusiness.openingDaysEnabled == true) {
             for (let index = 0; index < this.openingDays.length; index++) {
                 this.newBusiness.openingDays.push(this.openingDays[index])
             }
         }
         else { this.newBusiness.openingDays = [] }
-        this.newBusiness.categoryId = this.category.id;
-        this.newBusiness.subCategoryId = this.subCategory.id;
-        this.newBusiness.cityId = this.region.id;
-        this.newBusiness.locationId = this.subRegion.id;
+
+        this.newBusiness.categoryId = this.form.get('category').value.id;
+        this.newBusiness.subCategoryId = this.form.get('subCategory').value.id;
+        this.newBusiness.cityId = this.form.get('city').value.id;
+        this.newBusiness.locationId = this.form.get('location').value.id;
+        this.newBusiness.ownerId = this.form.get('owner').value.id;
+
         this.newBusiness.locationPoint = { lat: this.lat, lng: this.lng };
         if (this.logoFile != null) {
             const logoFrmData: FormData = new FormData();

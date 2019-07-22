@@ -24,19 +24,6 @@ export class EditGlobalBusinessComponent implements OnInit {
     form: FormGroup;
     formErrors: any;
     editedBusiness: any = {};
-    myControl = new FormControl();
-    filteredOptions: Observable<Owners[]>;
-    selectedOwner: any = {};
-    categories: any = [];
-    subCategories: any = [];
-    category: any = {};
-    subCategory: any = {};
-    owners: any = [];
-    owner: any = {};
-    regions: any = [];
-    subRegions: any = [];
-    region: any = {};
-    subRegion: any = {};
     prodcutFile: File = null;
     logoFile: File = null;
     coverFile: File = null;
@@ -46,12 +33,12 @@ export class EditGlobalBusinessComponent implements OnInit {
     dataFormProductsImgs: any = [];
     dataFormCoversImgs: any = [];
     days: any[] = [{ value: 2, valueName: "Monday" },
-     { value: 3, valueName: "Tuesday" },
-      { value: 4, valueName: "Wednesday" },
+    { value: 3, valueName: "Tuesday" },
+    { value: 4, valueName: "Wednesday" },
     { value: 5, valueName: "Thursday" },
-     { value: 6, valueName: "Friday" }, 
-     { value: 7, valueName: "Saturday" }, 
-     { value: 1, valueName: "Sunday" },]
+    { value: 6, valueName: "Friday" },
+    { value: 7, valueName: "Saturday" },
+    { value: 1, valueName: "Sunday" },]
     openingDays: any = [];
     lat = -34.397;
     lng = 150.644;
@@ -72,15 +59,20 @@ export class EditGlobalBusinessComponent implements OnInit {
     }
 
     ngOnInit() {
+        let props = ["category", "subCategory", "city", "location", "owner"];
 
         this.activatedRoute.params.subscribe((params: any) => {
             this.id = params.id;
 
             this.busServ.getGlobalBusinessById(this.id).subscribe(res => {
                 this.editedBusiness = res;
-                this.selectedOwner = this.editedBusiness.owner;
                 this.lat = this.editedBusiness.locationPoint.lat;
                 this.lng = this.editedBusiness.locationPoint.lng;
+
+                for (let field of props) {
+                    this.form.controls[field].setValue(res[field]);
+                }
+
                 for (let index = 0; index < this.editedBusiness.openingDays.length; index++) {
                     for (let i = 0; i < this.days.length; i++) {
                         if (this.editedBusiness.openingDays[index] == this.days[i].value) {
@@ -90,7 +82,7 @@ export class EditGlobalBusinessComponent implements OnInit {
                     }
                 }
                 for (let index = 0; index < this.editedBusiness.covers.length; index++) {
-                    if(this.editedBusiness.covers[index].type == 'video/*') {
+                    if (this.editedBusiness.covers[index].type == 'video/*') {
                         this.editedBusiness.covers[index].url = this.editedBusiness.covers[index].thumbnail;
                     }
                     this.covers[index] = this.editedBusiness.covers[index];
@@ -103,51 +95,12 @@ export class EditGlobalBusinessComponent implements OnInit {
                 }
                 this.dataSource.data = this.myData;
 
-                this.busCatServ.getBusinessCategories().subscribe(res => {
-                    this.categories = res;
-                    for (let index = 0; index < this.categories.length; index++) {
-                        if (this.categories[index].id == this.editedBusiness.categoryId) {
-                            this.category = this.categories[index];
-                            for (let j = 0; j < this.categories[index].subCategories.length; j++) {
-                                this.subCategories.push(this.categories[index].subCategories[j]);
-                                if (this.categories[index].subCategories[j].id == this.editedBusiness.subCategoryId) {
-                                    this.subCategory = this.categories[index].subCategories[j];
-                                }
-                            }
-                            break;
-                        }
-                    }
-                })
 
-                this.regServ.getAllCities().subscribe(res => {
-                    this.regions = res;
-                    for (let index = 0; index < this.regions.length; index++) {
-                        if (this.regions[index].id == this.editedBusiness.cityId) {
-                            this.region = this.regions[index];
-                            for (let i = 0; i < this.regions[index].locations.length; i++) {
-                                this.subRegions.push(this.regions[index].locations[i]);
-                                if (this.regions[index].locations[i].id == this.editedBusiness.locationId) {
-                                    this.subRegion = this.regions[index].locations[i];
-                                }
-                            }
-                            break;
-                        }
-                    }
-                })
             })
 
         });
 
         this.dataSource = new MatTableDataSource(this.myData);
-        this.userServ.getAllUsers().subscribe(res => {
-            this.owners = res;
-            this.filteredOptions = this.myControl.valueChanges
-                .pipe(
-                    startWith<string | Owners>(''),
-                    map(value => typeof value === 'string' ? value : value.username),
-                    map(title => title ? this._filter(title) : this.owners.slice())
-                );
-        })
 
 
 
@@ -158,10 +111,13 @@ export class EditGlobalBusinessComponent implements OnInit {
             description: {},
             status: {},
             openingDaysEnabled: {},
-            category: [],
-            subCategory: [],
-            city: [],
-            location: [],
+
+            category: {},
+            subCategory: {},
+            city: {},
+            location: {},
+            owner: {},
+
         };
 
         this.form = this.formBuilder.group({
@@ -174,43 +130,24 @@ export class EditGlobalBusinessComponent implements OnInit {
             description: ['', Validators.required],
             status: ['', Validators.required],
             openingDaysEnabled: [''],
-            category: [Validators.required],
-            subCategory: [{}, Validators.required],
-            city: [{}, Validators.required],
-            location: ['', Validators.required],
-            productName: [],
-            productPrice: [],
+
+            category: [null, Validators.required],
+            subCategory: [null, Validators.required],
+            city: [null, Validators.required],
+            location: [null, Validators.required],
+            owner: [null, Validators.required],
+
+
+            productName: '',
+            productPrice: '',
             productDescription: '',
         });
-
         this.form.valueChanges.subscribe(() => {
             this.onFormValuesChanged();
         });
 
     }
 
-    showSubCat() {
-        this.subCategories = this.category.subCategories;
-    }
-
-    showSubReg() {
-        this.subRegions = this.region.locations;
-    }
-
-    displayFn(own?: Owners): string | undefined {
-        return own ? own.username : undefined;
-    }
-
-    private _filter(own: string): Owners[] {
-        const filterValue = own.toLowerCase();
-        return this.owners.filter(own => {
-            if (own.username == undefined) {
-                own.username = "";
-            }
-            own.username.toLowerCase().indexOf(filterValue) === 0
-
-        });
-    }
 
     markerDragEnd($event) {
         this.lat = $event.coords.lat;
@@ -366,20 +303,8 @@ export class EditGlobalBusinessComponent implements OnInit {
 
 
     updateBusiness() {
-        var isThere: boolean = false;
-        this.loadingIndicator = true;
-        for (let index = 0; index < this.owners.length; index++) {
-            if (this.selectedOwner.id == this.owners[index].id) {
-                this.editedBusiness.ownerId = this.selectedOwner.id;
-                isThere = true;
-                break;
-            }
-        }
-        if (isThere == false) {
-            this.loadingIndicator = false;
-            this.snack.open('There is no Owner with this Username', 'Ok', { duration: 2000 });
-            return;
-        }
+
+
         if (this.editedBusiness.openingDaysEnabled == true) {
             var tempDays = [];
             for (let index = 0; index < this.openingDays.length; index++) {
@@ -388,10 +313,13 @@ export class EditGlobalBusinessComponent implements OnInit {
             this.editedBusiness.openingDays = tempDays;
         }
         else { this.editedBusiness.openingDays = [] }
-        this.editedBusiness.categoryId = this.category.id;
-        this.editedBusiness.subCategoryId = this.subCategory.id;
-        this.editedBusiness.cityId = this.region.id;
-        this.editedBusiness.locationId = this.subRegion.id;
+
+        this.editedBusiness.categoryId = this.form.get('category').value.id;
+        this.editedBusiness.subCategoryId = this.form.get('subCategory').value.id;
+        this.editedBusiness.cityId = this.form.get('city').value.id;
+        this.editedBusiness.locationId = this.form.get('location').value.id;
+        this.editedBusiness.ownerId = this.form.get('owner').value.id;
+
         delete this.editedBusiness.category;
         delete this.editedBusiness.subCategory;
         delete this.editedBusiness.owner;
@@ -430,8 +358,8 @@ export class EditGlobalBusinessComponent implements OnInit {
                                 tempData.push(this.myData[z + length]);
                             }
                             else {
-                                delete this.myData[ this.editedBusiness.products.length].order;
-                                this.editedBusiness.products.push(this.myData[ z + length]);
+                                delete this.myData[this.editedBusiness.products.length].order;
+                                this.editedBusiness.products.push(this.myData[z + length]);
                             }
                         }
                         for (let j = 0; j < res.length; j++) {
@@ -461,8 +389,8 @@ export class EditGlobalBusinessComponent implements OnInit {
                         tempData.push(this.myData[z + length]);
                     }
                     else {
-                        delete this.myData[ this.editedBusiness.products.length].order;
-                        this.editedBusiness.products.push(this.myData[ z + length]);
+                        delete this.myData[this.editedBusiness.products.length].order;
+                        this.editedBusiness.products.push(this.myData[z + length]);
                     }
                 }
                 for (let j = 0; j < res.length; j++) {
