@@ -15,6 +15,7 @@ import { EditGlobalBusinessComponent } from './edit-global-business/edit-global-
 import { ViewGlobalBusinessComponent } from './view-global-business/view-global-business.component';
 import { GlobalBusinessService } from '../../../../core/services/global-business.service';
 import { BusinessCategoriesService } from '../../../../core/services/business-cat.service';
+import { UtilsModule } from '../../../utlis/utils.module';
 
 
 const routes = [
@@ -46,6 +47,7 @@ const routes = [
     imports     : [
         SharedModule,
         CommonModule,
+        UtilsModule,
         RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
             apiKey: 'AIzaSyAth93MSTOwWPvaw_fmwulZgRhd1IsCyPY'

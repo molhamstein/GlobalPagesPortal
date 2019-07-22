@@ -1,17 +1,29 @@
 <div class="page-layout simple left-sidenav inner-sidenav">
     <!-- HEADER -->
-    <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
-        fxLayoutAlign.gt-xs="space-between center">
+    <div class="header mat-accent-bg p-16 p-sm-24 full-width" fxLayout="row" fxLayoutAlign="start start"
+        fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
 
         <!-- APP TITLE -->
-        <div fxLayout="row" fxLayoutAlign="start center">
+        <div fxLayout="row" class="full-width" fxLayoutAlign="start center">
 
-            <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+            <div class="logo" fxFlex="50" fxLayout="row" fxLayoutAlign="start start">
                 <mat-icon class="logo-icon mr-16" *fuseIfOnDom
                     [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">chrome_reader_mode</mat-icon>
                 <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Ads
                     Management</span>
+
+
             </div>
+            <div fxFlex="50" fxLayout="row" fxLayoutAlign="end end">
+                <button  fxFlex="50" mat-raised-button class="btn-add"
+                    [routerLink]="['/pages/ads-management/add-ad']">
+                    Add new Advertisement
+                </button>
+            </div>
+
+
+
+
 
         </div>
         <!-- / APP TITLE -->
@@ -23,15 +35,79 @@
     <mat-card>
 
         <div class="example-header">
-            <mat-form-field style="width: 50%;">
-                <input matInput placeholder="Search" [formControl]="filterControl">
-            </mat-form-field>
-            <button mat-raised-button class="btn-add" [routerLink]="['/pages/ads-management/add-ad']">
-                Add new Advertisement
-            </button>
+
+            <div fxLayout="row">
+
+                <form class="form-max-width full-width  mr-24 " fxLayout="column" fxLayoutAlign="start"
+                    fxFlex="1 0 auto" name="form" [formGroup]="filterForm">
+
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+
+                        <div fxFlex="25" class="pr-24">
+                            <mat-form-field>
+                                <input matInput placeholder="Title" formControlName="title">
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="25" class="pr-24">
+                            <mat-form-field>
+                                <mat-select placeholder="Status" formControlName="status">
+                                    <mat-option *ngFor="let s of selectStatus" [value]="s.value">
+                                        {{s.title}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div fxFlex="25" class="pr-24">
+                            <mat-form-field>
+                                <input type="date" matInput placeholder="From" formControlName="from">
+                            </mat-form-field>
+                        </div>
+                        <div fxFlex="25" class="pr-24">
+                            <mat-form-field>
+                                <input type="date" matInput placeholder="To" formControlName="to">
+                            </mat-form-field>
+                        </div>
+
+
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+
+                        <div fxFlex="25" class="pr-24">
+                            <app-owners-autocomplete formControlName="owner"></app-owners-autocomplete>
+                        </div>
+
+
+                        <div fxFlex="25" class="pr-24">
+                            <app-cities-autocomplete formControlName="city">
+                            </app-cities-autocomplete>
+                        </div>
+
+                        <div fxFlex="25" class="pr-24">
+                            <app-locations-autocomplete formControlName="location" [all]="true">
+                            </app-locations-autocomplete>
+                        </div>
+
+                        <div fxFlex="25" class="pr-24">
+                            <app-categories-auto-complete formControlName="category"></app-categories-auto-complete>
+                        </div>
+
+                        <div fxFlex="25" class="pr-24">
+                            <app-sub-categories-autocomplete class=" full-width" formControlName="subCategory"
+                                [all]="true">
+                            </app-sub-categories-autocomplete>
+                        </div>
+
+                    </div>
+
+
+                </form>
+
+            </div>
+
         </div>
 
-        <div  class="example-container mat-elevation-z8">
+        <div class="example-container mat-elevation-z8">
 
             <mat-table [dataSource]="dataSource">
 
@@ -101,7 +177,7 @@
                 </mat-row>
             </mat-table>
 
-            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"  [pageSize]="50" [length]="count" ></mat-paginator>
+            <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" [pageSize]="50" [length]="count"></mat-paginator>
         </div>
 
     </mat-card>

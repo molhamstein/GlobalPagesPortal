@@ -8,6 +8,7 @@ import { BusinessCategoriesService } from '../../../../core/services/business-ca
 import { AdsService } from '../../../../core/services/ads.service';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, startWith, switchMap, distinctUntilChanged, tap } from 'rxjs/operators';
+import { jsonCompare } from '../../../utlis/helpers';
 
 @Component({
     selector: 'ads-management',
@@ -18,11 +19,24 @@ import { debounceTime, startWith, switchMap, distinctUntilChanged, tap } from 'r
 export class AdsManagementComponent implements AfterViewInit {
 
 
-    filterControl = new FormControl('');
-    refreshSubject = new Subject();
 
+    refreshSubject = new Subject();
+    filterForm = this.formBuilder.group({
+        title: [null],
+        city: [null],
+        location: [null],
+        status: [null],
+        category: [null],
+        subCategory: [null],
+        owner: [null] ,
+        from : [null] , 
+        to : [null] 
+
+    })
 
     displayedColumns = ['title', 'description', 'status', 'thumbnail', 'icons'];
+    selectStatus = [{ value: null, title: 'All' }, { value: 'pending', title: 'pending' }, { value: 'activated', title: 'activated' }, { value: 'deactivated', title: 'deactivated' }];
+
     dataSource = new MatTableDataSource<Ads>([]);
     count = 0;
     @ViewChild(MatSort) sort;
@@ -30,19 +44,19 @@ export class AdsManagementComponent implements AfterViewInit {
 
 
     ngAfterViewInit() {
-
-
-        let filterInputSubject = this.filterControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), tap(() => {
+        let filterInputSubject = this.filterForm.valueChanges.pipe(distinctUntilChanged(jsonCompare), debounceTime(300), tap(() => {
             this.paginator.pageIndex = 0;
         }));
 
+
         this.paginator.page.merge(filterInputSubject, this.refreshSubject).pipe(
             startWith({}),
+            tap(console.log.bind('loading')),
             switchMap(() => {
                 let limit = this.paginator.pageSize;
                 let pageIndex = this.paginator.pageIndex;
                 let skip = pageIndex * limit;
-                let filter = this.filterControl.value;
+                let filter = this.filterForm.value;
 
                 return this.adServ.getAds(skip, limit, filter);
             })
@@ -54,7 +68,7 @@ export class AdsManagementComponent implements AfterViewInit {
 
     }
 
-    constructor(private adServ: AdsService) {
+    constructor(private adServ: AdsService, private formBuilder: FormBuilder) {
 
     }
 

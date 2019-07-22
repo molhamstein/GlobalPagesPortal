@@ -1,0 +1,1 @@
+export let jsonCompare = (a, b) => JSON.stringify(a) === JSON.stringify(b) ; 

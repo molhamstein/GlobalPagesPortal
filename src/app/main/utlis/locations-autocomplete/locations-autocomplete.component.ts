@@ -4,6 +4,7 @@ import { BaseControlValueAccessor } from '../BaseControlValueAccessort';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
 import { AutoCompleteBaseControl } from '../AutoCompleteBaseControl';
+import { RegionsService } from '../../../core/services/regions.service';
 
 @Component({
   selector: 'app-locations-autocomplete',
@@ -23,25 +24,28 @@ export class LocationsAutocompleteComponent extends AutoCompleteBaseControl<any>
 
 
   _city = null;
+  @Input() all: boolean = false;
   @Input() set city(city) {
     this._city = city;
-    if(city && this.value && this.value.cityId == city.id ) return ; 
+    if (city && this.value && this.value.cityId == city.id) return;
 
     this.filterControl.setValue('');
     this.optionSelected(null);
 
   }
+  _locations: any[] = [];
   get locations(): any[] {
-    if (this._city) return this._city.locations ? this._city.locations : [] ;
+    if (this.all) return this._locations;
+    if (this._city) return this._city.locations ? this._city.locations : [];
     return [];
   }
-  constructor() {
+  constructor(private regionService: RegionsService) {
     super();
   }
 
 
   displayFn(value) {
-    if(!value) return "" ; 
+    if (!value) return "";
 
     return value.nameEn;
   }
@@ -58,7 +62,9 @@ export class LocationsAutocompleteComponent extends AutoCompleteBaseControl<any>
   }
 
   async ngOnInit() {
-
+    if (this.all) {
+      this._locations = await this.regionService.getAllLocations().toPromise();
+    }
   }
   filterValueChanged(value) {
     if (typeof value !== "object") {
@@ -67,10 +73,10 @@ export class LocationsAutocompleteComponent extends AutoCompleteBaseControl<any>
   }
   filter(value: string) {
     if (!value) return this.locations.slice();
-    if(typeof value != "string") return this.filter(this.value ?  this.value.nameEn : null ) ;
+    if (typeof value != "string") return this.filter(this.value ? this.value.nameEn : null);
 
     return this.locations.filter(location => location.nameEn.toLowerCase().indexOf(value.toLowerCase()) > -1);
   }
 
-  
+
 }

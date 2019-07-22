@@ -7,7 +7,7 @@ import { ApiServiceBase } from "./api.service";
 
 @Injectable()
 
-export class AdsService  extends ApiServiceBase{
+export class AdsService extends ApiServiceBase {
 
   /*   headers = new HttpHeaders(); */
   accessToken = localStorage.getItem('authtoken');
@@ -21,9 +21,46 @@ export class AdsService  extends ApiServiceBase{
   getAllAds(): Observable<any> {
     return this.httpclient.get(GlobalURL.URL + 'posts');
   }
+  makeFilter(filter: any) {
+    let where: any = {};
+    if (filter.title)
+      where.title = { "like": `.*${filter.title}.*`, "options": "i" };
 
+
+    let dateFilter = [];
+    if (filter.from)
+      dateFilter.push({ creationDate: { gte: filter.from } });
+
+    if (filter.to)
+      dateFilter.push({ creationDate: { lte: filter.to } });
+
+    if (dateFilter.length)
+      where.and = dateFilter;
+
+
+    if (filter.city)
+      where.cityId = filter.city.id;
+    if (filter.status)
+      where.status = filter.status;
+
+    if (filter.location)
+      where.locationId = filter.location.id;
+
+    if (filter.subCategory)
+      where.subCategoryId = filter.subCategory.id;
+
+    if (filter.category)
+      where.categoryId = filter.category.id;
+
+    if (filter.owner)
+      where.ownerId = filter.owner.id;
+
+    return where;
+  }
   getAds(skip, limit, filter): Observable<any> {
-    return this.getWithCount(`posts/?filter={"where":{"title":{ "like":".*${filter}.*" , "options":"i" }},"limit":${limit}, "skip" : ${skip}}`);
+    let where = this.makeFilter(filter);
+    where = JSON.stringify(where);
+    return this.getWithCount(`posts/?filter={"where":${where},"limit":${limit},"skip":${skip}}`);
   }
 
   getAdsCount(): Observable<any> {

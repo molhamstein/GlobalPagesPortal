@@ -8,6 +8,7 @@ import { VolumesService } from '../../../../core/services/volumes.service.';
 import { GlobalBusinessService } from '../../../../core/services/global-business.service';
 import { Subject } from 'rxjs/Subject';
 import { debounceTime, distinctUntilChanged, tap, startWith, switchMap } from 'rxjs/operators';
+import { jsonCompare } from '../../../utlis/helpers';
 
 @Component({
     selector: 'global-business-management',
@@ -18,10 +19,24 @@ import { debounceTime, distinctUntilChanged, tap, startWith, switchMap } from 'r
 export class GlobalBusinessManagementComponent implements AfterViewInit {
 
 
-    displayedColumns = ['order', 'nameAr', 'nameEn', 'status', 'description', 'icons'];
+    displayedColumns = ['nameAr', 'nameEn', 'status', 'description', 'icons'];
     dataSource = new MatTableDataSource<GlobalBusiness>([]);
 
-    filterControl = new FormControl('');
+
+    filterForm = this.formBuilder.group({
+        nameEn: [null],
+        nameAr: [null],
+        city: [null],
+        location: [null],
+        status: [null],
+        category: [null],
+        subCategory: [null],
+        owner: [null],
+        from: [null],
+        to: [null]
+
+    })
+
     refreshSubject = new Subject();
 
     count = 0;
@@ -31,8 +46,7 @@ export class GlobalBusinessManagementComponent implements AfterViewInit {
 
     ngAfterViewInit() {
 
-
-        let filterInputSubject = this.filterControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), tap(() => {
+        let filterInputSubject = this.filterForm.valueChanges.pipe(distinctUntilChanged(jsonCompare), debounceTime(300), tap(() => {
             this.paginator.pageIndex = 0;
         }));
 
@@ -42,8 +56,7 @@ export class GlobalBusinessManagementComponent implements AfterViewInit {
                 let limit = this.paginator.pageSize;
                 let pageIndex = this.paginator.pageIndex;
                 let skip = pageIndex * limit;
-                let filter = this.filterControl.value;
-
+                let filter = this.filterForm.value;
                 return this.gbusServ.getGlobalBusiness(skip, limit, filter);
             })
         ).subscribe(response => {
@@ -54,7 +67,7 @@ export class GlobalBusinessManagementComponent implements AfterViewInit {
 
     }
 
-    constructor(private gbusServ: GlobalBusinessService) {
+    constructor(private gbusServ: GlobalBusinessService, private formBuilder: FormBuilder) {
 
     }
 
@@ -85,7 +98,7 @@ export class GlobalBusinessManagementComponent implements AfterViewInit {
         })
     }
 
-   
+
 }
 
 

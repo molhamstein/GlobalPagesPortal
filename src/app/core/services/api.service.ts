@@ -1,14 +1,12 @@
 import { GlobalURL } from "../global-url";
 import { HttpClient } from "@angular/common/http";
-import { map } from "rxjs/operators";
+import { map, catchError } from "rxjs/operators";
 import { Injectable } from "@angular/core";
 @Injectable()
 export abstract class ApiServiceBase {
 
-
     apiEndPoint = GlobalURL.URL;
     constructor(protected httpclient: HttpClient) { }
-
 
     getWithCount(query) {
 

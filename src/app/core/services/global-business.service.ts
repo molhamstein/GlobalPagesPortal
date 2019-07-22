@@ -20,8 +20,49 @@ export class GlobalBusinessService extends ApiServiceBase {
     return this.httpclient.get(GlobalURL.URL + 'businesses');
   }
 
+  makeFilter(filter: any) {
+    let where: any = {};
+    if (filter.nameEn)
+      where.nameEn = { "like": `.*${filter.nameEn}.*`, "options": "i" };
+
+    if (filter.nameAr)
+      where.nameAr = { "like": `.*${filter.nameAr}.*`, "options": "i" };
+
+    let dateFilter = [];
+    if (filter.from)
+      dateFilter.push({ creationDate: { gte: filter.from } });
+
+    if (filter.to)
+      dateFilter.push({ creationDate: { lte: filter.to } });
+
+    if (dateFilter.length)
+      where.and = dateFilter;
+
+
+    if (filter.city)
+      where.cityId = filter.city.id;
+    if (filter.status)
+      where.status = filter.status;
+
+    if (filter.location)
+      where.locationId = filter.location.id;
+
+    if (filter.subCategory)
+      where.subCategoryId = filter.subCategory.id;
+
+    if (filter.category)
+      where.categoryId = filter.category.id;
+
+    if (filter.owner)
+      where.ownerId = filter.owner.id;
+
+    return where;
+  }
+
   getGlobalBusiness(skip, limit, filter): Observable<any> {
-    return this.getWithCount(`businesses/?filter={"where":{"nameEn":{ "like":".*${filter}.*" , "options":"i" }},"limit":${limit}, "skip" : ${skip}}`);
+    let where = this.makeFilter(filter);
+    where = JSON.stringify(where);
+    return this.getWithCount(`businesses/?filter={"where":${where},"limit":${limit},"skip":${skip}}`);
   }
 
   getGlobalBusinessCount(): Observable<any> {
