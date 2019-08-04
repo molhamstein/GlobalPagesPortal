@@ -15,20 +15,20 @@ export class RegionsService {
     this.headers.append('Content-Type', 'application/json');
   }
 
-  getAllCities(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'cities/?filter[include]=locations&filter[order]=creationDate Desc');
+  getAllCities(order = "creationDate Desc"): Observable<any> {
+    return this.httpclient.get(GlobalURL.URL + `cities/?filter[include]=locations&filter[order]=${order}`);
   }
 
-  getAllLocations(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'locations/?filter[order]=creationDate Desc');
+  getAllLocations(order = "creationDate Desc"): Observable<any> {
+    return this.httpclient.get(GlobalURL.URL + `locations/?filter[order]=${order}`);
   }
 
   cityExist(id): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'cities/'+ id + '/exists');
+    return this.httpclient.get(GlobalURL.URL + 'cities/' + id + '/exists');
   }
 
   locationExist(id): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'locations/'+ id + '/exists');
+    return this.httpclient.get(GlobalURL.URL + 'locations/' + id + '/exists');
   }
 
   getCityById(id): Observable<any> {

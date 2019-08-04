@@ -34,7 +34,7 @@ export class CitiesAutocompleteComponent extends AutoCompleteBaseControl<any> im
   }
 
   async ngOnInit() {
-    this.cities = await this.regigonService.getAllCities().toPromise();
+    this.cities = await this.regigonService.getAllCities('nameEn').toPromise();
    
   }
   filterValueChanged(value) {

@@ -19,11 +19,11 @@ export class usersService extends ApiServiceBase {
   });
 
   getAllUsers(): Observable<any> {
-    return this.httpclient.get(GlobalURL.URL + 'users');
+    return this.httpclient.get(GlobalURL.URL + 'users?filter={"order" : "username"}');
   }
 
   getUsers(skip, limit, filter): Observable<any> {
-    return this.getWithCount(`users/?filter={"where":{"username":{ "like":".*${filter}.*" , "options":"i" }},"limit":${limit}, "skip" : ${skip}}`);
+    return this.getWithCount(`users/?filter={"where":{"username":{ "like":".*${filter}.*" , "options":"i" }},"limit":${limit}, "skip" : ${skip} , "order" : "username" }`);
   }
 
   getUsersCount(): Observable<number> {

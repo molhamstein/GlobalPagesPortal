@@ -63,7 +63,7 @@ export class LocationsAutocompleteComponent extends AutoCompleteBaseControl<any>
 
   async ngOnInit() {
     if (this.all) {
-      this._locations = await this.regionService.getAllLocations().toPromise();
+      this._locations = await this.regionService.getAllLocations('nameEn').toPromise();
     }
   }
   filterValueChanged(value) {

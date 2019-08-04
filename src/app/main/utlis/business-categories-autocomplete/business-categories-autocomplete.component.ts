@@ -30,7 +30,7 @@ export class BusinessCategoriesAutocompleteComponent extends AutoCompleteBaseCon
   }
 
   async ngOnInit() {
-    this.categories = await this.categoriesService.getBusinessCategories().toPromise();
+    this.categories = await this.categoriesService.getBusinessCategories('titleEn').toPromise();
   }
   filterValueChanged(value) {
     if (typeof value !== "object") {

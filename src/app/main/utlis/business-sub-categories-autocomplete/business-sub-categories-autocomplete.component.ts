@@ -40,7 +40,7 @@ export class BusinessSubCategoriesAutocompleteComponent extends AutoCompleteBase
 
   async ngOnInit() {
     if (this.all)
-      this._categories = await this.categoryService.getBusinessSubCategories().toPromise(); 
+      this._categories = await this.categoryService.getBusinessSubCategories("titleEn").toPromise(); 
   }
 
   displayFn(value) {
