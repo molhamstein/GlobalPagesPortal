@@ -18,13 +18,13 @@ import { Subject } from 'rxjs/Subject';
 })
 export class VolumesManagementComponent implements AfterViewInit {
 
-    
+
     displayedColumns = ['titleAr', 'titleEn', 'status', 'posts', 'icons'];
     dataSource = new MatTableDataSource<Volumes>([]);
-    count = 0 ;  
+    count = 0;
     @ViewChild(MatSort) sort: MatSort;
-    @ViewChild(MatPaginator) paginator : MatPaginator ;  
-    filterControl : FormControl = new FormControl(''); 
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+    filterControl: FormControl = new FormControl('');
     refreshSubject = new Subject();
 
     ngAfterViewInit(): void {
@@ -53,21 +53,21 @@ export class VolumesManagementComponent implements AfterViewInit {
 
 
 
-    
+
 
     constructor(private volServ: VolumesService) {
 
     }
 
     ngOnInit() {
-       
+
     }
     async deleteVolume(vol, id) {
         delete vol.order;
         delete vol.posts
         vol.status = "deactivated";
-        await this.volServ.deleteVolume(vol, id).toPromise(); 
-        this.refreshSubject.next(); 
+        await this.volServ.deleteVolume(id).toPromise();
+        this.refreshSubject.next();
 
     }
 

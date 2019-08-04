@@ -7,7 +7,7 @@ import { ApiServiceBase } from "./api.service";
 
 @Injectable()
 
-export class VolumesService  extends ApiServiceBase{
+export class VolumesService extends ApiServiceBase {
 
   accessToken = localStorage.getItem('authtoken');
 
@@ -41,8 +41,8 @@ export class VolumesService  extends ApiServiceBase{
     return this.httpclient.put(GlobalURL.URL + 'volumes/' + id, volume, { headers: this.headers })
   }
 
-  deleteVolume(volume, id): Observable<any> {
-    return this.httpclient.put(GlobalURL.URL + 'volumes/' + id, volume, { headers: this.headers })
+  deleteVolume(id): Observable<any> {
+    return this.httpclient.delete(GlobalURL.URL + 'volumes/' + id, { headers: this.headers })
   }
 
   filterVolume(value): Observable<any> {
