@@ -117,6 +117,7 @@ export class EditGlobalBusinessComponent implements OnInit {
             city: {},
             location: {},
             owner: {},
+            vip: {}
 
         };
 
@@ -130,7 +131,7 @@ export class EditGlobalBusinessComponent implements OnInit {
             description: ['', Validators.required],
             status: ['', Validators.required],
             openingDaysEnabled: [''],
-
+            vip: [false, Validators.required],
             category: [null, Validators.required],
             subCategory: [null, Validators.required],
             city: [null, Validators.required],

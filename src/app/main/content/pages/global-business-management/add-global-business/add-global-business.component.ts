@@ -72,7 +72,7 @@ export class AddGlobalBusinessComponent implements OnInit {
             description: {},
             status: {},
             openingDaysEnabled: {},
-
+            vip : {} , 
             category: {},
             subCategory: {},
             city: {},
@@ -91,7 +91,7 @@ export class AddGlobalBusinessComponent implements OnInit {
             description: ['', Validators.required],
             status: ['', Validators.required],
             openingDaysEnabled: [''],
-
+            vip : [false , Validators.required] , 
             category: [null, Validators.required],
             subCategory: [null, Validators.required],
             city: [null, Validators.required],

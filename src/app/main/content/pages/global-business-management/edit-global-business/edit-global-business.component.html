@@ -144,6 +144,15 @@
                             Required
                         </mat-error>
                     </div>
+
+                    <div fxFlex="50" class="rightForm">
+                        <label class="tog-label ">
+                            Is Vip
+                        </label>
+                        <mat-slide-toggle class="tog" formControlName="vip" [(ngModel)]="editedBusiness.vip">
+                        </mat-slide-toggle>
+                    </div>
+         
                 </div>
 
                 <ngx-datatable *ngIf="editedBusiness.openingDaysEnabled" class="material" [rows]="days"
