@@ -25,7 +25,7 @@ export class ViewVolumeComponent implements OnInit {
     order = 0;
 
     constructor(private formBuilder: FormBuilder, private adServ: AdsService, private route: Router,
-        private volServ:VolumesService, private loc: Location, private activatedRoute: ActivatedRoute) {
+        private volServ: VolumesService, private loc: Location, private activatedRoute: ActivatedRoute) {
 
     }
 
@@ -72,8 +72,8 @@ export class ViewVolumeComponent implements OnInit {
     deleteVolume() {
 
         this.volumeInfo.status = "deactivated";
-        this.volServ.deleteVolume(this.volumeInfo, this.volumeInfo.id).subscribe(() => {
-            
+        this.volServ.deleteVolume(this.volumeInfo.id).subscribe(() => {
+
             this.route.navigate(['/pages/volumes-management']);
         })
     }
