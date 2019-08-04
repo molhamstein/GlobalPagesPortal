@@ -51,7 +51,6 @@ export class AdsManagementComponent implements AfterViewInit {
 
         this.paginator.page.merge(filterInputSubject, this.refreshSubject).pipe(
             startWith({}),
-            tap(console.log.bind('loading')),
             switchMap(() => {
                 let limit = this.paginator.pageSize;
                 let pageIndex = this.paginator.pageIndex;

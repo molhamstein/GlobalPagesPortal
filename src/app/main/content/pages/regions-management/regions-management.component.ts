@@ -135,7 +135,7 @@ export class RegionsManagementComponent implements OnInit {
     deleteLocation(location, id) {
         delete location.order;
         this.regServ.deleteLocation(id).subscribe(() => {
-            console.log("deleted");
+            
             this.getCities();
             this.getLocations();
         })

@@ -73,7 +73,7 @@ export class ViewVolumeComponent implements OnInit {
 
         this.volumeInfo.status = "deactivated";
         this.volServ.deleteVolume(this.volumeInfo, this.volumeInfo.id).subscribe(() => {
-            console.log("deactivated");
+            
             this.route.navigate(['/pages/volumes-management']);
         })
     }

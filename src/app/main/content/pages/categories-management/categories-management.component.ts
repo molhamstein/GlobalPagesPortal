@@ -100,7 +100,7 @@ export class CategoriesManagementComponent implements OnInit {
     deleteCategory(cat, id) {
         
         this.catServ.deleteCategory(id).subscribe(() => {
-            console.log("deleted");
+            
             this.getCategories();
             this.getSubCategories();
         })
@@ -131,7 +131,7 @@ export class CategoriesManagementComponent implements OnInit {
     deleteSubCategory(cat, id) {
         delete cat.order;
         this.catServ.deleteCategory(id).subscribe(() => {
-            console.log("deleted");
+            
             this.getCategories();
             this.getSubCategories();
         })

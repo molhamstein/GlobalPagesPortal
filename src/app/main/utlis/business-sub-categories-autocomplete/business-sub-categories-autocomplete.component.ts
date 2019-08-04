@@ -50,7 +50,7 @@ export class BusinessSubCategoriesAutocompleteComponent extends AutoCompleteBase
   }
 
 
-  filterValueChanged(value) {
+  filterControlValueChanged(value) {
     if (typeof value !== "object") {
       this.optionSelected(null);
     }

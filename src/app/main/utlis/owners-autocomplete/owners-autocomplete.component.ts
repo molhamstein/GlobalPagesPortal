@@ -1,9 +1,9 @@
-import { Component, OnInit, forwardRef } from '@angular/core';
+import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { usersService } from '../../../core/services/users.service';
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs/Observable';
 import { BaseControlValueAccessor } from '../BaseControlValueAccessort';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, switchMap } from 'rxjs/operators';
 import { AutoCompleteBaseControl } from '../AutoCompleteBaseControl';
 
 @Component({
@@ -22,12 +22,18 @@ export class OwnersAutocompleteComponent extends AutoCompleteBaseControl<any> im
 
 
 
-  constructor(private usersService: usersService) { super() }
+
+  @Input() all: boolean = false;
+
+  constructor(private usersService: usersService) {
+    super();
+    //this.filteredOptions = this.filteredOptions.pipe(switchMap(e => e));
+  }
 
   users = [];
 
   displayFn(value) {
-    if(!value) return "" ; 
+    if (!value) return "";
     return value.username;
   }
 
@@ -35,17 +41,16 @@ export class OwnersAutocompleteComponent extends AutoCompleteBaseControl<any> im
     this.users = await this.usersService.getAllUsers().toPromise();
 
   }
-  filterValueChanged(value) {
+  filterControlValueChanged(value) {
     if (typeof value !== "object") {
       this.optionSelected(null);
     }
   }
 
-  filter(value: string) {
-    if (!value) return this.users.slice();
-    if(typeof value != "string") return this.filter(this.value ? this.value.username : null ) ;
-    
-    return this.users.filter(user => user && user.username && user.username.toLowerCase().indexOf(value.toLowerCase()) > -1);
+  filter(value: string): Promise<any[]> {
+    if (typeof value != "string") return this.filter(this.value ? this.value.username : '');
+    return this.usersService.getUsers(0, 20, value).map(e => e.data).toPromise();
+    //return this.users.filter(user => user && user.username && user.username.toLowerCase().indexOf(value.toLowerCase()) > -1);
   }
 
 

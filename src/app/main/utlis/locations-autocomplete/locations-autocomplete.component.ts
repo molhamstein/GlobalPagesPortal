@@ -66,7 +66,7 @@ export class LocationsAutocompleteComponent extends AutoCompleteBaseControl<any>
       this._locations = await this.regionService.getAllLocations('nameEn').toPromise();
     }
   }
-  filterValueChanged(value) {
+  filterControlValueChanged(value) {
     if (typeof value !== "object") {
       this.optionSelected(null);
     }

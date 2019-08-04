@@ -60,7 +60,7 @@ export class viewUsersComponent implements OnInit {
 
         this.selectedUser.status = "deactivated";
         this.userServ.deleteUser(this.selectedUser, this.selectedUser.id).subscribe(() => {
-            console.log("deactivated");
+            
             this.route.navigate(['/pages/users-management']);
         })
     }

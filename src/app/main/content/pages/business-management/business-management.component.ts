@@ -98,7 +98,7 @@ export class BusinessManagementComponent implements OnInit {
     deleteBusinessCategory(business, id) {
 
         this.busServ.deleteBusiness(id).subscribe(() => {
-            console.log("deleted");
+            
             this.getCategories();
             this.getSubCategories();
         })
@@ -129,7 +129,7 @@ export class BusinessManagementComponent implements OnInit {
     deleteBusinessSubCategory(business, id) {
         delete business.order;
         this.busServ.deleteBusiness(id).subscribe(() => {
-            console.log("deleted");
+            
             this.getCategories();
             this.getSubCategories();
         })

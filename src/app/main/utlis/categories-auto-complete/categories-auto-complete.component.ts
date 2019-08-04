@@ -32,7 +32,7 @@ export class CategoriesAutoCompleteComponent extends AutoCompleteBaseControl<any
   async ngOnInit() {
     this.categories = await this.categoriesService.getCategories().toPromise();
   }
-  filterValueChanged(value) {
+  filterControlValueChanged(value) {
     if (typeof value !== "object") {
       this.optionSelected(null);
     }

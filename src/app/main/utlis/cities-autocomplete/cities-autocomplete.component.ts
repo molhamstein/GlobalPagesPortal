@@ -37,7 +37,7 @@ export class CitiesAutocompleteComponent extends AutoCompleteBaseControl<any> im
     this.cities = await this.regigonService.getAllCities('nameEn').toPromise();
    
   }
-  filterValueChanged(value) {
+  filterControlValueChanged(value) {
     if (typeof value !== "object") {
       this.optionSelected(null);
     }

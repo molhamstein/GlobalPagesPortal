@@ -113,16 +113,16 @@ export class AddGlobalBusinessComponent implements OnInit {
 
     markerDragEnd($event) {
         this.lat = $event.coords.lat;
-        console.log(this.lat);
+        
         this.lng = $event.coords.lng;
-        console.log(this.lng);
+        
     }
 
     markerPosition(event) {
         this.lat = event.coords.lat;
-        console.log(this.lat);
+        
         this.lng = event.coords.lng;
-        console.log(this.lng);
+        
     }
 
     checked(event, day) {

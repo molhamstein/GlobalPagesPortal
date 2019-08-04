@@ -165,7 +165,7 @@ export class ViewGlobalBusinessComponent implements OnInit {
 
         this.businessInfo.status = "deactivated";
         this.busServ.deleteGlobalBusiness( this.businessInfo.id).subscribe(() => {
-            console.log("deactivated");
+            
             this.route.navigate(['/pages/global-business-management']);
         })
     }

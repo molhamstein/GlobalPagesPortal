@@ -54,7 +54,7 @@ export class SubCategoriesAutocompleteComponent extends AutoCompleteBaseControl<
   }
 
 
-  filterValueChanged(value) {
+  filterControlValueChanged(value) {
     if (typeof value !== "object") {
       this.optionSelected(null);
     }
