@@ -48,42 +48,42 @@ const routes: Routes = [
         children: [
             {
                 path: 'volumes-management',
-                loadChildren: VolumesManagementModuleLoad
+                loadChildren:'./volumes-management/volumes-management.module#VolumesManagementModule' 
             },
             {
                 path: 'users-management',
-                loadChildren: UsersManagementModuleLoad
+                loadChildren: './users-management/users-management.module#UsersManagementModule'
             }
             ,
             {
                 path: 'business-management',
-                loadChildren: BusinessManagementModuleLoad
+                loadChildren: './business-management/business-management.module#BusinessManagementModule' 
             }
             ,
             {
                 path: 'categories-management',
-                loadChildren: CategoriesManagementModuleLoad
+                loadChildren: './categories-management/categories-management.module#CategoriesManagementModule'
 
             }
             ,
             {
                 path: 'regions-management',
-                loadChildren: RegionsManagementModuleLoad
+                loadChildren: './regions-management/regions-management.module#RegionsManagementModule'
             }
             ,
             {
                 path: 'ads-management',
-                loadChildren: AdsManagementModuleLoad
+                loadChildren: './ads-management/ads-management.module#AdsManagementModule'
             }
             ,
             {
                 path: 'global-business-management',
-                loadChildren: GlobalBusinessManagementModuleLoad
+                loadChildren: './global-business-management/global-business-management.module#GlobalBusinessManagementModule' 
 
             },
             {
                 path: 'push-notification',
-                loadChildren: PushNotificationModuleLoad
+                loadChildren: './push-notification/push-notification.module#PushNotificationModule'
             }
         ]
 

@@ -18,38 +18,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AuthGuard } from './core/services/auth.gard';
 
 const appRoutes: Routes = [
-    /*  {
-         path        : 'apps/mail',
-         loadChildren: './main/content/apps/mail/mail.module#FuseMailModule'
-     },
-     {
-         path        : 'apps/chat',
-         loadChildren: './main/content/apps/chat/chat.module#FuseChatModule'
-     },
-     {
-         path        : 'apps/calendar',
-         loadChildren: './main/content/apps/calendar/calendar.module#FuseCalendarModule'
-     },
-     {
-         path        : 'apps/e-commerce',
-         loadChildren: './main/content/apps/e-commerce/e-commerce.module#FuseEcommerceModule'
-     },
-     {
-         path        : 'apps/todo',
-         loadChildren: './main/content/apps/todo/todo.module#FuseTodoModule'
-     },
-     {
-         path        : 'apps/file-manager',
-         loadChildren: './main/content/apps/file-manager/file-manager.module#FuseFileManagerModule'
-     },
-     {
-         path        : 'apps/contacts',
-         loadChildren: './main/content/apps/contacts/contacts.module#FuseContactsModule'
-     },
-     {
-         path        : 'apps/scrumboard',
-         loadChildren: './main/content/apps/scrumboard/scrumboard.module#FuseScrumboardModule'
-     }, */
+   
     {
         path: '',
         redirectTo: '/pages/users-management',
