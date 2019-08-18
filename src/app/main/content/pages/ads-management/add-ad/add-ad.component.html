@@ -72,7 +72,7 @@
 
                 <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
                     <div fxFlex="50" class="leftForm full-width">
-                        <app-categories-auto-complete formControlName="category" [(ngModel)]="category"
+                        <app-categories-auto-complete formControlName="category" 
                             #categoryAutoComplete></app-categories-auto-complete>
 
                         <mat-error *ngIf="formErrors.category.required">
