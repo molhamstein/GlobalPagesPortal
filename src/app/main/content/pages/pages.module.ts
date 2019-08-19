@@ -13,11 +13,14 @@ import { GlobalBusinessManagementModule } from './global-business-management/glo
 import { PushNotificationModule } from './push-notification/push-notification.module';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../../../core/services/auth.gard';
+import { BackupsManagementModule } from './backups-management/backups-management.module';
 
+export function BackupsManagementModuleLoad(){
+    return BackupsManagementModule; 
+}
 export function UsersManagementModuleLoad() {
     return UsersManagementModule;
 }
-
 export function BusinessManagementModuleLoad() {
     return BusinessManagementModule
 }
@@ -84,6 +87,10 @@ const routes: Routes = [
             {
                 path: 'push-notification',
                 loadChildren: './push-notification/push-notification.module#PushNotificationModule'
+            } , 
+            {
+                path : 'backups-management' ,                 
+                loadChildren : './backups-management/backups-management.module#BackupsManagementModule'
             }
         ]
 

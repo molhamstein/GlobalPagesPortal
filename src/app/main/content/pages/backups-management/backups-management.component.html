@@ -1,0 +1,108 @@
+<div class="page-layout simple left-sidenav inner-sidenav">
+  <!-- HEADER -->
+  <div class="header mat-accent-bg p-16 p-sm-24 full-width" fxLayout="row" fxLayoutAlign="start start"
+    fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="row" class="full-width" fxLayoutAlign="start center">
+
+      <div class="logo" fxFlex="50" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+          chrome_reader_mode</mat-icon>
+        <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Backups
+          Management</span>
+
+
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+
+  <mat-card>
+
+
+    <h2>Database Backup</h2>
+
+    <div class="example-container mat-elevation-z8">
+
+      <mat-table [dataSource]="dbData">
+
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef style=" flex: 0 0 200px;"> Name </mat-header-cell>
+          <mat-cell *matCellDef="let row" style=" flex: 0 0 200px;"> {{row.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="size">
+          <mat-header-cell *matHeaderCellDef style=" flex: 0 0 200px;"> Size </mat-header-cell>
+          <mat-cell *matCellDef="let row" style=" flex: 0 0 200px;"> {{ humanFileSize(row.size) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef style=" flex: 0 0 200px;"> Create Time </mat-header-cell>
+          <mat-cell *matCellDef="let row" style=" flex: 0 0 200px;"> {{row.ctime}}</mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="icons">
+          <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+
+            <a matTooltip="Download backup" [matTooltipPosition]="'above'" mat-icon-button
+              [attr.href]="row.download">
+              <mat-icon style="color: rgba(41, 163, 102, 0.993)">cloud_download</mat-icon>
+          </a>
+
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+      </mat-table>
+
+    </div>
+    <br/><br/>
+    <h2>Media Backup</h2>
+    <div class="example-container mat-elevation-z8">
+      <mat-table [dataSource]="mediaData">
+
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef style=" flex: 0 0 200px;"> Name </mat-header-cell>
+          <mat-cell *matCellDef="let row" style=" flex: 0 0 200px;"> {{row.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="size">
+          <mat-header-cell *matHeaderCellDef style=" flex: 0 0 200px;"> Size </mat-header-cell>
+          <mat-cell *matCellDef="let row" style=" flex: 0 0 200px;"> {{ humanFileSize(row.size) }}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <mat-header-cell *matHeaderCellDef style=" flex: 0 0 200px;"> Create Time </mat-header-cell>
+          <mat-cell *matCellDef="let row" style=" flex: 0 0 200px;"> {{row.ctime}}</mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="icons">
+          <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+
+            <a matTooltip="Download backup" [matTooltipPosition]="'above'" mat-icon-button
+              [attr.href]="row.download">
+              <mat-icon style="color: rgba(41, 163, 102, 0.993)">cloud_download</mat-icon>
+          </a>
+
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        </mat-row>
+      </mat-table>
+
+    </div>
+
+  </mat-card>
+
+</div>

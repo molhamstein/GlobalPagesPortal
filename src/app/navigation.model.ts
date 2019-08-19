@@ -93,6 +93,13 @@ export class NavigationModel
                         'icon'    : 'notifications_active',
                         'url'     : '/pages/push-notification'
                     },
+                    {
+                        'id' : 'backup' , 
+                        'title' : 'Backups Managment', 
+                        'type' : 'item'  , 
+                        'icon' : 'backup' , 
+                        'url' : '/pages/backups-management'
+                    }
                  
                 ]}
          

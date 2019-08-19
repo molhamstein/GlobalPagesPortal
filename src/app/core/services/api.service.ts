@@ -1,6 +1,6 @@
 import { GlobalURL } from "../global-url";
 import { HttpClient } from "@angular/common/http";
-import { map, catchError } from "rxjs/operators";
+import { map, catchError, tap } from "rxjs/operators";
 import { Injectable } from "@angular/core";
 @Injectable()
 export abstract class ApiServiceBase {
@@ -16,7 +16,11 @@ export abstract class ApiServiceBase {
                 let data = response.body;
                 return { count, data };
             })
-        );
+        )
+    }
+
+    get(query) {
+        return this.httpclient.get(this.apiEndPoint + query);
     }
 
 
