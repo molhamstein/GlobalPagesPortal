@@ -16,6 +16,7 @@ import { ViewGlobalBusinessComponent } from './view-global-business/view-global-
 import { GlobalBusinessService } from '../../../../core/services/global-business.service';
 import { BusinessCategoriesService } from '../../../../core/services/business-cat.service';
 import { UtilsModule } from '../../../utlis/utils.module';
+import { GeoLocationService } from '../../../../core/services/geo-location.service';
 
 
 const routes = [
@@ -54,7 +55,7 @@ const routes = [
         })
         
     ],
-    providers:[ GlobalBusinessService, usersService, RegionsService, CategoriesService, BusinessCategoriesService ]
+    providers:[ GlobalBusinessService, usersService, RegionsService, CategoriesService, BusinessCategoriesService  , GeoLocationService]
 })
 
 export class GlobalBusinessManagementModule

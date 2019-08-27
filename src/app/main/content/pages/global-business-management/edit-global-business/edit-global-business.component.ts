@@ -12,6 +12,7 @@ import { Location } from '../../../../../../../node_modules/@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
 import { isString } from 'util';
+import { GeoLocationService } from '../../../../../core/services/geo-location.service';
 
 @Component({
     selector: 'edit-global-business',
@@ -55,10 +56,12 @@ export class EditGlobalBusinessComponent implements OnInit {
 
     constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
         private route: Router, private snack: MatSnackBar, private busCatServ: BusinessCategoriesService, private loc: Location,
-        private regServ: RegionsService, private userServ: usersService, private activatedRoute: ActivatedRoute) {
+        private regServ: RegionsService, private userServ: usersService, private activatedRoute: ActivatedRoute         ) {
     }
 
     ngOnInit() {
+        
+
         let props = ["category", "subCategory", "city", "location", "owner"];
 
         this.activatedRoute.params.subscribe((params: any) => {

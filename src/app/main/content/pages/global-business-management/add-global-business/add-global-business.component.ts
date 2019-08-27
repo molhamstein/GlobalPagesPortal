@@ -12,6 +12,7 @@ import { BusinessCategoriesService } from '../../../../../core/services/business
 import { Location } from '../../../../../../../node_modules/@angular/common';
 import { Observable } from 'rxjs/Observable';
 import { startWith, map } from 'rxjs/operators';
+import { GeoLocationService } from '../../../../../core/services/geo-location.service';
 
 
 @Component({
@@ -52,7 +53,7 @@ export class AddGlobalBusinessComponent implements OnInit {
 
     constructor(private formBuilder: FormBuilder, private busServ: GlobalBusinessService,
         private route: Router, private snack: MatSnackBar, private busCatServ: BusinessCategoriesService,
-        private regServ: RegionsService, private userServ: usersService, private loc: Location) {
+        private regServ: RegionsService, private userServ: usersService, private loc: Location , private geoLocationService : GeoLocationService) {
 
         this.newBusiness.openingDaysEnabled = false;
         this.newBusiness.openingDays = [];
@@ -62,6 +63,11 @@ export class AddGlobalBusinessComponent implements OnInit {
     }
 
     ngOnInit() {
+        // zoom map to current location 
+        this.geoLocationService.getPosition().subscribe( position => { 
+            this.lat = position.coords.latitude ; 
+            this.lng = position.coords.longitude ; 
+        }); 
 
         this.dataSource = new MatTableDataSource(this.myData);
 
