@@ -82,15 +82,12 @@ export class CategoriesManagementComponent implements OnInit {
             this.j = 1;
             var temp = res;
             for (let index = 0; index < temp.length; index++) {
-                this.catServ.getCategoryById(temp[index].parentCategoryId).subscribe(res => {
-                    temp[index].parentCategory = res;
-                    temp[index].order = this.j;
-                    this.j++;
-                    this.myData1.push(temp[index]);
-                    this.dataSource1._updateChangeSubscription();
-                    this.dataSource1.paginator = this.paginator1;
-                    this.dataSource1.sort = this.sort1;
-                })
+                temp[index].order = this.j;
+                this.j++;
+                this.myData1.push(temp[index]);
+                this.dataSource1._updateChangeSubscription();
+                this.dataSource1.paginator = this.paginator1;
+                this.dataSource1.sort = this.sort1;
             }
             this.dataSource1 = new MatTableDataSource(this.myData1);
         })
@@ -98,9 +95,9 @@ export class CategoriesManagementComponent implements OnInit {
     }
 
     deleteCategory(cat, id) {
-        
+
         this.catServ.deleteCategory(id).subscribe(() => {
-            
+
             this.getCategories();
             this.getSubCategories();
         })
@@ -131,7 +128,7 @@ export class CategoriesManagementComponent implements OnInit {
     deleteSubCategory(cat, id) {
         delete cat.order;
         this.catServ.deleteCategory(id).subscribe(() => {
-            
+
             this.getCategories();
             this.getSubCategories();
         })
