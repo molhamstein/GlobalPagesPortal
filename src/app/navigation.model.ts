@@ -1,15 +1,17 @@
-export class NavigationModel
-{
+import { authService } from "./core/services/auth.service";
+import { Injectable } from "@angular/core";
+
+@Injectable()
+export class NavigationModel {
     public model: any[];
 
-    constructor()
-    {
+    constructor(private authService: authService) {
         this.model = [
             {
-                'id'      : 'pages',
-                'title'   : 'Pages',
-                'type'    : 'group',
-                'icon'    : 'pages',
+                'id': 'pages',
+                'title': 'Pages',
+                'type': 'group',
+                'icon': 'pages',
                 'children': [
                     /* {
                         'id'      : 'authentication',
@@ -38,73 +40,79 @@ export class NavigationModel
                         ]
                     }, */
                     {
-                        'id'      : 'users_management',
-                        'title'   : 'Users Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'person',
-                        'url'     : '/pages/users-management'
+                        'id': 'users_management',
+                        'title': 'Users Managemet',
+                        'type': 'item',
+                        'icon': 'person',
+                        'url': '/pages/users-management'
                     },
                     {
-                        'id'      : 'business_management',
-                        'title'   : 'Business Cat. Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'business_center',
-                        'url'     : '/pages/business-management'
+                        'id': 'business_management',
+                        'title': 'Business Cat. Managemet',
+                        'type': 'item',
+                        'icon': 'business_center',
+                        'url': '/pages/business-management'
                     },
                     {
-                        'id'      : 'categories_management',
-                        'title'   : 'Categories Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'category',
-                        'url'     : '/pages/categories-management'
+                        'id': 'categories_management',
+                        'title': 'Categories Managemet',
+                        'type': 'item',
+                        'icon': 'category',
+                        'url': '/pages/categories-management'
                     },
                     {
-                        'id'      : 'regions_management',
-                        'title'   : 'Regions Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'location_city',
-                        'url'     : '/pages/regions-management'
+                        'id': 'regions_management',
+                        'title': 'Regions Managemet',
+                        'type': 'item',
+                        'icon': 'location_city',
+                        'url': '/pages/regions-management'
                     },
                     {
-                        'id'      : 'ads_management',
-                        'title'   : 'Ads Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'chrome_reader_mode',
-                        'url'     : '/pages/ads-management'
+                        'id': 'ads_management',
+                        'title': 'Ads Managemet',
+                        'type': 'item',
+                        'icon': 'chrome_reader_mode',
+                        'url': '/pages/ads-management'
                     },
                     {
-                        'id'      : 'volumes_management',
-                        'title'   : 'Volumes Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'library_books',
-                        'url'     : '/pages/volumes-management'
+                        'id': 'volumes_management',
+                        'title': 'Volumes Managemet',
+                        'type': 'item',
+                        'icon': 'library_books',
+                        'url': '/pages/volumes-management'
                     },
                     {
-                        'id'      : 'global_business_management',
-                        'title'   : 'Business Managemet',
-                        'type'    : 'item',
-                        'icon'    : 'business',
-                        'url'     : '/pages/global-business-management'
+                        'id': 'global_business_management',
+                        'title': 'Business Managemet',
+                        'type': 'item',
+                        'icon': 'business',
+                        'url': '/pages/global-business-management'
                     },
                     {
-                        'id'      : 'push-notification',
-                        'title'   : 'Push Notifications',
-                        'type'    : 'item',
-                        'icon'    : 'notifications_active',
-                        'url'     : '/pages/push-notification'
+                        'id': 'push-notification',
+                        'title': 'Push Notifications',
+                        'type': 'item',
+                        'icon': 'notifications_active',
+                        'url': '/pages/push-notification'
                     },
-                    {
-                        'id' : 'backup' , 
-                        'title' : 'Backups Managment', 
-                        'type' : 'item'  , 
-                        'icon' : 'backup' , 
-                        'url' : '/pages/backups-management'
-                    }
-                 
-                ]}
-         
-     
+
+
+                ]
+            }
+
+
         ];
+
+        if (this.authService.hasPrivilege("backup")) {
+
+            this.model[0].children.push({
+                'id': 'backup',
+                'title': 'Backups Managment',
+                'type': 'item',
+                'icon': 'backup',
+                'url': '/pages/backups-management'
+            });
+        }
     }
 }
 

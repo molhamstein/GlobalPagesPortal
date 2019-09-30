@@ -3,17 +3,13 @@ import { NavigationModel } from '../../../navigation.model';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
-export class FuseNavigationService
-{
+export class FuseNavigationService {
     onNavCollapseToggle = new EventEmitter<any>();
     onNavCollapseToggled = new EventEmitter<any>();
     onNavigationModelChange: BehaviorSubject<any> = new BehaviorSubject({});
-    navigationModel: NavigationModel;
     flatNavigation: any[] = [];
 
-    constructor()
-    {
-        this.navigationModel = new NavigationModel();
+    constructor(private navigationModel: NavigationModel) {
         this.onNavigationModelChange.next(this.navigationModel.model);
     }
 
@@ -22,8 +18,7 @@ export class FuseNavigationService
      *
      * @returns {any[]}
      */
-    getNavigationModel()
-    {
+    getNavigationModel() {
         return this.navigationModel.model;
     }
 
@@ -32,8 +27,7 @@ export class FuseNavigationService
      *
      * @param model
      */
-    setNavigationModel(model)
-    {
+    setNavigationModel(model) {
         this.navigationModel = model;
         this.onNavigationModelChange.next(this.navigationModel.model);
     }
@@ -42,13 +36,11 @@ export class FuseNavigationService
      * Add new navigation item
      * to the given location
      */
-    addNavigationItem(location, item)
-    {
+    addNavigationItem(location, item) {
         // Parse the location
         const locationArr = location.split('.');
 
-        if ( locationArr.length === 0 )
-        {
+        if (locationArr.length === 0) {
             return;
         }
 
@@ -56,8 +48,7 @@ export class FuseNavigationService
         const navItem = this.findNavigationItemById(locationArr);
 
         // Act according to the item type
-        switch ( navItem.type )
-        {
+        switch (navItem.type) {
             case 'item':
 
                 // Create a children array
@@ -96,13 +87,11 @@ export class FuseNavigationService
      *
      * @param location
      */
-    getNavigationItem(location)
-    {
+    getNavigationItem(location) {
         // Parse the location
         const locationArr = location.split('.');
 
-        if ( locationArr.length === 0 )
-        {
+        if (locationArr.length === 0) {
             return;
         }
 
@@ -116,22 +105,17 @@ export class FuseNavigationService
      * @param location
      * @param navigation
      */
-    findNavigationItemById(location, navigation?)
-    {
-        if ( !navigation )
-        {
+    findNavigationItemById(location, navigation?) {
+        if (!navigation) {
             navigation = this.navigationModel.model;
         }
 
         // Iterate through the given navigation
-        for ( const navItem of navigation )
-        {
+        for (const navItem of navigation) {
             // If the nav item id equals the first location...
-            if ( navItem.id === location[0] )
-            {
+            if (navItem.id === location[0]) {
                 // If there is more location to look at...
-                if ( location.length > 1 )
-                {
+                if (location.length > 1) {
                     // Remove the first item of the location
                     location.splice(0, 1);
 
@@ -140,8 +124,7 @@ export class FuseNavigationService
                 }
 
                 // Otherwise just return the nav item
-                else
-                {
+                else {
                     return navItem;
                 }
             }
@@ -153,34 +136,28 @@ export class FuseNavigationService
      * @param navigationItems
      * @returns {any[]}
      */
-    getFlatNavigation(navigationItems?)
-    {
-        if ( !navigationItems )
-        {
+    getFlatNavigation(navigationItems?) {
+        if (!navigationItems) {
             navigationItems = this.navigationModel.model;
         }
 
-        for ( const navItem of navigationItems )
-        {
-            if ( navItem.type === 'subheader' )
-            {
+        for (const navItem of navigationItems) {
+            if (navItem.type === 'subheader') {
                 continue;
             }
 
-            if ( navItem.type === 'item' )
-            {
+            if (navItem.type === 'item') {
                 this.flatNavigation.push({
                     title: navItem.title,
-                    type : navItem.type,
-                    icon : navItem.icon || false,
-                    url  : navItem.url
+                    type: navItem.type,
+                    icon: navItem.icon || false,
+                    url: navItem.url
                 });
 
                 continue;
             }
 
-            if ( navItem.type === 'collapse' || navItem.type === 'group' )
-            {
+            if (navItem.type === 'collapse' || navItem.type === 'group') {
                 this.getFlatNavigation(navItem.children);
             }
         }

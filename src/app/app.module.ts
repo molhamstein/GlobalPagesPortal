@@ -16,9 +16,10 @@ import { FuseNavigationService } from './core/components/navigation/navigation.s
 import { MarkdownModule } from 'angular2-markdown';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthGuard } from './core/services/auth.gard';
+import { NavigationModel } from './navigation.model';
 
 const appRoutes: Routes = [
-   
+
     {
         path: '',
         redirectTo: '/pages/users-management',
@@ -37,7 +38,7 @@ const appRoutes: Routes = [
         HttpClientModule,
         BrowserAnimationsModule,
         PagesModule,
-        RouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true  }),
+        RouterModule.forRoot(appRoutes, { enableTracing: false, useHash: true }),
         SharedModule,
         MarkdownModule.forRoot(),
         TranslateModule.forRoot(),
@@ -47,6 +48,7 @@ const appRoutes: Routes = [
         FuseSplashScreenService,
         FuseConfigService,
         FuseNavigationService,
+        NavigationModel,
         AuthGuard
     ],
     bootstrap: [
