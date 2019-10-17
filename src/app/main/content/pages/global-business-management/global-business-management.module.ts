@@ -51,7 +51,7 @@ const routes = [
         UtilsModule,
         RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
-            apiKey: 'AIzaSyAth93MSTOwWPvaw_fmwulZgRhd1IsCyPY'
+            apiKey: 'AIzaSyBz2d1nPM2l1YSptI-xyK4Mr0ckeX1w1Is'
         })
         
     ],
